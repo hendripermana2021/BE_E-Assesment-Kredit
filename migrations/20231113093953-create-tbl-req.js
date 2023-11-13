@@ -2,48 +2,45 @@
 /** @type {import('sequelize-cli').Migration} */
 module.exports = {
   async up(queryInterface, Sequelize) {
-    await queryInterface.createTable('tbl_alternatifs', {
+    await queryInterface.createTable('tbl_reqs', {
       id: {
         allowNull: false,
         autoIncrement: true,
         primaryKey: true,
         type: Sequelize.INTEGER
       },
-      name: {
-        type: Sequelize.STRING
-      },
-      class: {
+      user_id: {
         type: Sequelize.INTEGER
       },
-      sex: {
+      status_req: {
         type: Sequelize.BOOLEAN
       },
-      fathername: {
-        type: Sequelize.STRING
+      created_by: {
+        type: Sequelize.INTEGER
       },
-      mothername: {
-        type: Sequelize.STRING
-      },
-      birthdate: {
+      date_start: {
         type: Sequelize.DATE
       },
-      id_room: {
-        type: Sequelize.INTEGER
+      time_start: {
+        type: Sequelize.TIME
       },
-      password: {
+      date_end: {
+        type: Sequelize.DATE
+      },
+      time_end: {
+        type: Sequelize.TIME
+      },
+      cpi_result: {
+        type: Sequelize.FLOAT
+      },
+      commented: {
         type: Sequelize.STRING
       },
-      status: {
+      validation: {
         type: Sequelize.BOOLEAN
       },
-      role_id: {
-        type: Sequelize.STRING
-      },
-      accesstoken: {
-        type: Sequelize.TEXT
-      },
-      refreshtoken: {
-        type: Sequelize.TEXT
+      validation_by: {
+        type: Sequelize.INTEGER
       },
       createdAt: {
         allowNull: false,
@@ -56,6 +53,6 @@ module.exports = {
     });
   },
   async down(queryInterface, Sequelize) {
-    await queryInterface.dropTable('tbl_alternatifs');
+    await queryInterface.dropTable('tbl_reqs');
   }
 };

@@ -14,9 +14,9 @@ module.exports = (sequelize, DataTypes) => {
     }
   }
   tbl_kriteria.init({
-    classes_case: DataTypes.INTEGER,
-    kriteria: DataTypes.STRING,
-    weight: DataTypes.FLOAT
+    scale_priority: DataTypes.INTEGER,
+    name_kriteria: DataTypes.STRING,
+    weight_score: DataTypes.FLOAT
   }, {
     sequelize,
     modelName: 'tbl_kriteria',

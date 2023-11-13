@@ -14,6 +14,7 @@ module.exports = (sequelize, DataTypes) => {
     }
   }
   tbl_room.init({
+    id_ustadz: DataTypes.INTEGER,
     nameroom: DataTypes.INTEGER
   }, {
     sequelize,

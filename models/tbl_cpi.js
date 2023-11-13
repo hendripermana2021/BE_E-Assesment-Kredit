@@ -3,7 +3,7 @@ const {
   Model
 } = require('sequelize');
 module.exports = (sequelize, DataTypes) => {
-  class tbl_classcase extends Model {
+  class tbl_cpi extends Model {
     /**
      * Helper method for defining associations.
      * This method is not a part of Sequelize lifecycle.
@@ -13,11 +13,13 @@ module.exports = (sequelize, DataTypes) => {
       // define association here
     }
   }
-  tbl_classcase.init({
-    classes: DataTypes.STRING
+  tbl_cpi.init({
+    id_kriteria: DataTypes.INTEGER,
+    id_value: DataTypes.INTEGER,
+    id_order: DataTypes.INTEGER
   }, {
     sequelize,
-    modelName: 'tbl_classcase',
+    modelName: 'tbl_cpi',
   });
-  return tbl_classcase;
+  return tbl_cpi;
 };
