@@ -17,6 +17,9 @@ module.exports = {
         {
           role_name: "Petugas Keamanan",
         },
+        {
+          role_name: "Santri",
+        },
       ],
       {}
     );
