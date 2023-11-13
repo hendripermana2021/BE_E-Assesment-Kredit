@@ -6,13 +6,16 @@ module.exports = {
       "tbl_rooms",
       [
         {
-          nameroom : "Abu Bakar 1",
+          id_ustadz: 2,
+          nameroom: "Abu Bakar 1",
         },
         {
-          nameroom : "Abu Bakar 2",
+          id_ustadz: 1,
+          nameroom: "Abu Bakar 2",
         },
         {
-          nameroom : "Abu Bakar 3",
+          id_ustadz: 2,
+          nameroom: "Abu Bakar 3",
         },
       ],
       {}

@@ -6,18 +6,17 @@ module.exports = {
       "tbl_roles",
       [
         {
-          role_name : "Administrator",
+          role_name: "Administrator",
         },
         {
-          role_name : "Ustadz/ah",
+          role_name: "Kepala Pengasuhan",
         },
         {
-          role_name : "Petugas Keamanan",
+          role_name: "Ustadz/ah",
         },
         {
-          role_name : "santri/wati",
+          role_name: "Petugas Keamanan",
         },
-        
       ],
       {}
     );

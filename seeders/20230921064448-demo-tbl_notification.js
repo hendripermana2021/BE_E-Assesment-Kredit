@@ -6,10 +6,10 @@ module.exports = {
       "tbl_notifications",
       [
         {
-          user_id : 1,
-          message : "Request Perpulangan diterima",
-          isRead : 1
-        }
+          user_id: 1,
+          message: "Request Perpulangan diterima",
+          isRead: 1,
+        },
       ],
       {}
     );

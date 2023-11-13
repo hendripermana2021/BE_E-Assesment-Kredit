@@ -1,58 +1,58 @@
-'use strict';
+"use strict";
 /** @type {import('sequelize-cli').Migration} */
 module.exports = {
   async up(queryInterface, Sequelize) {
-    await queryInterface.createTable('tbl_reqs', {
+    await queryInterface.createTable("tbl_reqs", {
       id: {
         allowNull: false,
         autoIncrement: true,
         primaryKey: true,
-        type: Sequelize.INTEGER
+        type: Sequelize.INTEGER,
       },
-      user_id: {
-        type: Sequelize.INTEGER
+      student_id: {
+        type: Sequelize.INTEGER,
       },
       status_req: {
-        type: Sequelize.BOOLEAN
+        type: Sequelize.BOOLEAN,
       },
       created_by: {
-        type: Sequelize.INTEGER
+        type: Sequelize.INTEGER,
       },
       date_start: {
-        type: Sequelize.DATE
+        type: Sequelize.DATE,
       },
       time_start: {
-        type: Sequelize.TIME
+        type: Sequelize.TIME,
       },
       date_end: {
-        type: Sequelize.DATE
+        type: Sequelize.DATE,
       },
       time_end: {
-        type: Sequelize.TIME
+        type: Sequelize.TIME,
       },
       cpi_result: {
-        type: Sequelize.FLOAT
+        type: Sequelize.FLOAT,
       },
       commented: {
-        type: Sequelize.STRING
+        type: Sequelize.STRING,
       },
       validation: {
-        type: Sequelize.BOOLEAN
+        type: Sequelize.BOOLEAN,
       },
       validation_by: {
-        type: Sequelize.INTEGER
+        type: Sequelize.INTEGER,
       },
       createdAt: {
         allowNull: false,
-        type: Sequelize.DATE
+        type: Sequelize.DATE,
       },
       updatedAt: {
         allowNull: false,
-        type: Sequelize.DATE
-      }
+        type: Sequelize.DATE,
+      },
     });
   },
   async down(queryInterface, Sequelize) {
-    await queryInterface.dropTable('tbl_reqs');
-  }
+    await queryInterface.dropTable("tbl_reqs");
+  },
 };
