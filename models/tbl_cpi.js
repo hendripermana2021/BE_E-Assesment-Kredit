@@ -1,7 +1,5 @@
-'use strict';
-const {
-  Model
-} = require('sequelize');
+"use strict";
+const { Model } = require("sequelize");
 module.exports = (sequelize, DataTypes) => {
   class tbl_cpi extends Model {
     /**
@@ -13,13 +11,16 @@ module.exports = (sequelize, DataTypes) => {
       // define association here
     }
   }
-  tbl_cpi.init({
-    id_kriteria: DataTypes.INTEGER,
-    id_value: DataTypes.INTEGER,
-    id_order: DataTypes.INTEGER
-  }, {
-    sequelize,
-    modelName: 'tbl_cpi',
-  });
+  tbl_cpi.init(
+    {
+      id_kriteria: DataTypes.INTEGER,
+      id_subkriteria: DataTypes.INTEGER,
+      id_order: DataTypes.INTEGER,
+    },
+    {
+      sequelize,
+      modelName: "tbl_cpi",
+    }
+  );
   return tbl_cpi;
 };

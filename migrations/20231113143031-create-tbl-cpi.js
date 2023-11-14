@@ -2,24 +2,21 @@
 /** @type {import('sequelize-cli').Migration} */
 module.exports = {
   async up(queryInterface, Sequelize) {
-    await queryInterface.createTable("tbl_kriteria", {
+    await queryInterface.createTable("tbl_cpis", {
       id: {
         allowNull: false,
         autoIncrement: true,
         primaryKey: true,
         type: Sequelize.INTEGER,
       },
-      scale_priority: {
+      id_kriteria: {
         type: Sequelize.INTEGER,
       },
-      name_kriteria: {
-        type: Sequelize.STRING,
+      id_subkriteria: {
+        type: Sequelize.INTEGER,
       },
-      weight_score: {
-        type: Sequelize.FLOAT,
-      },
-      type: {
-        type: Sequelize.BOOLEAN,
+      id_order: {
+        type: Sequelize.INTEGER,
       },
       createdAt: {
         allowNull: false,
@@ -32,6 +29,6 @@ module.exports = {
     });
   },
   async down(queryInterface, Sequelize) {
-    await queryInterface.dropTable("tbl_kriteria");
+    await queryInterface.dropTable("tbl_cpis");
   },
 };
