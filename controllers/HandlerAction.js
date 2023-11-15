@@ -102,7 +102,7 @@ export const getDataKriteriaDanSubKriteria = async (req, res) => {
   }
 };
 
-export const calculatedROC = async (req, res) => {
+export const createKriteriaAndCalculatedROC = async (req, res) => {
   const kriteria = await Kriteria.findAll({});
 
   const sortfill = kriteria.sort((a, b) => a.scale_priority - b.scale_priority);
@@ -159,6 +159,7 @@ export const calculatedCPI = async (req, res) => {
       attributes: ["id", "student_id", "cpi_result"],
       where: {
         created_by: user_id,
+        cpi_result: null,
       },
       include: {
         model: Cpi,
@@ -175,6 +176,14 @@ export const calculatedCPI = async (req, res) => {
         ],
       },
     });
+
+    if (req == "") {
+      return res.status(400).json({
+        code: 400,
+        status: false,
+        msg: "Don't Have Data for Calculated",
+      });
+    }
 
     const kriteria = await Kriteria.findAll({});
 
@@ -275,12 +284,31 @@ export const calculatedCPI = async (req, res) => {
     }
     console.log("Final Results CPI dan ROC : ", step4Final);
 
-    //END
+    // END
+
+    //Insert CPI RESULTS to DATABASE Permission Req Table Database
+    for (let i = 0; i < req.length; i++) {
+      await Req.update(
+        {
+          cpi_result: step4Final[i],
+        },
+        {
+          where: { id: req[i].id },
+        }
+      );
+    }
+    console.log(step4Final[0]);
 
     res.status(200).json({
       status: true,
       msg: "Success Calculated ROC",
-      data: kriteria,
+      data: {
+        req,
+        step1: { groupedArrays, minValues },
+        step2: minNormalisasiTranspose,
+        step3: { step3Transpose, sumGroups, maxValue, minValue },
+        step4: step4Final,
+      },
     });
   } catch (error) {
     console.log(error);

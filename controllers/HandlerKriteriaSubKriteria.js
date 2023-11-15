@@ -46,6 +46,17 @@ export const createKriteriaDanSub = async (req, res) => {
   const subKriteria = req.body.subkriteria;
 
   try {
+    const getkriteria = await Kriteria.findAll({});
+
+    for (let i = 0; i < getkriteria.length; i++) {
+      if (scale_priority == getkriteria[i].scale_priority) {
+        res.status(400).json({
+          code: 400,
+          status: false,
+          msg: "Scale Priority is Duplicate, please change",
+        });
+      }
+    }
     const kriteria = await Kriteria.create({
       scale_priority,
       name_kriteria,

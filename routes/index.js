@@ -48,7 +48,7 @@ import {
 import {
   addReqAndAlternatives,
   calculatedCPI,
-  calculatedROC,
+  createKriteriaAndCalculatedROC,
   getDataKriteriaDanSubKriteria,
 } from "../controllers/HandlerAction.js";
 import {
@@ -87,7 +87,11 @@ router.get(
   verifyToken,
   getDataKriteriaDanSubKriteria
 );
-router.post(prefix + "action/calculatedROC", verifyToken, calculatedROC);
+router.post(
+  prefix + "action/calculatedROC",
+  verifyToken,
+  createKriteriaAndCalculatedROC
+);
 router.post(prefix + "result/CPI", verifyToken, calculatedCPI);
 
 //ROUTES FOR ADMINISTRATOR
