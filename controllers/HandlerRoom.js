@@ -3,110 +3,93 @@ import bcrypt from "bcrypt";
 import jwt from "jsonwebtoken";
 import { Op } from "sequelize";
 
-const Santri = db.tbl_santri;
-export const getDataSantri = async (req, res) => {
+const Room = db.tbl_room;
+export const getDataRoom = async (req, res) => {
   try {
-    const santri = await Santri.findAll({});
+    const room = await Room.findAll({});
     res.status(200).json({
       code: 200,
       status: true,
       msg: "data you searched Found",
-      data: santri,
+      data: room,
     });
   } catch (error) {
     console.log(error);
   }
 };
 
-export const getDataSantriById = async (req, res) => {
+export const getDataRoomById = async (req, res) => {
   const { id } = req.params;
   try {
-    const santri = await Santri.findAll({
+    const room = await Room.findAll({
       where: { id: id },
     });
-    if (santri == "") {
+    if (room == "") {
       return res.status(400).json({
         code: 400,
         status: false,
-        msg: "Data Doesn't Exist",
+        msg: "Room Doesn't Exist",
       });
     }
     res.status(200).json({
       code: 200,
       status: true,
       msg: "data you searched Found",
-      data: santri,
+      data: room,
     });
   } catch (error) {
     console.log(error);
   }
 };
 
-export const getSantriBy = async (req, res) => {
+export const getRoomBy = async (req, res) => {
   try {
     const { search } = req.params;
-    let santri = await Santri.findAll({
+    let room = await Room.findAll({
       where: {
-        [Op.or]: [{ name_santri: { [Op.like]: `%` + search + `%` } }],
+        [Op.or]: [{ nameroom: { [Op.like]: `%` + search + `%` } }],
       },
     });
-    if (santri == "") {
+    if (room == "") {
       return res.status(400).json({
         code: 400,
         status: false,
-        msg: "Santri Doesn't Existing",
+        msg: "Room Doesn't Existing",
       });
     }
     return res.status(200).json({
       code: 200,
       status: true,
-      msg: "data Santri you searched Found",
-      data: santri,
+      msg: "data Room you searched Found",
+      data: room,
     });
   } catch (error) {
     console.log(error);
   }
 };
 
-export const RegisterSantri = async (req, res) => {
-  const {
-    name_santri,
-    sex,
-    fathername,
-    mothername,
-    password,
-    status,
-    id_room,
-    role_id,
-  } = req.body;
+export const createRoom = async (req, res) => {
+  const { id_ustadz, nameroom } = req.body;
 
-  const salt = await bcrypt.genSalt();
-  const hashPassword = await bcrypt.hash(password, salt);
   try {
-    const santri = await Santri.create({
-      name_santri,
-      sex,
-      fathername,
-      mothername,
-      password: hashPassword,
-      status,
-      id_room,
-      role_id: 5,
+    const room = await Room.create({
+      id_ustadz,
+      nameroom,
     });
     res.status(200).json({
       code: 200,
       status: true,
       msg: "Register Data Santri berhasil",
-      data: santri,
+      data: req.body,
     });
   } catch (error) {
     console.log(error);
   }
 };
 
-export const deleteSantri = async (req, res) => {
+export const deleteRoom = async (req, res) => {
   const { id } = req.params;
-  const dataBefore = await Santri.findOne({
+  const dataBefore = await Room.findOne({
     where: { id },
   });
   const parsedDataProfile = JSON.parse(JSON.stringify(dataBefore));
@@ -115,25 +98,25 @@ export const deleteSantri = async (req, res) => {
     return res.status(400).json({
       code: 400,
       status: false,
-      msg: "Data Santri doesn't exist or has been deleted!",
+      msg: "Data Room doesn't exist or has been deleted!",
     });
   }
 
-  await Santri.destroy({
+  await Room.destroy({
     where: { id },
   });
 
   return res.status(200).json({
     code: 200,
     status: true,
-    msg: "Delete Data Santri Successfully",
+    msg: "Delete Data Room Successfully",
     data: dataBefore,
   });
 };
 
-export const updateDataSantri = async (req, res) => {
+export const updateRoom = async (req, res) => {
   const { id } = req.params;
-  const dataBeforeDelete = await Santri.findOne({
+  const dataBeforeDelete = await Room.findOne({
     where: { id: id },
   });
   const parsedDataProfile = JSON.parse(JSON.stringify(dataBeforeDelete));
@@ -142,32 +125,17 @@ export const updateDataSantri = async (req, res) => {
     return res.status(400).json({
       code: 400,
       status: false,
-      msg: "Data Santri doesn't exist or has been deleted!",
+      msg: "Data Room doesn't exist or has been deleted!",
     });
   }
 
-  const {
-    name_santri,
-    sex,
-    fathername,
-    mothername,
-    password,
-    status,
-    id_room,
-    role_id,
-  } = req.body;
+  const { id_ustadz, nameroom } = req.body;
 
   try {
-    const santri = await Santri.update(
+    const room = await Room.update(
       {
-        name_santri,
-        sex,
-        fathername,
-        mothername,
-        password,
-        status,
-        id_room,
-        role_id,
+        id_ustadz,
+        nameroom,
       },
       {
         where: { id: id },

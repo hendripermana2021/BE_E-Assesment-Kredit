@@ -253,14 +253,15 @@ export const updateDataPegawai = async (req, res) => {
   }
 
   const { name_pegawai, sex, email, password, role_id } = req.body;
-
+  const salt = await bcrypt.genSalt();
+  const hashPassword = await bcrypt.hash(password, salt);
   try {
     const user = await Pegawai.update(
       {
         name_pegawai,
         sex,
         email,
-        password,
+        password: hashPassword,
         role_id,
       },
       {
@@ -273,6 +274,32 @@ export const updateDataPegawai = async (req, res) => {
       msg: "Users Success Updated",
       data_before: dataBeforeDelete,
       data: req.body,
+    });
+  } catch (error) {
+    console.log(error);
+  }
+};
+
+export const getDataPegawaiBy = async (req, res) => {
+  try {
+    const { search } = req.params;
+    let pegawai = await Pegawai.findAll({
+      where: {
+        [Op.or]: [{ name_pegawai: { [Op.like]: `%` + search + `%` } }],
+      },
+    });
+    if (pegawai == "") {
+      return res.status(400).json({
+        code: 400,
+        status: false,
+        msg: "Data Pegawai Doesn't Existing",
+      });
+    }
+    return res.status(200).json({
+      code: 200,
+      status: true,
+      msg: "data pegawai you searched Found",
+      data: pegawai,
     });
   } catch (error) {
     console.log(error);

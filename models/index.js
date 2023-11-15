@@ -61,5 +61,33 @@ db.tbl_subkriteria = require("../models/tbl_subkriteria.js")(
   sequelize,
   Sequelize
 );
+db.tbl_cpi = require("../models/tbl_cpi.js")(sequelize, Sequelize);
+
+db.tbl_req.hasMany(db.tbl_cpi, {
+  as: "cpi_data",
+  foreignKey: "id_order",
+});
+
+// db.tbl_cpi.hasMany(db.tbl_kriteria, {
+//   as: "kriteria",
+//   foreignKey: "id",
+// });
+
+db.tbl_cpi.hasMany(db.tbl_kriteria, {
+  foreignKey: "id",
+  as: "kriteria",
+  sourceKey: "id_kriteria",
+});
+
+// db.tbl_subkriteria.hasMany(db.tbl_cpi, {
+//   as: "subkriteria",
+//   foreignKey: "id_kriteria",
+// });
+
+db.tbl_cpi.hasMany(db.tbl_subkriteria, {
+  foreignKey: "id",
+  as: "subkriteria",
+  sourceKey: "id_subkriteria",
+});
 
 module.exports = db;
