@@ -47,6 +47,7 @@ import {
 } from "../controllers/HandlerNotification.js";
 import {
   addReqAndAlternatives,
+  calculatedCPI,
   calculatedROC,
   getDataKriteriaDanSubKriteria,
 } from "../controllers/HandlerAction.js";
@@ -87,6 +88,7 @@ router.get(
   getDataKriteriaDanSubKriteria
 );
 router.post(prefix + "action/calculatedROC", verifyToken, calculatedROC);
+router.post(prefix + "result/CPI", verifyToken, calculatedCPI);
 
 //ROUTES FOR ADMINISTRATOR
 //API PEGAWAI
