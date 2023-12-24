@@ -18,17 +18,11 @@ module.exports = {
       created_by: {
         type: Sequelize.INTEGER
       },
-      date_start: {
+      start_permission: {
         type: Sequelize.DATE
       },
-      time_start: {
-        type: Sequelize.TIME
-      },
-      date_end: {
+      end_permission: {
         type: Sequelize.DATE
-      },
-      time_end: {
-        type: Sequelize.TIME
       },
       cpi_result: {
         type: Sequelize.FLOAT
@@ -36,10 +30,19 @@ module.exports = {
       commented: {
         type: Sequelize.STRING
       },
-      validation: {
+      validation_code: {
+        type: Sequelize.STRING
+      },
+      permission_status: {
         type: Sequelize.BOOLEAN
       },
-      validation_by: {
+      val_go_by: {
+        type: Sequelize.INTEGER
+      },
+      val_back_by: {
+        type: Sequelize.INTEGER
+      },
+      id_calculated: {
         type: Sequelize.INTEGER
       },
       createdAt: {

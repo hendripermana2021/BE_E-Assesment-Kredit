@@ -6,7 +6,22 @@ import { Op } from "sequelize";
 const Santri = db.tbl_santri;
 export const getDataSantri = async (req, res) => {
   try {
-    const santri = await Santri.findAll({});
+    const santri = await Santri.findAll({
+      // include: {
+      //   model: Cpi,
+      //   as: "cpi_data",
+      //   include: [
+      //     {
+      //       model: Kriteria,
+      //       as: "kriteria",
+      //     },
+      //     {
+      //       model: Sub_Kriteria,
+      //       as: "subkriteria",
+      //     },
+      //   ],
+      // },
+    });
     res.status(200).json({
       code: 200,
       status: true,

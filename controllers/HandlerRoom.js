@@ -1,6 +1,4 @@
 import db from "../models/index.js";
-import bcrypt from "bcrypt";
-import jwt from "jsonwebtoken";
 import { Op } from "sequelize";
 
 const Room = db.tbl_room;
@@ -12,6 +10,7 @@ export const getDataRoom = async (req, res) => {
       status: true,
       msg: "data you searched Found",
       data: room,
+      url: req.url,
     });
   } catch (error) {
     console.log(error);
@@ -36,6 +35,7 @@ export const getDataRoomById = async (req, res) => {
       status: true,
       msg: "data you searched Found",
       data: room,
+      url: req.url,
     });
   } catch (error) {
     console.log(error);

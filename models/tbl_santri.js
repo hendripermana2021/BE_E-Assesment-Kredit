@@ -20,7 +20,6 @@ module.exports = (sequelize, DataTypes) => {
     mothername: DataTypes.STRING,
     id_room: DataTypes.INTEGER,
     status: DataTypes.BOOLEAN,
-    role_id: DataTypes.STRING,
     accesstoken: DataTypes.TEXT,
     refreshtoken: DataTypes.TEXT
   }, {

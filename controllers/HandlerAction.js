@@ -105,6 +105,7 @@ export const getDataKriteriaDanSubKriteria = async (req, res) => {
 export const createKriteriaAndCalculatedROC = async (req, res) => {
   const kriteria = await Kriteria.findAll({});
 
+  ///////////////////////////////////////////////////////////////////////////////---> START CODE FOR METHOD ROC
   const sortfill = kriteria.sort((a, b) => a.scale_priority - b.scale_priority);
 
   let result = [];
@@ -129,6 +130,7 @@ export const createKriteriaAndCalculatedROC = async (req, res) => {
     const sumAndAverage = separatedArray.map(
       (subarray) => subarray.reduce((acc, num) => acc + num, 0) / 6
     );
+    ///////////////////////////////////////////////////////////////////////////////---> END CODE METHOD ROC
 
     for (let i = 0; i < sortfill.length; i++) {
       await Kriteria.update(
@@ -187,6 +189,8 @@ export const calculatedCPI = async (req, res) => {
 
     const kriteria = await Kriteria.findAll({});
 
+    ///////////////////////////////////////////////////////////////---> START CODE METHOD CPI
+    //------> STEP 1
     let normalisasi = [];
     //Step 1 normalisasi Tabel dan Flatten
     for (let i = 0; i < req.length; i++) {
@@ -220,7 +224,7 @@ export const calculatedCPI = async (req, res) => {
     console.log("Pencarian Nilai Min : ", minValues);
     //END
 
-    //STEP KE-2, melakukan perkalian dan pembagian
+    //------> STEP KE-2, melakukan perkalian dan pembagian
     let minNormalisasi = [];
 
     for (let i = 0; i < req.length; i++) {
@@ -243,7 +247,7 @@ export const calculatedCPI = async (req, res) => {
     console.log("Transpose Step 2 :", minNormalisasiTranspose);
     //END
 
-    //STEP KE-3, BOBOT x MATRIKS TERNORMALISASI
+    //------> STEP KE-3, BOBOT x MATRIKS TERNORMALISASI
     let step3 = [];
 
     for (let i = 0; i < req.length; i++) {
@@ -276,7 +280,7 @@ export const calculatedCPI = async (req, res) => {
     Min Value: ${minValue}`);
     //END
 
-    //STEP 4 FINAL RESULTS
+    //------> STEP 4 FINAL RESULTS
     let step4Final = [];
     for (let i = 0; i < sumGroups.length; i++) {
       let z = (sumGroups[i] - minValue) / (maxValue - minValue);
@@ -284,7 +288,7 @@ export const calculatedCPI = async (req, res) => {
     }
     console.log("Final Results CPI dan ROC : ", step4Final);
 
-    // END
+    ///////////////////////////////////////////////////////////////////////////////---> END CODE METHOD CPI
 
     //Insert CPI RESULTS to DATABASE Permission Req Table Database
     for (let i = 0; i < req.length; i++) {

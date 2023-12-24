@@ -1,5 +1,4 @@
 import db from "../models/index.js";
-import { Op } from "sequelize";
 
 const Kriteria = db.tbl_kriteria;
 const SubKriteria = db.tbl_subkriteria;
@@ -92,8 +91,6 @@ export const deleteKriteriaDanSub = async (req, res) => {
     const dataBefore = await Kriteria.findOne({
       where: { id },
     });
-
-    const parsedDataKriteria = JSON.parse(JSON.stringify(dataBefore));
 
     if (!dataBefore) {
       return res.status(400).json({

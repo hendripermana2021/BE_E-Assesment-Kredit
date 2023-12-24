@@ -1,52 +1,49 @@
-"use strict";
+'use strict';
 /** @type {import('sequelize-cli').Migration} */
 module.exports = {
   async up(queryInterface, Sequelize) {
-    await queryInterface.createTable("tbl_santris", {
+    await queryInterface.createTable('tbl_santris', {
       id: {
         allowNull: false,
         autoIncrement: true,
         primaryKey: true,
-        type: Sequelize.INTEGER,
+        type: Sequelize.INTEGER
       },
       name_santri: {
-        type: Sequelize.STRING,
+        type: Sequelize.STRING
       },
       sex: {
-        type: Sequelize.BOOLEAN,
+        type: Sequelize.BOOLEAN
       },
       fathername: {
-        type: Sequelize.STRING,
+        type: Sequelize.STRING
       },
       mothername: {
-        type: Sequelize.STRING,
+        type: Sequelize.STRING
       },
       id_room: {
-        type: Sequelize.INTEGER,
+        type: Sequelize.INTEGER
       },
       status: {
-        type: Sequelize.BOOLEAN,
-      },
-      role_id: {
-        type: Sequelize.STRING,
+        type: Sequelize.BOOLEAN
       },
       accesstoken: {
-        type: Sequelize.TEXT,
+        type: Sequelize.TEXT
       },
       refreshtoken: {
-        type: Sequelize.TEXT,
+        type: Sequelize.TEXT
       },
       createdAt: {
         allowNull: false,
-        type: Sequelize.DATE,
+        type: Sequelize.DATE
       },
       updatedAt: {
         allowNull: false,
-        type: Sequelize.DATE,
-      },
+        type: Sequelize.DATE
+      }
     });
   },
   async down(queryInterface, Sequelize) {
-    await queryInterface.dropTable("tbl_santris");
-  },
+    await queryInterface.dropTable('tbl_santris');
+  }
 };

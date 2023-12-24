@@ -90,4 +90,9 @@ db.tbl_cpi.hasMany(db.tbl_subkriteria, {
   sourceKey: "id_subkriteria",
 });
 
+// db.tbl_santri.hasOne(db.tbl_room,{
+//   foreignKey: "id",
+//   as : 
+// })
+
 module.exports = db;
