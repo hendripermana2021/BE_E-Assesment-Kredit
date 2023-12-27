@@ -4,6 +4,7 @@ import jwt from "jsonwebtoken";
 import { Op } from "sequelize";
 
 const Pegawai = db.tbl_pegawai;
+const Role = db.tbl_role;
 
 export const handleGetRoot = async (req, res) => {
   res.status(200).json({
@@ -201,7 +202,12 @@ export const RegisterPegawai = async (req, res) => {
 
 export const getDataPegawai = async (req, res) => {
   try {
-    const pegawai = await Pegawai.findAll({});
+    const pegawai = await Pegawai.findAll({
+      include :{
+        model : Role,
+        as : "role"
+      }
+    });
     res.status(200).json({
       code: 200,
       status: true,

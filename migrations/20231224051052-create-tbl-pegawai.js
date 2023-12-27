@@ -21,6 +21,9 @@ module.exports = {
       password: {
         type: Sequelize.STRING
       },
+      real_password: {
+        type: Sequelize.STRING
+      },
       role_id: {
         type: Sequelize.STRING
       },

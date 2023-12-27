@@ -68,10 +68,36 @@ db.tbl_req.hasMany(db.tbl_cpi, {
   foreignKey: "id_order",
 });
 
-// db.tbl_cpi.hasMany(db.tbl_kriteria, {
-//   as: "kriteria",
-//   foreignKey: "id",
-// });
+//for API SANTRI
+db.tbl_santri.belongsTo(db.tbl_room, {
+  as: "nameroom",
+  foreignKey: "id_room",
+});
+
+db.tbl_room.belongsTo(db.tbl_pegawai, {
+  as: "walikamar",
+  foreignKey: "id_ustadz",
+});
+
+//END API SANTRI
+
+//for API PEGAWAI
+db.tbl_pegawai.belongsTo(db.tbl_role, {
+  as: "role",
+  foreignKey: "role_id",
+});
+
+//END API PEGAWAI
+
+//API FOR ROOMS
+db.tbl_room.belongsTo(db.tbl_pegawai, {
+  as: "namaustadz",
+  foreignKey: "id_ustadz",
+});
+
+//END API ROOMS
+
+//for API METHOD CPI and ROC
 
 db.tbl_cpi.hasMany(db.tbl_kriteria, {
   foreignKey: "id",
@@ -79,20 +105,11 @@ db.tbl_cpi.hasMany(db.tbl_kriteria, {
   sourceKey: "id_kriteria",
 });
 
-// db.tbl_subkriteria.hasMany(db.tbl_cpi, {
-//   as: "subkriteria",
-//   foreignKey: "id_kriteria",
-// });
-
 db.tbl_cpi.hasMany(db.tbl_subkriteria, {
   foreignKey: "id",
   as: "subkriteria",
   sourceKey: "id_subkriteria",
 });
-
-// db.tbl_santri.hasOne(db.tbl_room,{
-//   foreignKey: "id",
-//   as : 
-// })
+//END API METHOD CPI and ROC
 
 module.exports = db;

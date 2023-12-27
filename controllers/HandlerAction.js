@@ -71,7 +71,6 @@ export const getDataKriteriaDanSubKriteria = async (req, res) => {
   const user_id = req.user.userId;
   try {
     const req = await Req.findAll({
-      attributes: ["id", "student_id", "cpi_result"],
       where: {
         created_by: user_id,
       },

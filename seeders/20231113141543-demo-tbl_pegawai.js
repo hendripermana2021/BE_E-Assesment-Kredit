@@ -11,13 +11,15 @@ module.exports = {
           sex: 1,
           email: "hendripermana60@gmail.com",
           password: await bcrypt.hash("12345", 10),
-          role_id: 5,
+          real_password: "12345",
+          role_id: 1,
         },
         {
           name_pegawai: "Setia Darma",
           sex: 1,
           email: "setia@gmail.com",
           password: await bcrypt.hash("12345", 10),
+          real_password: "12345",
           role_id: 2,
         },
         {
@@ -25,6 +27,7 @@ module.exports = {
           sex: 1,
           email: "yusuf@gmail.com",
           password: await bcrypt.hash("12345", 10),
+          real_password: "12345",
           role_id: 3,
         },
         {
@@ -32,6 +35,7 @@ module.exports = {
           sex: 1,
           email: "rasyid@gmail.com",
           password: await bcrypt.hash("12345", 10),
+          real_password: "12345",
           role_id: 4,
         },
       ],

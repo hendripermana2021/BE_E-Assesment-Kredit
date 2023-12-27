@@ -4,23 +4,19 @@ import jwt from "jsonwebtoken";
 import { Op } from "sequelize";
 
 const Santri = db.tbl_santri;
+const Room = db.tbl_room
+const Pegawai = db.tbl_pegawai
 export const getDataSantri = async (req, res) => {
   try {
     const santri = await Santri.findAll({
-      // include: {
-      //   model: Cpi,
-      //   as: "cpi_data",
-      //   include: [
-      //     {
-      //       model: Kriteria,
-      //       as: "kriteria",
-      //     },
-      //     {
-      //       model: Sub_Kriteria,
-      //       as: "subkriteria",
-      //     },
-      //   ],
-      // },
+      include: {
+        model: Room,
+        as: "nameroom",
+        include : {
+          model: Pegawai,
+          as: "walikamar",
+        }
+      },
     });
     res.status(200).json({
       code: 200,

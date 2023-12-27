@@ -12,7 +12,7 @@ module.exports = {
       id_kriteria: {
         type: Sequelize.INTEGER
       },
-      id_value: {
+      id_subkriteria: {
         type: Sequelize.INTEGER
       },
       id_order: {
