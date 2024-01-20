@@ -68,6 +68,15 @@ db.tbl_req.hasMany(db.tbl_cpi, {
   foreignKey: "id_order",
 });
 
+//for API KRITERIA & SUBKRITERIA
+db.tbl_kriteria.hasMany(db.tbl_subkriteria, {
+  foreignKey: "id_kriteria",
+  as: "sub_kriteria",
+  sourceKey: "id",
+});
+
+//END API KRITERIA & SUBKRITERIA
+
 //for API SANTRI
 db.tbl_santri.belongsTo(db.tbl_room, {
   as: "nameroom",
@@ -97,8 +106,32 @@ db.tbl_room.belongsTo(db.tbl_pegawai, {
 
 //END API ROOMS
 
-//for API METHOD CPI and ROC
+//FOR API PERMISSION
+db.tbl_req.belongsTo(db.tbl_santri, {
+  as: "namasantri",
+  foreignKey: "student_id",
+});
 
+db.tbl_req.belongsTo(db.tbl_pegawai, {
+  foreignKey: "val_go_by",
+  as: "val_go_name",
+  sourceKey: "id",
+});
+
+db.tbl_req.belongsTo(db.tbl_pegawai, {
+  foreignKey: "created_by",
+  as: "created_permission",
+  sourceKey: "id",
+});
+
+db.tbl_req.belongsTo(db.tbl_pegawai, {
+  foreignKey: "val_back_by",
+  as: "val_back_name",
+  sourceKey: "id",
+});
+//END API PERMISSION
+
+//for API METHOD CPI and ROC
 db.tbl_cpi.hasMany(db.tbl_kriteria, {
   foreignKey: "id",
   as: "kriteria",

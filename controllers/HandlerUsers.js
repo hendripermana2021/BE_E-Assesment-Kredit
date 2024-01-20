@@ -14,6 +14,39 @@ export const handleGetRoot = async (req, res) => {
   });
 };
 
+export const refreshToken = async (req, res) => {
+  try {
+    const refreshToken = req.cookies.refreshToken;
+    if (!refreshToken) return res.sendStatus(401);
+    const pegawai = await Pegawai.findAll({
+      where: {
+        refreshtoken: refreshToken,
+      },
+    });
+    if (!pegawai[0]) return res.sendStatus(403);
+    jwt.verify(
+      refreshToken,
+      process.env.REFRESH_TOKEN_SECRET,
+      (err, decoded) => {
+        if (err) return res.sendStatus(403);
+        const userId = pegawai[0].role_id;
+        const name = pegawai[0].name;
+        const email = pegawai[0].email;
+        const accessToken = jwt.sign(
+          { userId, name, email },
+          process.env.ACCESS_TOKEN_SECRET,
+          {
+            expiresIn: "30s",
+          }
+        );
+        res.json({ accessToken });
+      }
+    );
+  } catch (error) {
+    console.log(error);
+  }
+};
+
 export const whoAmI = async (req, res) => {
   try {
     const currentUser = req.user;
@@ -28,13 +61,13 @@ export const whoAmI = async (req, res) => {
   }
 };
 
-export const LoginPegawai = async (req, res) => {
+export const Login = async (req, res) => {
   try {
-    const user = await Pegawai.findOne({
+    const user = await Pegawai.findAll({
       where: { email: req.body.email },
     });
 
-    if (!user) {
+    if (user == 0) {
       return res.status(404).json({
         code: 404,
         status: false,
@@ -42,7 +75,7 @@ export const LoginPegawai = async (req, res) => {
       });
     }
 
-    const match = await bcrypt.compare(req.body.password, user.password);
+    const match = await bcrypt.compare(req.body.password, user[0].password);
 
     if (!match) {
       return res.status(400).json({
@@ -52,23 +85,27 @@ export const LoginPegawai = async (req, res) => {
       });
     }
 
-    const { id, name_pegawai, sex, email, role_id } = user; // Destructuring assignment untuk menyederhanakan kode
+    const userId = user[0].id;
+    const name_pegawai = user[0].name_pegawai;
+    const sex = user[0].sex;
+    const role_id = user[0].role_id;
+    const email = user[0].email;
 
     const accessToken = jwt.sign(
-      { id, name_pegawai, sex, email, role_id },
+      { userId, name_pegawai, sex, email, role_id },
       process.env.ACCESS_TOKEN_SECRET,
       { expiresIn: "1d" }
     );
 
     const refreshToken = jwt.sign(
-      { id, name_pegawai, sex, email, role_id },
+      { userId, name_pegawai, sex, email, role_id },
       process.env.REFRESH_TOKEN_SECRET,
       { expiresIn: "1d" }
     );
 
     await Pegawai.update(
       { refreshtoken: refreshToken, accesstoken: accessToken },
-      { where: { id: user.id } } // Menggunakan user.id langsung tanpa indexing
+      { where: { id: user[0].id } } // Menggunakan user.id langsung tanpa indexing
     );
 
     res.cookie("refreshToken", refreshToken, {
@@ -81,7 +118,7 @@ export const LoginPegawai = async (req, res) => {
     res.status(200).json({
       code: 200,
       msg: "Login Berhasil",
-      Token: accessToken,
+      accessToken,
     });
   } catch (error) {
     console.error("Gagal System:", error); // Menampilkan pesan kesalahan yang lebih informatif
@@ -203,10 +240,10 @@ export const RegisterPegawai = async (req, res) => {
 export const getDataPegawai = async (req, res) => {
   try {
     const pegawai = await Pegawai.findAll({
-      include :{
-        model : Role,
-        as : "role"
-      }
+      include: {
+        model: Role,
+        as: "role",
+      },
     });
     res.status(200).json({
       code: 200,

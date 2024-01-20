@@ -2,7 +2,7 @@ import express from "express";
 import fs from "fs";
 import {
   handleGetRoot,
-  LoginPegawai,
+  Login,
   getEmailPegawai,
   Logout,
   whoAmI,
@@ -12,6 +12,7 @@ import {
   getDataPegawai,
   updateDataPegawai,
   getDataPegawaiBy,
+  refreshToken,
 } from "../controllers/HandlerUsers.js";
 import { verifyToken } from "../middleware/verifyToken.js";
 import { verifyRole } from "../middleware/verifyRole.js";
@@ -47,9 +48,8 @@ import {
 } from "../controllers/HandlerNotification.js";
 import {
   addReqAndAlternatives,
-  calculatedCPI,
+  calculatedCPIisNull,
   createKriteriaAndCalculatedROC,
-  getDataKriteriaDanSubKriteria,
 } from "../controllers/HandlerAction.js";
 import {
   createKriteriaDanSub,
@@ -58,6 +58,11 @@ import {
   getDataKriteriaById,
   updateKriteriaDanSub,
 } from "../controllers/HandlerKriteriaSubKriteria.js";
+import {
+  getDataPermissionById,
+  getDataPermission,
+  getDataPermissionByUserId,
+} from "../controllers/HandlerPermission.js";
 
 export const prefix = "/v1/api/";
 
@@ -66,35 +71,26 @@ export const router = express.Router();
 //ROUTES FOR GLOBAL
 router.get(prefix, handleGetRoot);
 router.get(prefix + "me", verifyToken, whoAmI);
-router.post(prefix + "login", LoginPegawai);
+router.post(prefix + "login", Login);
+router.get(prefix + "token", refreshToken);
 router.delete(prefix + "logout", verifyToken, Logout);
 router.post(prefix + "create/permission", verifyToken, addReqAndAlternatives);
-router.post(prefix + "create/kriteria&sub", verifyToken, createKriteriaDanSub);
-router.get(prefix + "kriteria&sub", verifyToken, getDataKriteria);
-router.get(prefix + "kriteria&sub/:id", verifyToken, getDataKriteriaById);
-router.delete(
-  prefix + "kriteria&sub/delete/:id",
-  verifyToken,
-  deleteKriteriaDanSub
-);
-router.put(
-  prefix + "kriteria&sub/update/:id",
-  verifyToken,
-  updateKriteriaDanSub
-);
-router.get(
-  prefix + "getKriteria&Sub-kriteria",
-  verifyToken,
-  getDataKriteriaDanSubKriteria
-);
 router.post(
   prefix + "action/calculatedROC",
   verifyToken,
   createKriteriaAndCalculatedROC
 );
-router.post(prefix + "result/CPI", verifyToken, calculatedCPI);
+router.post(prefix + "result/CPI", verifyToken, calculatedCPIisNull);
 
 //ROUTES FOR ADMINISTRATOR
+//API KRITERIA DAN SUB-KRITERIA
+router.get(prefix + "kriteria", getDataKriteria);
+router.get(prefix + "kriteria/:id", getDataKriteriaById);
+router.delete(prefix + "kriteria/delete/:id", deleteKriteriaDanSub);
+router.put(prefix + "kriteria/update/:id", updateKriteriaDanSub);
+router.post(prefix + "kriteria/create", createKriteriaDanSub);
+//END API KRITERIA DAN SUB-KRITERIA
+
 //API PEGAWAI
 router.get(prefix + "pegawai/email", getEmailPegawai);
 router.get(prefix + "pegawai/byid/:id", getDataPegawaiId);
@@ -137,6 +133,11 @@ router.put(prefix + "notif/read", verifyToken, readNotify);
 router.delete(prefix + "notif/delete/:id", verifyToken, deleteNotification);
 
 //API SUBKRITERIA
+
+//API PERMISSION
+router.get(prefix + "permission/all", getDataPermission);
+router.get(prefix + "permission/byid/:id", getDataPermissionById);
+router.get(prefix + "permission", verifyToken, getDataPermissionByUserId);
 
 //ROUTES FOR KEPALA PENGASUHAN
 

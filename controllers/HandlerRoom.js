@@ -2,14 +2,14 @@ import db from "../models/index.js";
 import { Op } from "sequelize";
 
 const Room = db.tbl_room;
-const Pegawai = db.tbl_pegawai
+const Pegawai = db.tbl_pegawai;
 export const getDataRoom = async (req, res) => {
   try {
     const room = await Room.findAll({
-      include : {
-        model : Pegawai,
-        as : "namaustadz"
-      }
+      include: {
+        model: Pegawai,
+        as: "namaustadz",
+      },
     });
     res.status(200).json({
       code: 200,
@@ -85,7 +85,7 @@ export const createRoom = async (req, res) => {
     res.status(200).json({
       code: 200,
       status: true,
-      msg: "Register Data Santri berhasil",
+      msg: "Create Room Success",
       data: req.body,
     });
   } catch (error) {

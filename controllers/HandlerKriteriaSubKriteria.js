@@ -4,7 +4,12 @@ const Kriteria = db.tbl_kriteria;
 const SubKriteria = db.tbl_subkriteria;
 export const getDataKriteria = async (req, res) => {
   try {
-    const kriteria = await Kriteria.findAll({});
+    const kriteria = await Kriteria.findAll({
+      include: {
+        model: SubKriteria,
+        as: "sub_kriteria",
+      },
+    });
     res.status(200).json({
       code: 200,
       status: true,
