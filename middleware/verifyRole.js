@@ -1,4 +1,4 @@
-export const verifyRole = (req, res, next) => {
+export const isAdmin = (req, res, next) => {
   if (req.user.role_id != 1) {
     return res.status(401).json({
       message:

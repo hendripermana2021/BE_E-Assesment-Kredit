@@ -15,7 +15,7 @@ import {
   refreshToken,
 } from "../controllers/HandlerUsers.js";
 import { verifyToken } from "../middleware/verifyToken.js";
-import { verifyRole } from "../middleware/verifyRole.js";
+import { isAdmin } from "../middleware/verifyRole.js";
 import {
   RegisterSantri,
   deleteSantri,
@@ -30,6 +30,7 @@ import {
   getDataRoom,
   getDataRoomById,
   getRoomBy,
+  updateRoom,
 } from "../controllers/HandlerRoom.js";
 import {
   createRole,
@@ -63,6 +64,7 @@ import {
   getDataPermission,
   getDataPermissionByUserId,
 } from "../controllers/HandlerPermission.js";
+import { dashboardPage } from "../controllers/HandlerDashboard.js";
 
 export const prefix = "/v1/api/";
 
@@ -83,6 +85,9 @@ router.post(
 router.post(prefix + "result/CPI", verifyToken, calculatedCPIisNull);
 
 //ROUTES FOR ADMINISTRATOR
+//API FOR DASHBOARD
+router.get(prefix + "dashboard", verifyToken, isAdmin, dashboardPage);
+
 //API KRITERIA DAN SUB-KRITERIA
 router.get(prefix + "kriteria", getDataKriteria);
 router.get(prefix + "kriteria/:id", getDataKriteriaById);
@@ -114,7 +119,7 @@ router.get(prefix + "room", getDataRoom);
 router.get(prefix + "room/byid/:id", getDataRoomById);
 router.get(prefix + "room/:search", getRoomBy);
 router.post(prefix + "room/create", createRoom);
-router.put(prefix + "room/update/:id", getDataRoomById);
+router.put(prefix + "room/update/:id", updateRoom);
 router.delete(prefix + "room/delete/:id", deleteRoom);
 
 //API ROLE

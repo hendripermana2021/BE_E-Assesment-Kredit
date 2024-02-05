@@ -27,12 +27,6 @@ module.exports = {
       status: {
         type: Sequelize.BOOLEAN
       },
-      accesstoken: {
-        type: Sequelize.TEXT
-      },
-      refreshtoken: {
-        type: Sequelize.TEXT
-      },
       createdAt: {
         allowNull: false,
         type: Sequelize.DATE

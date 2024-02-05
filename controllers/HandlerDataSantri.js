@@ -4,18 +4,18 @@ import jwt from "jsonwebtoken";
 import { Op } from "sequelize";
 
 const Santri = db.tbl_santri;
-const Room = db.tbl_room
-const Pegawai = db.tbl_pegawai
+const Room = db.tbl_room;
+const Pegawai = db.tbl_pegawai;
 export const getDataSantri = async (req, res) => {
   try {
     const santri = await Santri.findAll({
       include: {
         model: Room,
         as: "nameroom",
-        include : {
+        include: {
           model: Pegawai,
           as: "walikamar",
-        }
+        },
       },
     });
     res.status(200).json({
@@ -80,29 +80,17 @@ export const getSantriBy = async (req, res) => {
 };
 
 export const RegisterSantri = async (req, res) => {
-  const {
-    name_santri,
-    sex,
-    fathername,
-    mothername,
-    password,
-    status,
-    id_room,
-    role_id,
-  } = req.body;
+  const { name_santri, sex, fathername, mothername, status, id_room } =
+    req.body;
 
-  const salt = await bcrypt.genSalt();
-  const hashPassword = await bcrypt.hash(password, salt);
   try {
     const santri = await Santri.create({
       name_santri,
       sex,
       fathername,
       mothername,
-      password: hashPassword,
       status,
       id_room,
-      role_id: 5,
     });
     res.status(200).json({
       code: 200,

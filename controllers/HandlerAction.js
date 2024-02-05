@@ -1,12 +1,9 @@
 import db from "../models/index.js";
-import { Op } from "sequelize";
 
 const Req = db.tbl_req;
 const Cpi = db.tbl_cpi;
 const Kriteria = db.tbl_kriteria;
 const Sub_Kriteria = db.tbl_subkriteria;
-const PegawaiUstadz = db.tbl_pegawai;
-const Santri = db.tbl_santri;
 
 export const addReqAndAlternatives = async (req, res) => {
   const {

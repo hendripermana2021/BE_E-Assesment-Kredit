@@ -26,6 +26,10 @@ export const getDataKriteriaById = async (req, res) => {
   try {
     const kriteria = await Kriteria.findAll({
       where: { id: id },
+      include: {
+        model: SubKriteria,
+        as: "sub_kriteria",
+      },
     });
     if (kriteria == "") {
       return res.status(400).json({
@@ -38,7 +42,7 @@ export const getDataKriteriaById = async (req, res) => {
       code: 200,
       status: true,
       msg: "data you searched Found",
-      data: role,
+      data: kriteria,
     });
   } catch (error) {
     console.log(error);
@@ -130,7 +134,7 @@ export const updateKriteriaDanSub = async (req, res) => {
   const fromBodySubKriteria = req.body.subkriteria;
 
   try {
-    const dataBeforeUpdate = await Kriteria.findOne({
+    const dataBeforeUpdate = await Kriteria.findAll({
       where: { id: id },
     });
 
@@ -140,9 +144,7 @@ export const updateKriteriaDanSub = async (req, res) => {
       },
     });
 
-    const parsedDataKriteria = JSON.parse(JSON.stringify(dataBeforeUpdate));
-
-    if (!parsedDataKriteria) {
+    if (dataBeforeUpdate == 0) {
       return res.status(400).json({
         code: 400,
         status: false,
@@ -156,6 +158,7 @@ export const updateKriteriaDanSub = async (req, res) => {
         where: { id: id },
       }
     );
+
     const dataKriteriaUpdated = await Kriteria.findOne({
       where: { id: id },
     });

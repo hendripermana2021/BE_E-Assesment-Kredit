@@ -19,9 +19,7 @@ module.exports = (sequelize, DataTypes) => {
     fathername: DataTypes.STRING,
     mothername: DataTypes.STRING,
     id_room: DataTypes.INTEGER,
-    status: DataTypes.BOOLEAN,
-    accesstoken: DataTypes.TEXT,
-    refreshtoken: DataTypes.TEXT
+    status: DataTypes.BOOLEAN
   }, {
     sequelize,
     modelName: 'tbl_santri',

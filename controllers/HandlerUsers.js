@@ -17,33 +17,44 @@ export const handleGetRoot = async (req, res) => {
 export const refreshToken = async (req, res) => {
   try {
     const refreshToken = req.cookies.refreshToken;
-    if (!refreshToken) return res.sendStatus(401);
-    const pegawai = await Pegawai.findAll({
+
+    if (!refreshToken) {
+      return res.sendStatus(401);
+    }
+
+    const pegawai = await Pegawai.findOne({
       where: {
         refreshtoken: refreshToken,
       },
     });
-    if (!pegawai[0]) return res.sendStatus(403);
+
+    if (!pegawai) {
+      return res.sendStatus(403);
+    }
+
     jwt.verify(
       refreshToken,
       process.env.REFRESH_TOKEN_SECRET,
       (err, decoded) => {
-        if (err) return res.sendStatus(403);
-        const userId = pegawai[0].role_id;
-        const name = pegawai[0].name;
-        const email = pegawai[0].email;
+        if (err) {
+          return res.sendStatus(403);
+        }
+
+        const { role_id, name, email } = pegawai;
         const accessToken = jwt.sign(
-          { userId, name, email },
+          { userId: role_id, name, email },
           process.env.ACCESS_TOKEN_SECRET,
           {
             expiresIn: "30s",
           }
         );
+
         res.json({ accessToken });
       }
     );
   } catch (error) {
-    console.log(error);
+    console.error(error);
+    res.sendStatus(500);
   }
 };
 
@@ -63,69 +74,65 @@ export const whoAmI = async (req, res) => {
 
 export const Login = async (req, res) => {
   try {
-    const user = await Pegawai.findAll({
+    const user = await Pegawai.findOne({
       where: { email: req.body.email },
     });
 
-    if (user == 0) {
+    if (!user) {
       return res.status(404).json({
         code: 404,
         status: false,
-        msg: "Email tidak ditemukan",
+        msg: "Email not found",
       });
     }
 
-    const match = await bcrypt.compare(req.body.password, user[0].password);
+    const match = await bcrypt.compare(req.body.password, user.password);
 
     if (!match) {
       return res.status(400).json({
         code: 400,
         status: false,
-        msg: "Password salah",
+        msg: "Incorrect password",
       });
     }
 
-    const userId = user[0].id;
-    const name_pegawai = user[0].name_pegawai;
-    const sex = user[0].sex;
-    const role_id = user[0].role_id;
-    const email = user[0].email;
+    const { id, name_pegawai, sex, role_id, email } = user;
 
     const accessToken = jwt.sign(
-      { userId, name_pegawai, sex, email, role_id },
+      { id, name_pegawai, sex, email, role_id },
       process.env.ACCESS_TOKEN_SECRET,
       { expiresIn: "1d" }
     );
 
     const refreshToken = jwt.sign(
-      { userId, name_pegawai, sex, email, role_id },
+      { id, name_pegawai, sex, email, role_id },
       process.env.REFRESH_TOKEN_SECRET,
       { expiresIn: "1d" }
     );
 
     await Pegawai.update(
       { refreshtoken: refreshToken, accesstoken: accessToken },
-      { where: { id: user[0].id } } // Menggunakan user.id langsung tanpa indexing
+      { where: { id } } // Use id directly without indexing
     );
 
     res.cookie("refreshToken", refreshToken, {
       httpOnly: true,
       maxAge: 24 * 60 * 60 * 1000,
-      secure: true, // Menambahkan opsi keamanan
-      sameSite: "Lax", // Menambahkan opsi SameSite
+      secure: true,
+      sameSite: "Lax",
     });
 
     res.status(200).json({
       code: 200,
-      msg: "Login Berhasil",
+      msg: "Login successful",
       accessToken,
     });
   } catch (error) {
-    console.error("Gagal System:", error); // Menampilkan pesan kesalahan yang lebih informatif
+    console.error("System failure:", error);
     res.status(500).json({
       code: 500,
       status: false,
-      msg: "Gagal System",
+      msg: "System failure",
     });
   }
 };
@@ -149,41 +156,57 @@ export const getEmailPegawai = async (req, res) => {
 };
 
 export const Logout = async (req, res) => {
-  const refreshToken = req.cookies.refreshToken;
-  if (!refreshToken) {
-    return res.status(200).json({
-      code: 200,
-      status: false,
-      msg: "User Has Been Log Out",
-    });
-  }
-  const user = await Pegawai.findOne({
-    where: {
-      refreshtoken: refreshToken,
-    },
-  });
-  if (!user) {
-    return res.status(200).json({
-      code: 200,
-      status: false,
-      msg: "User Not Found",
-    });
-  }
-  const userId = user.id;
-  await Pegawai.update(
-    { refreshtoken: null },
-    {
-      where: {
-        id: userId,
-      },
+  try {
+    const refreshToken = req.cookies.refreshToken;
+
+    if (!refreshToken) {
+      return res.status(200).json({
+        code: 200,
+        status: false,
+        msg: "User has been logged out",
+      });
     }
-  );
-  res.clearCookie("refreshToken");
-  return res.status(200).json({
-    code: 200,
-    status: true,
-    msg: "You Logout Now",
-  });
+
+    const user = await Pegawai.findOne({
+      where: {
+        refreshtoken: refreshToken,
+      },
+    });
+
+    if (!user) {
+      return res.status(200).json({
+        code: 200,
+        status: false,
+        msg: "User not found",
+      });
+    }
+
+    const userId = user.id;
+
+    await Pegawai.update(
+      { refreshtoken: null },
+      {
+        where: {
+          id: userId,
+        },
+      }
+    );
+
+    res.clearCookie("refreshToken");
+
+    return res.status(200).json({
+      code: 200,
+      status: true,
+      msg: "You have been logged out",
+    });
+  } catch (error) {
+    console.error(error);
+    return res.status(500).json({
+      code: 500,
+      status: false,
+      msg: "Internal Server Error",
+    });
+  }
 };
 
 export const deletePegawai = async (req, res) => {
@@ -224,6 +247,7 @@ export const RegisterPegawai = async (req, res) => {
       sex,
       email,
       password: hashPassword,
+      real_password: password,
       role_id,
     });
     res.status(200).json({
