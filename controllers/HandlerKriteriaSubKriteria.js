@@ -54,16 +54,16 @@ export const createKriteriaDanSub = async (req, res) => {
   const subKriteria = req.body.subkriteria;
 
   try {
-    const getkriteria = await Kriteria.findAll({});
+    const existingKriteria = await Kriteria.findOne({
+      where: { scale_priority: scale_priority },
+    });
 
-    for (let i = 0; i < getkriteria.length; i++) {
-      if (scale_priority == getkriteria[i].scale_priority) {
-        res.status(400).json({
-          code: 400,
-          status: false,
-          msg: "Scale Priority is Duplicate, please change",
-        });
-      }
+    if (existingKriteria) {
+      return res.status(200).json({
+        code: 200,
+        status: true,
+        msg: "Scale Priority is Duplicate, please change",
+      });
     }
 
     const kriteriaCreate = await Kriteria.create({
@@ -130,7 +130,7 @@ export const createKriteriaDanSub = async (req, res) => {
       code: 200,
       status: true,
       msg: "Create Data Kriteria and Sub Kriteria berhasil",
-      data: { kriteria, addSubKriteria },
+      data: { updateKriteria, addSubKriteria },
     });
   } catch (error) {
     console.log(error);
@@ -178,8 +178,10 @@ export const updateKriteriaDanSub = async (req, res) => {
   const fromBodySubKriteria = req.body.subkriteria;
 
   try {
-    const dataBeforeUpdate = await Kriteria.findOne({
-      where: { id: id },
+    const getAllData = await Kriteria.findOne({ where: { scale_priority } });
+
+    const data_before = await Kriteria.findOne({
+      where: { id },
       include: {
         model: SubKriteria,
         as: "sub_kriteria",
@@ -192,7 +194,7 @@ export const updateKriteriaDanSub = async (req, res) => {
       },
     });
 
-    if (dataBeforeUpdate == 0) {
+    if (data_before == 0) {
       return res.status(400).json({
         code: 400,
         status: false,
@@ -200,10 +202,74 @@ export const updateKriteriaDanSub = async (req, res) => {
       });
     }
 
+    // const result = [];
+    // for (let i = 0; i < getAllData.length; i++) {
+    //   if (getAllData[i].scale_priority == scale_priority)
+    //     result.push(getAllData[i]);
+    // }
+
+    //IF SCALE PRIORITY  IS SAME WITH DATA BEFORE UPDATE
+
+    if (getAllData != 0) {
+      await Kriteria.update(
+        {
+          scale_priority: data_before.scale_priority,
+          weight_score: data_before.weight_score,
+        },
+
+        {
+          where: { id: getAllData.id },
+        }
+      );
+
+      await Kriteria.update(
+        {
+          scale_priority: getAllData.scale_priority,
+          name_kriteria,
+          type,
+          weight_score: getAllData.weight_score,
+        },
+        {
+          where: { id },
+        }
+      );
+
+      for (let i = 0; i < fromBodySubKriteria.length; i++) {
+        await SubKriteria.update(
+          {
+            name_sub: fromBodySubKriteria[i].name_sub,
+            value: fromBodySubKriteria[i].value,
+          },
+          {
+            where: { id: getDataSubKriteria[i].id },
+          }
+        );
+      }
+
+      const data_update = await Kriteria.findOne({
+        where: { id },
+        include: {
+          model: SubKriteria,
+          as: "sub_kriteria",
+        },
+      });
+
+      console.log("Jalan baru");
+
+      return res.status(200).json({
+        code: 200,
+        status: true,
+        msg: "Kriteria dan Sub-Kriteria Success Updated",
+        data: { data_before, data_update },
+      });
+    }
+
+    //IF SCALE PRIORITY  IS SAME WITH DATA BEFORE UPDATE END
+
     const kriteria = await Kriteria.update(
       { scale_priority, name_kriteria, type },
       {
-        where: { id: id },
+        where: { id },
       }
     );
 
@@ -220,22 +286,21 @@ export const updateKriteriaDanSub = async (req, res) => {
       );
     }
 
-    const dataUpdated = await Kriteria.findOne({
-      where: { id: id },
+    const data_update = await Kriteria.findOne({
+      where: { id },
       include: {
         model: SubKriteria,
         as: "sub_kriteria",
       },
     });
 
+    console.log("Jalan Lama");
+
     return res.status(200).json({
       code: 200,
       status: true,
       msg: "Kriteria dan Sub-Kriteria Success Updated",
-      data: {
-        "Data Sebelum": dataBeforeUpdate,
-        "Sesudah Diubah": dataUpdated,
-      },
+      data: { data_before, data_update },
     });
   } catch (error) {
     console.log(error);

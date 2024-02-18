@@ -5,12 +5,12 @@ const Pegawai = db.tbl_pegawai;
 const Notif = db.tbl_notification;
 
 export const validation = async (req, res) => {
-  const { validation_code } = req.body;
+  const { id } = req.body;
   const user = req.user;
 
   try {
-    const req = await Req.findAll({
-      where: { validation_code },
+    const req = await Req.findOne({
+      where: { id },
     });
 
     if (req == "") {
@@ -22,14 +22,14 @@ export const validation = async (req, res) => {
     }
 
     const updateCode = await Req.update(
-      { permission_status: 1, val_go_by: user.userId },
+      { status_req: 0, permission_status: 1, val_go_by: user.userId },
       {
-        where: { validation_code },
+        where: { id },
       }
     );
 
     const reqUpdate = await Req.findOne({
-      where: { validation_code },
+      where: { id },
     });
 
     const updateStatusSantri = await Santri.update(
@@ -57,12 +57,12 @@ export const validation = async (req, res) => {
 };
 
 export const validationBack = async (req, res) => {
-  const { validation_code } = req.body;
+  const { id } = req.body;
   const user = req.user;
 
   try {
-    const req = await Req.findAll({
-      where: { validation_code },
+    const req = await Req.findOne({
+      where: { id },
     });
 
     if (req == "") {
@@ -74,14 +74,14 @@ export const validationBack = async (req, res) => {
     }
 
     const updateCode = await Req.update(
-      { status_req: 0, permission_status: 0, val_back_by: user.userId },
+      { permission_status: 0, val_back_by: user.userId },
       {
-        where: { validation_code },
+        where: { id },
       }
     );
 
     const reqUpdate = await Req.findOne({
-      where: { validation_code },
+      where: { id },
     });
 
     const santri = await Santri.findOne({

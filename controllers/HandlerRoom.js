@@ -122,22 +122,22 @@ export const deleteRoom = async (req, res) => {
 
 export const updateRoom = async (req, res) => {
   const { id } = req.params;
-  const dataBeforeDelete = await Room.findOne({
-    where: { id: id },
-  });
-  const parsedDataProfile = JSON.parse(JSON.stringify(dataBeforeDelete));
-
-  if (!parsedDataProfile) {
-    return res.status(400).json({
-      code: 400,
-      status: false,
-      msg: "Data Room doesn't exist or has been deleted!",
-    });
-  }
-
-  const { id_ustadz, nameroom } = req.body;
 
   try {
+    const data_before = await Room.findOne({
+      where: { id: id },
+    });
+
+    if (data_before == null) {
+      return res.status(400).json({
+        code: 400,
+        status: false,
+        msg: "Data Room doesn't exist or has been deleted!",
+      });
+    }
+
+    const { id_ustadz, nameroom } = req.body;
+
     const room = await Room.update(
       {
         id_ustadz,
@@ -147,12 +147,16 @@ export const updateRoom = async (req, res) => {
         where: { id: id },
       }
     );
+
+    const data_update = await Room.findOne({
+      where: { id: id },
+    });
+
     return res.status(200).json({
       code: 200,
       status: true,
-      msg: "Users Success Updated",
-      data_before: dataBeforeDelete,
-      data: req.body,
+      msg: "Rooms Success Update",
+      data: { data_before, data_update },
     });
   } catch (error) {
     console.log(error);

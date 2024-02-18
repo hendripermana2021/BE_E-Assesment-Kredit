@@ -6,7 +6,7 @@ const Kriteria = db.tbl_kriteria;
 const Room = db.tbl_room;
 const Notif = db.tbl_notification;
 
-export const dashboardAdmin = async (req, res) => {
+export const dashboard = async (req, res) => {
   try {
     const currentUser = req.user;
     if (currentUser.role_id == 1) {
@@ -36,7 +36,7 @@ export const dashboardAdmin = async (req, res) => {
           notif,
         },
       });
-    } else if (currentUser.role_id == 3) {
+    } else if (currentUser.role_id == 2) {
       const rooms = await Room.findAll({
         where: { id_ustadz: currentUser.userId },
       });
@@ -75,7 +75,7 @@ export const dashboardAdmin = async (req, res) => {
           santriActive,
         },
       });
-    } else if (currentUser.role_id == 4) {
+    } else if (currentUser.role_id == 3) {
       const santri = (await Santri.findAll()).length;
       const pegawai = (await Pegawai.findAll()).length;
 

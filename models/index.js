@@ -84,6 +84,7 @@ db.tbl_santri.belongsTo(db.tbl_room, {
 });
 
 db.tbl_santri.belongsTo(db.tbl_req, {
+  foreignKey: "id",
   as: "cpi",
   sourceKey: "student_id",
 });

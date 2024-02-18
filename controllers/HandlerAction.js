@@ -68,7 +68,7 @@ export const calculatedCPIisNull = async (req, res) => {
   try {
     const req = await Req.findAll({
       where: {
-        cpi_result: null,
+        cpi_result: 0,
       },
       include: {
         model: Cpi,

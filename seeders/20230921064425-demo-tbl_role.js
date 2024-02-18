@@ -7,15 +7,23 @@ module.exports = {
       [
         {
           role_name: "Administrator",
+          createdAt: new Date(),
+          updatedAt: new Date(),
         },
         {
           role_name: "Ustadz/ah",
+          createdAt: new Date(),
+          updatedAt: new Date(),
         },
         {
           role_name: "Petugas Keamanan",
+          createdAt: new Date(),
+          updatedAt: new Date(),
         },
         {
           role_name: "Santri",
+          createdAt: new Date(),
+          updatedAt: new Date(),
         },
       ],
       {}

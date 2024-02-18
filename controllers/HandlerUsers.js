@@ -306,41 +306,47 @@ export const getDataPegawaiId = async (req, res) => {
 
 export const updateDataPegawai = async (req, res) => {
   const { id } = req.params;
-  const dataBeforeDelete = await Pegawai.findOne({
-    where: { id: id },
-  });
-  const parsedDataProfile = JSON.parse(JSON.stringify(dataBeforeDelete));
-
-  if (!parsedDataProfile) {
-    return res.status(400).json({
-      code: 400,
-      status: false,
-      msg: "Users doesn't exist or has been deleted!",
-    });
-  }
-
   const { name_pegawai, sex, email, password, role_id } = req.body;
-  const salt = await bcrypt.genSalt();
-  const hashPassword = await bcrypt.hash(password, salt);
+
   try {
+    const data_before = await Pegawai.findOne({
+      where: { id },
+    });
+
+    if (data_before == null) {
+      return res.status(400).json({
+        code: 400,
+        status: false,
+        msg: "Users doesn't exist or has been deleted!",
+      });
+    }
+
+    const salt = await bcrypt.genSalt();
+    const hashPassword = await bcrypt.hash(password, salt);
+
     const user = await Pegawai.update(
       {
         name_pegawai,
         sex,
         email,
         password: hashPassword,
+        real_password: password,
         role_id,
       },
       {
-        where: { id: id },
+        where: { id },
       }
     );
+
+    const data_update = await Pegawai.findOne({
+      where: { id },
+    });
+
     return res.status(200).json({
       code: 200,
       status: true,
       msg: "Users Success Updated",
-      data_before: dataBeforeDelete,
-      data: req.body,
+      data: { data_before, data_update },
     });
   } catch (error) {
     console.log(error);

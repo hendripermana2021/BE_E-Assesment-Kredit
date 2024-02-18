@@ -178,7 +178,6 @@ export const addPermission = async (req, res) => {
   const alternatifKriteriaSub = req.body.kriteria;
 
   const user = req.user;
-  const randomCode = generateRandomCode();
 
   try {
     //Check Request Existed
@@ -205,7 +204,6 @@ export const addPermission = async (req, res) => {
       status_req: 1,
       start_permission,
       end_permission,
-      validation_code: randomCode,
       cpi_result: "",
       id_calculated: "",
       commented,
@@ -393,11 +391,11 @@ export const deletePermission = async (req, res) => {
       where: { id },
     });
 
-    if (req == 0) {
+    if (!req) {
       return res.status(400).json({
         code: 400,
         status: false,
-        msg: "Permission doesn't exist or has been deleted!",
+        msg: "Data permission doesn't exist or has been deleted!",
       });
     }
 

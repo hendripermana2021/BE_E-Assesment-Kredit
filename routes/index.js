@@ -64,7 +64,7 @@ import {
   updatePermission,
   deletePermission,
 } from "../controllers/HandlerPermission.js";
-import { dashboardAdmin } from "../controllers/HandlerDashboard.js";
+import { dashboard } from "../controllers/HandlerDashboard.js";
 import { validation, validationBack } from "../controllers/HandlerValidate.js";
 import { generateReport } from "../controllers/HandlerReport.js";
 
@@ -85,11 +85,11 @@ router.get(prefix + "report", verifyToken, generateReport);
 
 //ROUTES FOR ADMINISTRATOR
 //API FOR DASHBOARD
-router.get(prefix + "dashboard", verifyToken, dashboardAdmin);
+router.get(prefix + "dashboard", verifyToken, dashboard);
 
 //API KRITERIA DAN SUB-KRITERIA
 router.get(prefix + "kriteria", getDataKriteria);
-router.get(prefix + "kriteria/:id", getDataKriteriaById);
+router.get(prefix + "kriteria/byid/:id", getDataKriteriaById);
 router.delete(prefix + "kriteria/delete/:id", deleteKriteriaDanSub);
 router.put(prefix + "kriteria/update/:id", updateKriteriaDanSub);
 router.post(prefix + "kriteria/create", createKriteriaDanSub);

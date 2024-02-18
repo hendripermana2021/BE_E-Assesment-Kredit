@@ -36,7 +36,7 @@ module.exports = {
           email: "rasyid@gmail.com",
           password: await bcrypt.hash("12345", 10),
           real_password: "12345",
-          role_id: 4,
+          role_id: 3,
         },
       ],
       {}

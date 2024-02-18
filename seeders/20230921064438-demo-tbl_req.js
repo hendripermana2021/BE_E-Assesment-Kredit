@@ -18,6 +18,8 @@ module.exports = {
           val_go_by: "",
           val_back_by: "",
           id_calculated: "",
+          createdAt: new Date(),
+          updatedAt: new Date(),
         },
         {
           student_id: 2,
@@ -31,6 +33,8 @@ module.exports = {
           val_go_by: "",
           val_back_by: "",
           id_calculated: "",
+          createdAt: new Date(),
+          updatedAt: new Date(),
         },
         {
           student_id: 3,
@@ -44,6 +48,8 @@ module.exports = {
           val_go_by: "",
           val_back_by: "",
           id_calculated: "",
+          createdAt: new Date(),
+          updatedAt: new Date(),
         },
         {
           student_id: 4,
@@ -57,6 +63,8 @@ module.exports = {
           val_go_by: "",
           val_back_by: "",
           id_calculated: "",
+          createdAt: new Date(),
+          updatedAt: new Date(),
         },
         {
           student_id: 5,
@@ -70,6 +78,8 @@ module.exports = {
           val_go_by: "",
           val_back_by: "",
           id_calculated: "",
+          createdAt: new Date(),
+          updatedAt: new Date(),
         },
         {
           student_id: 6,
@@ -83,6 +93,8 @@ module.exports = {
           val_go_by: "",
           val_back_by: "",
           id_calculated: "",
+          createdAt: new Date(),
+          updatedAt: new Date(),
         },
         {
           student_id: 7,
@@ -96,6 +108,8 @@ module.exports = {
           val_go_by: "",
           val_back_by: "",
           id_calculated: "",
+          createdAt: new Date(),
+          updatedAt: new Date(),
         },
         {
           student_id: 8,
@@ -109,6 +123,8 @@ module.exports = {
           val_go_by: "",
           val_back_by: "",
           id_calculated: "",
+          createdAt: new Date(),
+          updatedAt: new Date(),
         },
         {
           student_id: 9,
@@ -122,6 +138,8 @@ module.exports = {
           val_go_by: "",
           val_back_by: "",
           id_calculated: "",
+          createdAt: new Date(),
+          updatedAt: new Date(),
         },
         {
           student_id: 10,
@@ -135,6 +153,8 @@ module.exports = {
           val_go_by: "",
           val_back_by: "",
           id_calculated: "",
+          createdAt: new Date(),
+          updatedAt: new Date(),
         },
       ],
       {}
