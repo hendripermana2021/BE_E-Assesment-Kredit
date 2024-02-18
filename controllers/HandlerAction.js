@@ -68,7 +68,7 @@ export const calculatedCPIisNull = async (req, res) => {
   try {
     const req = await Req.findAll({
       where: {
-        cpi_result: 0,
+        id_calculated: 0,
       },
       include: {
         model: Cpi,
@@ -86,14 +86,27 @@ export const calculatedCPIisNull = async (req, res) => {
       },
     });
 
-    const kriteria = await Kriteria.findAll({});
-    if (req == 0) {
+    const checkKriteria = await Kriteria.findAll({
+      where: { weight_score: 0 },
+    });
+
+    if (checkKriteria.length > 0) {
       return res.status(400).json({
         code: 400,
         status: false,
-        msg: "Data Doesn't Exist",
+        msg: "Please Process ROC Kriteria First",
       });
     }
+
+    if (req.length === 0) {
+      return res.status(400).json({
+        code: 400,
+        status: false,
+        msg: "Nothing Data CPI Empty for Calculated",
+      });
+    }
+
+    const kriteria = await Kriteria.findAll({});
 
     ///////////////////////////////////////////////////////////////---> START CODE METHOD CPI
     //------> STEP 1
@@ -216,11 +229,28 @@ export const calculatedCPIisNull = async (req, res) => {
 
     console.log(step4Final[0]);
 
+    const resultCpi = await Req.findAll({
+      include: {
+        model: Cpi,
+        as: "cpi_data",
+        include: [
+          {
+            model: Kriteria,
+            as: "kriteria",
+          },
+          {
+            model: Sub_Kriteria,
+            as: "subkriteria",
+          },
+        ],
+      },
+    });
+
     res.status(200).json({
       status: true,
       msg: "Success Calculated CPI",
       data: {
-        req,
+        resultCpi,
         step1: { groupedArrays, minValues },
         step2: minNormalisasiTranspose,
         step3: { step3Transpose, sumGroups, maxValue, minValue },
