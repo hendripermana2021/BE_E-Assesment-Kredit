@@ -15,11 +15,15 @@ export const generateReport = async (req, res) => {
       },
     });
 
+    const result = report.sort((a, b) => b.cpi.cpi_result - a.cpi.cpi_result);
+
+    const total = result.length;
+
     res.status(200).json({
       code: 200,
       status: true,
       msg: "data you searched Found",
-      data: report,
+      data: { result, total },
     });
   } catch (error) {
     console.log(error);
