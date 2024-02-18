@@ -1,16 +1,12 @@
-const timestamp = "2023-12-24T08:14:59.000Z";
-const dateObject = new Date(timestamp);
+//Function for Random Code
+export function generateRandomCode() {
+  const alphabet = "ABCDEFGHIJKLMNOPQRSTUVWXYZ";
+  let randomCode = "";
 
-// Get the date components
-const year = dateObject.getFullYear();
-const month = dateObject.getMonth() + 1; // Month is zero-based
-const day = dateObject.getDate();
+  for (let i = 0; i < 5; i++) {
+    const randomIndex = Math.floor(Math.random() * alphabet.length);
+    randomCode += alphabet.charAt(randomIndex);
+  }
 
-console.log(year)
-console.log(month)
-console.log(day)
-
-// Create a formatted date string
-const formattedDate = `${year}-${month < 10 ? '0' : ''}${month}-${day < 10 ? '0' : ''}${day}`;
-
-console.log(formattedDate);
+  return randomCode;
+}

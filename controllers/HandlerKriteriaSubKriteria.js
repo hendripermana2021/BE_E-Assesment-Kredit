@@ -65,7 +65,8 @@ export const createKriteriaDanSub = async (req, res) => {
         });
       }
     }
-    const kriteria = await Kriteria.create({
+
+    const kriteriaCreate = await Kriteria.create({
       scale_priority,
       name_kriteria,
       weight_score,
@@ -73,7 +74,7 @@ export const createKriteriaDanSub = async (req, res) => {
     });
 
     const bulkCreateKriteriaDanSub = subKriteria.map((data) => ({
-      id_kriteria: kriteria.id,
+      id_kriteria: kriteriaCreate.id,
       name_sub: data.name_sub,
       value: data.value,
     }));
@@ -81,6 +82,49 @@ export const createKriteriaDanSub = async (req, res) => {
     const addSubKriteria = await SubKriteria.bulkCreate(
       bulkCreateKriteriaDanSub
     );
+
+    //Auto ROC for Kriteria
+    const kriteria = await Kriteria.findAll({});
+    const sortfill = kriteria.sort(
+      (a, b) => a.scale_priority - b.scale_priority
+    );
+
+    let result = [];
+    for (let i = 1; i <= sortfill.length; i++) {
+      for (let j = 1; j <= sortfill.length; j++) {
+        if (i <= j) {
+          result.push(1 / j);
+        } else {
+          result.push(0);
+        }
+      }
+      result;
+    }
+
+    const separatedArray = [];
+    for (let i = 0; i < result.length; i += 6) {
+      separatedArray.push(result.slice(i, i + 6));
+    }
+
+    // Menjumlahkan setiap subarray dan membagi hasilnya dengan 6
+    const sumAndAverage = separatedArray.map(
+      (subarray) => subarray.reduce((acc, num) => acc + num, 0) / 6
+    );
+    ///////////////////////////////////////////////////////////////////////////////---> END CODE METHOD ROC
+
+    for (let i = 0; i < sortfill.length; i++) {
+      await Kriteria.update(
+        {
+          weight_score: sumAndAverage[i],
+        },
+        {
+          where: { id: sortfill[i].id },
+        }
+      );
+    }
+
+    const updateKriteria = await Kriteria.findAll({});
+    //END
 
     res.status(200).json({
       code: 200,
@@ -130,12 +174,16 @@ export const deleteKriteriaDanSub = async (req, res) => {
 
 export const updateKriteriaDanSub = async (req, res) => {
   const { id } = req.params;
-  const { scale_priority, name_kriteria, weight_score, type } = req.body;
+  const { scale_priority, name_kriteria, type } = req.body;
   const fromBodySubKriteria = req.body.subkriteria;
 
   try {
-    const dataBeforeUpdate = await Kriteria.findAll({
+    const dataBeforeUpdate = await Kriteria.findOne({
       where: { id: id },
+      include: {
+        model: SubKriteria,
+        as: "sub_kriteria",
+      },
     });
 
     const getDataSubKriteria = await SubKriteria.findAll({
@@ -153,15 +201,11 @@ export const updateKriteriaDanSub = async (req, res) => {
     }
 
     const kriteria = await Kriteria.update(
-      { scale_priority, name_kriteria, weight_score, type },
+      { scale_priority, name_kriteria, type },
       {
         where: { id: id },
       }
     );
-
-    const dataKriteriaUpdated = await Kriteria.findOne({
-      where: { id: id },
-    });
 
     //BULK UPDATE WITH FOR
     for (let i = 0; i < fromBodySubKriteria.length; i++) {
@@ -171,16 +215,27 @@ export const updateKriteriaDanSub = async (req, res) => {
           value: fromBodySubKriteria[i].value,
         },
         {
-          where: { id: fromBodySubKriteria[i].id },
+          where: { id: getDataSubKriteria[i].id },
         }
       );
     }
+
+    const dataUpdated = await Kriteria.findOne({
+      where: { id: id },
+      include: {
+        model: SubKriteria,
+        as: "sub_kriteria",
+      },
+    });
 
     return res.status(200).json({
       code: 200,
       status: true,
       msg: "Kriteria dan Sub-Kriteria Success Updated",
-      data: { dataKriteriaUpdated, fromBodySubKriteria },
+      data: {
+        "Data Sebelum": dataBeforeUpdate,
+        "Sesudah Diubah": dataUpdated,
+      },
     });
   } catch (error) {
     console.log(error);

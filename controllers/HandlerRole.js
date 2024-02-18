@@ -70,14 +70,29 @@ export const createRole = async (req, res) => {
   const { role_name } = req.body;
 
   try {
+    const checkRole = Role.findAll({
+      where: {
+        role_name: role_name,
+      },
+    });
+
+    if (checkRole == 0) {
+      return res.status(400).json({
+        code: 400,
+        status: false,
+        msg: "Data Santri doesn't exist or has been deleted!",
+      });
+    }
+
     const role = await Role.create({
       role_name,
     });
+
     res.status(200).json({
       code: 200,
       status: true,
       msg: "Create Data Role berhasil",
-      data: req.body,
+      data: role_name,
     });
   } catch (error) {
     console.log(error);
@@ -113,34 +128,38 @@ export const deleteRole = async (req, res) => {
 
 export const updateRole = async (req, res) => {
   const { id } = req.params;
-  const dataBeforeDelete = await Role.findOne({
-    where: { id: id },
-  });
-  const parsedDataProfile = JSON.parse(JSON.stringify(dataBeforeDelete));
-
-  if (!parsedDataProfile) {
-    return res.status(400).json({
-      code: 400,
-      status: false,
-      msg: "Data Role doesn't exist or has been deleted!",
-    });
-  }
-
-  const { role_name } = req.body;
-
   try {
+    const dataBefore = await Role.findOne({
+      where: { id: id },
+    });
+    const parsedDataProfile = JSON.parse(JSON.stringify(dataBefore));
+
+    if (!parsedDataProfile) {
+      return res.status(400).json({
+        code: 400,
+        status: false,
+        msg: "Data Role doesn't exist or has been deleted!",
+      });
+    }
+
+    const { role_name } = req.body;
+
     const role = await Role.update(
       { role_name },
       {
         where: { id: id },
       }
     );
+
+    const dataUpdate = await Role.findOne({
+      where: { id: id },
+    });
+
     return res.status(200).json({
       code: 200,
       status: true,
       msg: "Role Success Updated",
-      data_before: dataBeforeDelete,
-      data: req.body,
+      data_before: { dataBefore, dataUpdate },
     });
   } catch (error) {
     console.log(error);

@@ -41,16 +41,13 @@ import {
   updateRole,
 } from "../controllers/HandlerRole.js";
 import {
-  createNotification,
-  deleteNotification,
   getDataNotification,
   getDataNotificationById,
-  readNotify,
 } from "../controllers/HandlerNotification.js";
 import {
-  addReqAndAlternatives,
+  CalculatedROC,
+  calculatedCPIByIdCalculated,
   calculatedCPIisNull,
-  createKriteriaAndCalculatedROC,
 } from "../controllers/HandlerAction.js";
 import {
   createKriteriaDanSub,
@@ -63,8 +60,13 @@ import {
   getDataPermissionById,
   getDataPermission,
   getDataPermissionByUserId,
+  addPermission,
+  updatePermission,
+  deletePermission,
 } from "../controllers/HandlerPermission.js";
-import { dashboardPage } from "../controllers/HandlerDashboard.js";
+import { dashboardAdmin } from "../controllers/HandlerDashboard.js";
+import { validation, validationBack } from "../controllers/HandlerValidate.js";
+import { generateReport } from "../controllers/HandlerReport.js";
 
 export const prefix = "/v1/api/";
 
@@ -76,17 +78,14 @@ router.get(prefix + "me", verifyToken, whoAmI);
 router.post(prefix + "login", Login);
 router.get(prefix + "token", refreshToken);
 router.delete(prefix + "logout", verifyToken, Logout);
-router.post(prefix + "create/permission", verifyToken, addReqAndAlternatives);
-router.post(
-  prefix + "action/calculatedROC",
-  verifyToken,
-  createKriteriaAndCalculatedROC
-);
+router.post(prefix + "action/calculatedROC", verifyToken, CalculatedROC);
 router.post(prefix + "result/CPI", verifyToken, calculatedCPIisNull);
+router.get(prefix + "result/CPI/:id", verifyToken, calculatedCPIByIdCalculated);
+router.get(prefix + "report", verifyToken, generateReport);
 
 //ROUTES FOR ADMINISTRATOR
 //API FOR DASHBOARD
-router.get(prefix + "dashboard", verifyToken, isAdmin, dashboardPage);
+router.get(prefix + "dashboard", verifyToken, dashboardAdmin);
 
 //API KRITERIA DAN SUB-KRITERIA
 router.get(prefix + "kriteria", getDataKriteria);
@@ -133,9 +132,6 @@ router.delete(prefix + "role/delete/:id", deleteRole);
 //API NOTIFICATION
 router.get(prefix + "notif", verifyToken, getDataNotification);
 router.get(prefix + "notif/byid/:id", verifyToken, getDataNotificationById);
-router.post(prefix + "notif/create", verifyToken, createNotification);
-router.put(prefix + "notif/read", verifyToken, readNotify);
-router.delete(prefix + "notif/delete/:id", verifyToken, deleteNotification);
 
 //API SUBKRITERIA
 
@@ -143,12 +139,17 @@ router.delete(prefix + "notif/delete/:id", verifyToken, deleteNotification);
 router.get(prefix + "permission/all", getDataPermission);
 router.get(prefix + "permission/byid/:id", getDataPermissionById);
 router.get(prefix + "permission", verifyToken, getDataPermissionByUserId);
+router.put(prefix + "permission/update/:id", verifyToken, updatePermission);
+router.delete(prefix + "permission/delete/:id", verifyToken, deletePermission);
+router.post(prefix + "permission/create", verifyToken, addPermission);
 
 //ROUTES FOR KEPALA PENGASUHAN
 
 //ROUTES FOR USTADZ/AH
 
 //ROUTES FOR PETUGAS KEAMANAN
+router.put(prefix + "validation/code", verifyToken, validation);
+router.put(prefix + "validation-back/code", verifyToken, validationBack);
 
 //ROUTES FOR SANTRI
 export default router;

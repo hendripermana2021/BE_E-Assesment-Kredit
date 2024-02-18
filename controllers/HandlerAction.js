@@ -1,77 +1,22 @@
 import db from "../models/index.js";
+import { generateRandomCode } from "./FunctionGlobal.js";
 
 const Req = db.tbl_req;
 const Cpi = db.tbl_cpi;
 const Kriteria = db.tbl_kriteria;
 const Sub_Kriteria = db.tbl_subkriteria;
+const Calculated = db.tbl_calculated;
 
-export const addReqAndAlternatives = async (req, res) => {
-  const {
-    student_id,
-    created_by,
-    status_req,
-    date_start,
-    time_start,
-    date_end,
-    time_end,
-    cpi_result,
-    commented,
-    validation,
-    validation_by,
-  } = req.body;
-  const cpi = req.body.kriteria;
-  const alternatifKriteriaSub = req.body.kriteria;
-
-  const userID = req.user.userId;
-
-  try {
-    const req = await Req.create({
-      student_id,
-      created_by: userID,
-      status_req: 0,
-      date_start,
-      time_start,
-      date_end,
-      time_end,
-      cpi_result,
-      commented,
-      validation,
-      validation_by,
-    });
-
-    const dataReq = await Req.findAll({
-      where: { id: req.id },
-    });
-
-    const parsedDataProfile = JSON.parse(JSON.stringify(alternatifKriteriaSub));
-
-    const inputCpi = cpi.map((parsedDataProfile) => ({
-      id_order: req.id,
-      id_kriteria: parsedDataProfile.id_kriteria,
-      id_subkriteria: parsedDataProfile.id_subkriteria,
-    }));
-
-    const hasil = await Cpi.bulkCreate(inputCpi);
-
-    res.status(200).json({
-      code: 200,
-      status: true,
-      msg: "Success Adding New Permission",
-      data: { dataReq, hasil },
-    });
-  } catch (error) {
-    console.log(error);
-  }
-};
-
-export const createKriteriaAndCalculatedROC = async (req, res) => {
+export const CalculatedROC = async (req, res) => {
   const kriteria = await Kriteria.findAll({});
 
   ///////////////////////////////////////////////////////////////////////////////---> START CODE FOR METHOD ROC
-  const sortfill = kriteria.sort((a, b) => a.scale_priority - b.scale_priority);
-
-  let result = [];
   try {
+    const sortfill = kriteria.sort(
+      (a, b) => a.scale_priority - b.scale_priority
+    );
+
+    let result = [];
     for (let i = 1; i <= sortfill.length; i++) {
       for (let j = 1; j <= sortfill.length; j++) {
         if (i <= j) {
@@ -105,11 +50,13 @@ export const createKriteriaAndCalculatedROC = async (req, res) => {
       );
     }
 
+    const updateKriteria = await Kriteria.findAll({});
+
     res.status(200).json({
       code: 200,
       status: true,
       msg: "Success Calculated ROC",
-      data: kriteria,
+      data: updateKriteria,
     });
   } catch (error) {
     console.log(error);
@@ -120,9 +67,7 @@ export const calculatedCPIisNull = async (req, res) => {
   const user_id = req.user.userId;
   try {
     const req = await Req.findAll({
-      attributes: ["id", "student_id", "cpi_result"],
       where: {
-        created_by: user_id,
         cpi_result: null,
       },
       include: {
@@ -142,6 +87,13 @@ export const calculatedCPIisNull = async (req, res) => {
     });
 
     const kriteria = await Kriteria.findAll({});
+    if (req == 0) {
+      return res.status(400).json({
+        code: 400,
+        status: false,
+        msg: "Data Doesn't Exist",
+      });
+    }
 
     ///////////////////////////////////////////////////////////////---> START CODE METHOD CPI
     //------> STEP 1
@@ -245,21 +197,28 @@ export const calculatedCPIisNull = async (req, res) => {
     ///////////////////////////////////////////////////////////////////////////////---> END CODE METHOD CPI
 
     //Insert CPI RESULTS to DATABASE Permission Req Table Database
+
+    const calculateId = await Calculated.create({
+      created_by: user_id,
+    });
+
     for (let i = 0; i < req.length; i++) {
       await Req.update(
         {
           cpi_result: step4Final[i],
+          id_calculated: calculateId.id,
         },
         {
           where: { id: req[i].id },
         }
       );
     }
+
     console.log(step4Final[0]);
 
     res.status(200).json({
       status: true,
-      msg: "Success Calculated ROC",
+      msg: "Success Calculated CPI",
       data: {
         req,
         step1: { groupedArrays, minValues },
@@ -275,12 +234,12 @@ export const calculatedCPIisNull = async (req, res) => {
 
 export const calculatedCPIByIdCalculated = async (req, res) => {
   const user_id = req.user.userId;
+  const { id } = req.params;
   try {
     const req = await Req.findAll({
-      attributes: ["id", "student_id", "cpi_result"],
       where: {
         created_by: user_id,
-        cpi_result: null,
+        id_calculated: id,
       },
       include: {
         model: Cpi,

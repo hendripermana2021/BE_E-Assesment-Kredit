@@ -9,9 +9,6 @@ module.exports = {
           role_name: "Administrator",
         },
         {
-          role_name: "Kepala Pengasuhan",
-        },
-        {
           role_name: "Ustadz/ah",
         },
         {

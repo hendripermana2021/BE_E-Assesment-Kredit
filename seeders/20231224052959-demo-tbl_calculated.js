@@ -6,7 +6,7 @@ module.exports = {
       "tbl_calculateds",
       [
         {
-          created_by:"2",
+          created_by: "2",
         },
         {
           created_by: "1",

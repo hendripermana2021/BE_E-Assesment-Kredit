@@ -83,6 +83,11 @@ db.tbl_santri.belongsTo(db.tbl_room, {
   foreignKey: "id_room",
 });
 
+db.tbl_santri.belongsTo(db.tbl_req, {
+  as: "cpi",
+  sourceKey: "student_id",
+});
+
 db.tbl_room.belongsTo(db.tbl_pegawai, {
   as: "walikamar",
   foreignKey: "id_ustadz",
@@ -108,8 +113,8 @@ db.tbl_room.belongsTo(db.tbl_pegawai, {
 
 //FOR API PERMISSION
 db.tbl_req.belongsTo(db.tbl_santri, {
-  as: "namasantri",
   foreignKey: "student_id",
+  as: "namasantri",
 });
 
 db.tbl_req.belongsTo(db.tbl_pegawai, {
