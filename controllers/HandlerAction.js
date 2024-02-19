@@ -1,5 +1,4 @@
 import db from "../models/index.js";
-import { generateRandomCode } from "./FunctionGlobal.js";
 
 const Req = db.tbl_req;
 const Cpi = db.tbl_cpi;

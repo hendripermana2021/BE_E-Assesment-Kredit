@@ -59,9 +59,9 @@ export const createKriteriaDanSub = async (req, res) => {
     });
 
     if (existingKriteria) {
-      return res.status(200).json({
-        code: 200,
-        status: true,
+      return res.status(400).json({
+        code: 400,
+        status: false,
         msg: "Scale Priority is Duplicate, please change",
       });
     }

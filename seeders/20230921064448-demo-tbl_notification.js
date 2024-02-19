@@ -9,6 +9,8 @@ module.exports = {
           user_id: 1,
           message: "Request Perpulangan diterima",
           isRead: 1,
+          createdAt: new Date(),
+          updatedAt: new Date(),
         },
       ],
       {}
