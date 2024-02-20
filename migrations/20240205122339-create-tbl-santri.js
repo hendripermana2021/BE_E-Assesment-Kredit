@@ -24,6 +24,9 @@ module.exports = {
       id_room: {
         type: Sequelize.INTEGER,
       },
+      image: {
+        type: Sequelize.STRING,
+      },
       status: {
         type: Sequelize.BOOLEAN,
       },

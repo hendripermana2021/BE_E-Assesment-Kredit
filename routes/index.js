@@ -1,4 +1,6 @@
 import express from "express";
+import multer from "multer";
+import path from "path";
 import fs from "fs";
 import {
   handleGetRoot,
@@ -72,6 +74,19 @@ export const prefix = "/v1/api/";
 
 export const router = express.Router();
 
+const storage = multer.diskStorage({
+  destination: (req, file, cb) => {
+    cb(null, "./image/"); // Set the destination folder
+  },
+  filename: (req, file, cb) => {
+    cb(
+      null,
+      `${file.fieldname}-${Date.now()}${path.extname(file.originalname)}`
+    );
+  },
+});
+const upload = multer({ storage });
+
 //ROUTES FOR GLOBAL
 router.get(prefix, handleGetRoot);
 router.get(prefix + "me", verifyToken, whoAmI);
@@ -109,8 +124,12 @@ router.put(prefix + "pegawai/update/:id", updateDataPegawai);
 router.get(prefix + "santri", getDataSantri);
 router.get(prefix + "santri/byid/:id", getDataSantriById);
 router.get(prefix + "santri/:search", getSantriBy);
-router.post(prefix + "santri/register", RegisterSantri);
-router.put(prefix + "santri/update/:id", updateDataSantri);
+router.post(prefix + "santri/register", upload.single("image"), RegisterSantri);
+router.put(
+  prefix + "santri/update/:id",
+  upload.single("image"),
+  updateDataSantri
+);
 router.delete(prefix + "santri/delete/:id", deleteSantri);
 
 //API ROOM
@@ -133,8 +152,6 @@ router.delete(prefix + "role/delete/:id", deleteRole);
 router.get(prefix + "notif", verifyToken, getDataNotification);
 router.get(prefix + "notif/byid/:id", verifyToken, getDataNotificationById);
 
-//API SUBKRITERIA
-
 //API PERMISSION
 router.get(prefix + "permission/all", getDataPermission);
 router.get(prefix + "permission/byid/:id", getDataPermissionById);
@@ -143,13 +160,8 @@ router.put(prefix + "permission/update/:id", verifyToken, updatePermission);
 router.delete(prefix + "permission/delete/:id", verifyToken, deletePermission);
 router.post(prefix + "permission/create", verifyToken, addPermission);
 
-//ROUTES FOR KEPALA PENGASUHAN
-
-//ROUTES FOR USTADZ/AH
-
 //ROUTES FOR PETUGAS KEAMANAN
 router.put(prefix + "validation/code", verifyToken, validation);
 router.put(prefix + "validation-back/code", verifyToken, validationBack);
 
-//ROUTES FOR SANTRI
 export default router;

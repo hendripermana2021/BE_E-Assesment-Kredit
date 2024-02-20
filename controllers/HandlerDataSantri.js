@@ -1,11 +1,13 @@
 import db from "../models/index.js";
-import bcrypt from "bcrypt";
-import jwt from "jsonwebtoken";
 import { Op } from "sequelize";
+import multer from "multer";
+import fs from "fs/promises";
 
 const Santri = db.tbl_santri;
 const Room = db.tbl_room;
 const Pegawai = db.tbl_pegawai;
+const storage = multer.memoryStorage();
+const upload = multer({ storage: storage });
 export const getDataSantri = async (req, res) => {
   try {
     const santri = await Santri.findAll({
@@ -90,7 +92,9 @@ export const RegisterSantri = async (req, res) => {
       mothername,
       status: 1,
       id_room,
+      image: `./image/${req.file.filename}`,
     });
+
     res.status(200).json({
       code: 200,
       status: true,
@@ -131,11 +135,22 @@ export const deleteSantri = async (req, res) => {
 
 export const updateDataSantri = async (req, res) => {
   const { id } = req.params;
+  const { name_santri, sex, fathername, mothername, password, id_room } =
+    req.body;
 
   try {
     const data_before = await Santri.findOne({
       where: { id },
     });
+
+    if (data_before.image) {
+      await fs.unlink(data_before.image);
+    }
+
+    let imagePath;
+    if (req.file) {
+      imagePath = `./image/${req.file.filename}`;
+    }
 
     if (data_before == null) {
       return res.status(400).json({
@@ -145,9 +160,6 @@ export const updateDataSantri = async (req, res) => {
       });
     }
 
-    const { name_santri, sex, fathername, mothername, password, id_room } =
-      req.body;
-
     const santri = await Santri.update(
       {
         name_santri,
@@ -156,6 +168,7 @@ export const updateDataSantri = async (req, res) => {
         mothername,
         password,
         id_room,
+        image: imagePath || null,
       },
       {
         where: { id },
