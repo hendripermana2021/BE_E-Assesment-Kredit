@@ -174,8 +174,8 @@ export const Logout = async (req, res) => {
     });
 
     if (!user) {
-      return res.status(200).json({
-        code: 200,
+      return res.status(400).json({
+        code: 400,
         status: false,
         msg: "User not found",
       });

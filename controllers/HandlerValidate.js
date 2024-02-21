@@ -4,8 +4,8 @@ const Santri = db.tbl_santri;
 const Pegawai = db.tbl_pegawai;
 const Notif = db.tbl_notification;
 
-export const validation = async (req, res) => {
-  const { id } = req.body;
+export const validationGo = async (req, res) => {
+  const { id } = req.params;
   const user = req.user;
 
   try {
@@ -57,7 +57,7 @@ export const validation = async (req, res) => {
 };
 
 export const validationBack = async (req, res) => {
-  const { id } = req.body;
+  const { id } = req.params;
   const user = req.user;
 
   try {

@@ -1,34 +1,34 @@
-'use strict';
+"use strict";
 /** @type {import('sequelize-cli').Migration} */
 module.exports = {
   async up(queryInterface, Sequelize) {
-    await queryInterface.createTable('tbl_subkriteria', {
+    await queryInterface.createTable("tbl_subkriteria", {
       id: {
         allowNull: false,
         autoIncrement: true,
         primaryKey: true,
-        type: Sequelize.INTEGER
+        type: Sequelize.INTEGER,
       },
       name_sub: {
-        type: Sequelize.STRING
+        type: Sequelize.STRING,
       },
       id_kriteria: {
-        type: Sequelize.INTEGER
+        type: Sequelize.INTEGER,
       },
       value: {
-        type: Sequelize.FLOAT
+        type: Sequelize.FLOAT,
       },
       createdAt: {
         allowNull: false,
-        type: Sequelize.DATE
+        type: Sequelize.DATE,
       },
       updatedAt: {
         allowNull: false,
-        type: Sequelize.DATE
-      }
+        type: Sequelize.DATE,
+      },
     });
   },
   async down(queryInterface, Sequelize) {
-    await queryInterface.dropTable('tbl_subkriteria');
-  }
+    await queryInterface.dropTable("tbl_subkriteria");
+  },
 };
