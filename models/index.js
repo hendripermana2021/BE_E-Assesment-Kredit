@@ -138,16 +138,16 @@ db.tbl_req.belongsTo(db.tbl_pegawai, {
 //END API PERMISSION
 
 //for API METHOD CPI and ROC
-db.tbl_cpi.hasMany(db.tbl_kriteria, {
-  foreignKey: "id",
+db.tbl_cpi.belongsTo(db.tbl_kriteria, {
+  foreignKey: "id_kriteria",
   as: "kriteria",
-  sourceKey: "id_kriteria",
+  targetKey: "id",
 });
 
-db.tbl_cpi.hasMany(db.tbl_subkriteria, {
-  foreignKey: "id",
+db.tbl_cpi.belongsTo(db.tbl_subkriteria, {
+  foreignKey: "id_subkriteria",
   as: "subkriteria",
-  sourceKey: "id_subkriteria",
+  targetKey: "id",
 });
 //END API METHOD CPI and ROC
 
