@@ -19,6 +19,7 @@ export const verifyToken = (req, res, next) => {
       sex: decoded.sex,
       email: decoded.email, // Fix here: change decoded.gender to decoded.email
       role_id: decoded.role_id,
+      image: decoded.image,
     };
 
     req.id = decoded.userId;
@@ -26,6 +27,7 @@ export const verifyToken = (req, res, next) => {
     req.sex = decoded.sex;
     req.email = decoded.email;
     req.role_id = decoded.role_id;
+    req.image = decoded.image;
 
     next();
   });

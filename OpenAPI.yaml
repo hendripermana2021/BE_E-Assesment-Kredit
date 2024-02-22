@@ -179,14 +179,19 @@ paths:
       deprecated: false
       security:
         - bearerAuth: []
-  /room/abu:
+  /room/{search}:
     get:
       tags:
         - For Student Room's
       summary: GET DATA ROOM BY SEARCH
       description: ""
       operationId: GETDATAROOMBYIDSEARCH
-      parameters: []
+      parameters:
+        - name: search
+          in: path
+          required: true
+          schema:
+            type: string
       responses:
         "200":
           description: Successful Get Rooms
@@ -383,7 +388,7 @@ paths:
       deprecated: false
       security:
         - bearerAuth: []
-  /santri/{search}}:
+  /santri/{search}:
     get:
       tags:
         - For Data Student
@@ -395,7 +400,7 @@ paths:
           in: path
           required: true
           schema:
-            type: integer
+            type: string
       responses:
         "200":
           description: Successful Get data santri by name
@@ -846,14 +851,19 @@ paths:
       deprecated: false
       security:
         - bearerAuth: []
-  /kriteria/byid/1:
+  /kriteria/byid/{id}:
     get:
       tags:
         - For Data Kriteria and Sub-kriteria
       summary: GET DATA KRITERIA BY ID
       description: ""
       operationId: GETDATAKRITERIABYID
-      parameters: []
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: integer
       responses:
         "200":
           description: Successful Get data kriteria by id
@@ -870,20 +880,55 @@ paths:
       deprecated: false
       security:
         - bearerAuth: []
-  /kriteria/update/5:
+  /kriteria/update/{id}:
     put:
       tags:
         - For Data Kriteria and Sub-kriteria
       summary: UPDATE DATA KRITERIA BY ID
       description: ""
       operationId: UPDATEDATAKRITERIABYID
-      parameters: []
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: integer
       requestBody:
         description: ""
         content:
           application/json:
             schema:
               type: object
+              properties:
+                scale_priority:
+                  type: integer
+                  description: "Skala Prioritas"
+                name_kriteria:
+                  type: string
+                  description: "Name kriteria"
+                type:
+                  type: integer
+                  description: "1 Benefit, 2 cost"
+                subkriteria:
+                  type: string
+                  description: "Sub Kriteria array input"
+              required:
+                - scale_priority
+                - name_kriteria
+                - type
+                - subkriteria
+            examples:
+              example1:
+                value:
+                  scale_priority: 3
+                  name_kriteria: "Edited Kriteria"
+                  type: 1
+                  subkriteria:
+                    [
+                      { name_sub: "subkriteria-1", value: 1 },
+                      { name_sub: "subkriteria-2", value: 2 },
+                      { name_sub: "subkriteria-3", value: 3 },
+                    ]
         required: false
       responses:
         "200":
@@ -901,14 +946,19 @@ paths:
       deprecated: false
       security:
         - bearerAuth: []
-  /kriteria/delete/4:
+  /kriteria/delete/{id}:
     delete:
       tags:
         - For Data Kriteria and Sub-kriteria
       summary: DELETE KRITERIA AND SUB-KRITERIA BY ID
       description: ""
       operationId: DELETEKRITERIABYID
-      parameters: []
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: integer
       responses:
         "200":
           description: Successful delete data kriteria by id
@@ -939,6 +989,36 @@ paths:
           application/json:
             schema:
               type: object
+              properties:
+                scale_priority:
+                  type: integer
+                  description: "Skala Prioritas"
+                name_kriteria:
+                  type: string
+                  description: "Name kriteria"
+                type:
+                  type: integer
+                  description: "1 Benefit, 2 cost"
+                subkriteria:
+                  type: string
+                  description: "Sub Kriteria array input"
+              required:
+                - scale_priority
+                - name_kriteria
+                - type
+                - subkriteria
+            examples:
+              example1:
+                value:
+                  scale_priority: 3
+                  name_kriteria: "Edited Kriteria"
+                  type: 1
+                  subkriteria:
+                    [
+                      { name_sub: "subkriteria-1", value: 1 },
+                      { name_sub: "subkriteria-2", value: 2 },
+                      { name_sub: "subkriteria-3", value: 3 },
+                    ]
         required: false
       responses:
         "200":
@@ -982,14 +1062,19 @@ paths:
       deprecated: false
       security:
         - bearerAuth: []
-  /permission/byid/1:
+  /permission/byid/{id}:
     get:
       tags:
         - For Data Permission
       summary: GET DATA PERMISSION BY ID
       description: ""
       operationId: GETDATAPERMISSIONBYID
-      parameters: []
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: integer
       responses:
         "200":
           description: Successful get data permission by id
@@ -1030,14 +1115,19 @@ paths:
       deprecated: false
       security:
         - bearerAuth: []
-  /permission/delete/4:
+  /permission/delete/{id}:
     delete:
       tags:
         - For Data Permission
       summary: DELETE PERMISSION BY ID
       description: ""
       operationId: DELETEPERMISSIONBYID
-      parameters: []
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: integer
       responses:
         "200":
           description: Successful delete data permission by id
@@ -1068,6 +1158,43 @@ paths:
           application/json:
             schema:
               type: object
+              properties:
+                student_id:
+                  type: integer
+                  description: "Skala Prioritas"
+                start_permission:
+                  type: string
+                  format: date
+                  description: "Start Permission Date"
+                end_permission:
+                  type: string
+                  format: date
+                  description: "End Permission Date"
+                commented:
+                  type: string
+                  description: "Sub Kriteria array input"
+                kriteria:
+                  type: string
+                  description: "kriteria input"
+              required:
+                - student_id
+                - start_permission
+                - end_permission
+                - commented
+                - kriteria
+            examples:
+              example1:
+                value:
+                  student_id: 1
+                  start_permission: 2024-02-05 12:24:23
+                  end_permission: 2024-02-10 13:24:23
+                  commented: "Sakit karena demam"
+                  kriteria:
+                    [
+                      { id_kriteria: 1, id_subkriteria: 2 },
+                      { id_kriteria: 2, id_subkriteria: 6 },
+                      { id_kriteria: 3, id_subkriteria: 17 },
+                    ]
         required: false
       responses:
         "200":
@@ -1085,20 +1212,62 @@ paths:
       deprecated: false
       security:
         - bearerAuth: []
-  /permission/update/5:
+  /permission/update/{id}:
     put:
       tags:
         - For Data Permission
       summary: UPDATE DATA PERMISSION BY ID
       description: ""
       operationId: UPDATEDATAPERMISSIONBYID
-      parameters: []
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: integer
       requestBody:
         description: ""
         content:
           application/json:
             schema:
               type: object
+              properties:
+                student_id:
+                  type: integer
+                  description: "Skala Prioritas"
+                start_permission:
+                  type: string
+                  format: date
+                  description: "Start Permission Date"
+                end_permission:
+                  type: string
+                  format: date
+                  description: "End Permission Date"
+                commented:
+                  type: string
+                  description: "Sub Kriteria array input"
+                kriteria:
+                  type: string
+                  description: "kriteria input"
+              required:
+                - student_id
+                - start_permission
+                - end_permission
+                - commented
+                - kriteria
+            examples:
+              example1:
+                value:
+                  student_id: 1
+                  start_permission: 2024-02-05 12:24:23
+                  end_permission: 2024-02-10 13:24:23
+                  commented: "Sakit karena demam"
+                  kriteria:
+                    [
+                      { id_kriteria: 1, id_subkriteria: 2 },
+                      { id_kriteria: 2, id_subkriteria: 6 },
+                      { id_kriteria: 3, id_subkriteria: 17 },
+                    ]
         required: false
       responses:
         "200":
@@ -1126,13 +1295,6 @@ paths:
       description: ""
       operationId: CALCULATEDROC
       parameters: []
-      requestBody:
-        description: ""
-        content:
-          text/plain:
-            schema:
-              type: string
-        required: false
       responses:
         "200":
           description: Successful calculated ROC
@@ -1157,13 +1319,6 @@ paths:
       description: ""
       operationId: CALCULATEDCPI
       parameters: []
-      requestBody:
-        description: ""
-        content:
-          application/json:
-            schema:
-              type: object
-        required: false
       responses:
         "200":
           description: Successful calculated CPI
@@ -1180,14 +1335,19 @@ paths:
       deprecated: false
       security:
         - bearerAuth: []
-  /result/CPI/3:
+  /result/CPI/{id}:
     get:
       tags:
         - For Calculated
       summary: GET RESULT CPI AND ROC BY ID
       description: ""
       operationId: GETRESULTROCANDCPIBYID
-      parameters: []
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: integer
       responses:
         "200":
           description: Successful get calculated ROC & CPI by id
@@ -1206,21 +1366,19 @@ paths:
         - bearerAuth: []
 
   #FOR VALIDATION
-  /validation-go/5:
+  /validation-go/{id}:
     put:
       tags:
         - For Satpam Validation
       summary: UPDATE VALIDATION PERMISSION GO BY ID
       description: ""
       operationId: UPDATEVALIDATIONPERMISSIONGO
-      parameters: []
-      requestBody:
-        description: ""
-        content:
-          application/json:
-            schema:
-              type: object
-        required: false
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: integer
       responses:
         "200":
           description: Successful update data permission status
@@ -1237,21 +1395,19 @@ paths:
       deprecated: false
       security:
         - bearerAuth: []
-  /validation-back/5:
+  /validation-back/{id}:
     put:
       tags:
         - For Satpam Validation
       summary: UPDATE VALIDATION PERMISSION BACK BY ID
       description: ""
       operationId: UPDATEVALIDATIONPERMISSIONBACK
-      parameters: []
-      requestBody:
-        description: ""
-        content:
-          application/json:
-            schema:
-              type: object
-        required: false
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: integer
       responses:
         "200":
           description: Successful update data permission status back to pesantren
@@ -1271,20 +1427,13 @@ paths:
 
   #FOR REPORT
   /report:
-    put:
+    get:
       tags:
         - For Report
       summary: GET DATA FOR REPORT
       description: ""
       operationId: REPORTDATA
       parameters: []
-      requestBody:
-        description: ""
-        content:
-          application/json:
-            schema:
-              type: object
-        required: false
       responses:
         "200":
           description: Successful get report

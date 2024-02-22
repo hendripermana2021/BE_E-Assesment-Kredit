@@ -56,6 +56,10 @@ export const createKriteriaDanSub = async (req, res) => {
   try {
     const existingKriteria = await Kriteria.findOne({
       where: { scale_priority: scale_priority },
+      include: {
+        model: SubKriteria,
+        as: "sub_kriteria",
+      },
     });
 
     if (existingKriteria) {
@@ -143,6 +147,10 @@ export const deleteKriteriaDanSub = async (req, res) => {
   try {
     const dataBefore = await Kriteria.findOne({
       where: { id },
+      include: {
+        model: SubKriteria,
+        as: "sub_kriteria",
+      },
     });
 
     if (!dataBefore) {
@@ -201,12 +209,6 @@ export const updateKriteriaDanSub = async (req, res) => {
         msg: "Data Kriteria doesn't exist or has been deleted!",
       });
     }
-
-    // const result = [];
-    // for (let i = 0; i < getAllData.length; i++) {
-    //   if (getAllData[i].scale_priority == scale_priority)
-    //     result.push(getAllData[i]);
-    // }
 
     //IF SCALE PRIORITY  IS SAME WITH DATA BEFORE UPDATE
 

@@ -1,7 +1,5 @@
-'use strict';
-const {
-  Model
-} = require('sequelize');
+"use strict";
+const { Model } = require("sequelize");
 module.exports = (sequelize, DataTypes) => {
   class tbl_kriteria extends Model {
     /**
@@ -13,14 +11,17 @@ module.exports = (sequelize, DataTypes) => {
       // define association here
     }
   }
-  tbl_kriteria.init({
-    scale_priority: DataTypes.INTEGER,
-    name_kriteria: DataTypes.STRING,
-    weight_score: DataTypes.FLOAT,
-    type: DataTypes.BOOLEAN
-  }, {
-    sequelize,
-    modelName: 'tbl_kriteria',
-  });
+  tbl_kriteria.init(
+    {
+      scale_priority: DataTypes.INTEGER,
+      name_kriteria: DataTypes.STRING,
+      weight_score: DataTypes.FLOAT,
+      type: DataTypes.BOOLEAN,
+    },
+    {
+      sequelize,
+      modelName: "tbl_kriteria",
+    }
+  );
   return tbl_kriteria;
 };

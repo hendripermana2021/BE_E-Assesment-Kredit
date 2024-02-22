@@ -10,10 +10,10 @@ export const validationGo = async (req, res) => {
 
   try {
     const req = await Req.findOne({
-      where: { id },
+      where: { id, status_req: 1, permission_status: 0 },
     });
 
-    if (req == "") {
+    if (!req) {
       return res.status(400).json({
         code: 400,
         status: false,
@@ -62,10 +62,10 @@ export const validationBack = async (req, res) => {
 
   try {
     const req = await Req.findOne({
-      where: { id },
+      where: { id, permission_status: 1 },
     });
 
-    if (req == "") {
+    if (!req) {
       return res.status(400).json({
         code: 400,
         status: false,

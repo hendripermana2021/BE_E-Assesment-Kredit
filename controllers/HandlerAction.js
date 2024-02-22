@@ -113,7 +113,7 @@ export const calculatedCPIisNull = async (req, res) => {
     //Step 1 normalisasi Tabel dan Flatten
     for (let i = 0; i < req.length; i++) {
       for (let j = 0; j < req[i].cpi_data.length; j++) {
-        normalisasi.push(req[i].cpi_data[j].subkriteria[0].value);
+        normalisasi.push(req[i].cpi_data[j].subkriteria.value);
       }
     }
 
@@ -147,7 +147,7 @@ export const calculatedCPIisNull = async (req, res) => {
 
     for (let i = 0; i < req.length; i++) {
       for (let j = 0; j < req[i].cpi_data.length; j++) {
-        if (req[i].cpi_data[j].kriteria[0].type == 1) {
+        if (req[i].cpi_data[j].kriteria.type == 1) {
           let a = (groupedArrays[i][j] / minValues[j]) * 1;
           minNormalisasi.push(a);
         } else {
@@ -286,6 +286,14 @@ export const calculatedCPIByIdCalculated = async (req, res) => {
       },
     });
 
+    if (req.length === 0) {
+      return res.status(400).json({
+        code: 400,
+        status: false,
+        msg: "Nothing Data CPI Empty for Calculated",
+      });
+    }
+
     const kriteria = await Kriteria.findAll({});
 
     ///////////////////////////////////////////////////////////////---> START CODE METHOD CPI
@@ -294,7 +302,7 @@ export const calculatedCPIByIdCalculated = async (req, res) => {
     //Step 1 normalisasi Tabel dan Flatten
     for (let i = 0; i < req.length; i++) {
       for (let j = 0; j < req[i].cpi_data.length; j++) {
-        normalisasi.push(req[i].cpi_data[j].subkriteria[0].value);
+        normalisasi.push(req[i].cpi_data[j].subkriteria.value);
       }
     }
 
@@ -328,7 +336,7 @@ export const calculatedCPIByIdCalculated = async (req, res) => {
 
     for (let i = 0; i < req.length; i++) {
       for (let j = 0; j < req[i].cpi_data.length; j++) {
-        if (req[i].cpi_data[j].kriteria[0].type == 1) {
+        if (req[i].cpi_data[j].kriteria.type == 1) {
           let a = (groupedArrays[i][j] / minValues[j]) * 1;
           minNormalisasi.push(a);
         } else {

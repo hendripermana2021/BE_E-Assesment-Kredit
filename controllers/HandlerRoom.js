@@ -28,6 +28,10 @@ export const getDataRoomById = async (req, res) => {
   try {
     const room = await Room.findAll({
       where: { id: id },
+      include: {
+        model: Pegawai,
+        as: "namaustadz",
+      },
     });
     if (room == "") {
       return res.status(400).json({
@@ -54,6 +58,10 @@ export const getRoomBy = async (req, res) => {
     let room = await Room.findAll({
       where: {
         [Op.or]: [{ nameroom: { [Op.like]: `%` + search + `%` } }],
+      },
+      include: {
+        model: Pegawai,
+        as: "namaustadz",
       },
     });
     if (room == "") {

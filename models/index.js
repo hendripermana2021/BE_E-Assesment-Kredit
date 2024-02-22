@@ -121,19 +121,19 @@ db.tbl_req.belongsTo(db.tbl_santri, {
 db.tbl_req.belongsTo(db.tbl_pegawai, {
   foreignKey: "val_go_by",
   as: "val_go_name",
-  sourceKey: "id",
+  targetKey: "id",
 });
 
 db.tbl_req.belongsTo(db.tbl_pegawai, {
   foreignKey: "created_by",
   as: "created_permission",
-  sourceKey: "id",
+  targetKey: "id",
 });
 
 db.tbl_req.belongsTo(db.tbl_pegawai, {
   foreignKey: "val_back_by",
   as: "val_back_name",
-  sourceKey: "id",
+  targetKey: "id",
 });
 //END API PERMISSION
 
