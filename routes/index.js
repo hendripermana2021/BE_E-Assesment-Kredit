@@ -52,6 +52,7 @@ import {
   CalculatedROC,
   calculatedCPIByIdCalculated,
   calculatedCPIisNull,
+  getReqCpiNull,
 } from "../controllers/HandlerAction.js";
 import {
   createKriteriaDanSub,
@@ -111,6 +112,7 @@ router.post(prefix + "action/calculatedROC", verifyToken, CalculatedROC);
 router.post(prefix + "action/calculatedCPI", verifyToken, calculatedCPIisNull);
 router.get(prefix + "result/CPI/:id", verifyToken, calculatedCPIByIdCalculated);
 router.get(prefix + "report", verifyToken, generateReport);
+router.get(prefix + "datareqByUser", verifyToken, getReqCpiNull);
 
 //ROUTES FOR ADMINISTRATOR
 //API FOR DASHBOARD

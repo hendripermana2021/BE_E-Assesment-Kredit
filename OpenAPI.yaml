@@ -1364,6 +1364,30 @@ paths:
       deprecated: false
       security:
         - bearerAuth: []
+  /datareqByUser:
+    get:
+      tags:
+        - For Calculated
+      summary: Get Data Req By User
+      description: ""
+      operationId: GETDATAUSERREQ
+      parameters: []
+      responses:
+        "200":
+          description: Successful Get Data Req User by Created
+          headers: {}
+          content: {}
+        "400":
+          description: Error or not success get Data Req User by Created
+          headers: {}
+          content: {}
+        "500":
+          description: internal server error
+          headers: {}
+          content: {}
+      deprecated: false
+      security:
+        - bearerAuth: []
 
   #FOR VALIDATION
   /validation-go/{id}:

@@ -425,3 +425,44 @@ export const calculatedCPIByIdCalculated = async (req, res) => {
     console.log(error);
   }
 };
+
+export const getReqCpiNull = async (req, res) => {
+  const user_id = req.user.userId;
+
+  try {
+    const req = await Req.findAll({
+      where: {
+        created_by: user_id,
+        id_calculated: 0,
+      },
+      include: {
+        model: Cpi,
+        as: "cpi_data",
+        include: [
+          {
+            model: Kriteria,
+            as: "kriteria",
+          },
+          {
+            model: Sub_Kriteria,
+            as: "subkriteria",
+          },
+        ],
+      },
+    });
+
+    if (req.length === 0) {
+      return res.status(400).json({
+        code: 400,
+        status: false,
+        msg: "Nothing Data CPI Empty for Calculated",
+      });
+    }
+
+    res.status(200).json({
+      status: true,
+      msg: "Success get data CPI null by created",
+      data: req,
+    });
+  } catch (error) {}
+};
