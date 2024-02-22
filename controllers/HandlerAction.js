@@ -7,7 +7,12 @@ const Sub_Kriteria = db.tbl_subkriteria;
 const Calculated = db.tbl_calculated;
 
 export const CalculatedROC = async (req, res) => {
-  const kriteria = await Kriteria.findAll({});
+  const kriteria = await Kriteria.findAll({
+    include: {
+      model: Sub_Kriteria,
+      as: "sub_kriteria",
+    },
+  });
 
   ///////////////////////////////////////////////////////////////////////////////---> START CODE FOR METHOD ROC
   try {
@@ -49,7 +54,12 @@ export const CalculatedROC = async (req, res) => {
       );
     }
 
-    const updateKriteria = await Kriteria.findAll({});
+    const updateKriteria = await Kriteria.findAll({
+      include: {
+        model: Sub_Kriteria,
+        as: "sub_kriteria",
+      },
+    });
 
     res.status(200).json({
       code: 200,
