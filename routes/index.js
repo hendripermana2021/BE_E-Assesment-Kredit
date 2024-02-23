@@ -68,6 +68,7 @@ import {
   addPermission,
   updatePermission,
   deletePermission,
+  getDataPermissionForValidation,
 } from "../controllers/HandlerPermission.js";
 import { dashboard } from "../controllers/HandlerDashboard.js";
 import {
@@ -188,5 +189,10 @@ router.post(prefix + "permission/create", verifyToken, addPermission);
 //ROUTES FOR PETUGAS KEAMANAN
 router.put(prefix + "validation-go/:id", verifyToken, validationGo);
 router.put(prefix + "validation-back/:id", verifyToken, validationBack);
+router.get(
+  prefix + "validation/student",
+  verifyToken,
+  getDataPermissionForValidation
+);
 
 export default router;

@@ -1448,6 +1448,30 @@ paths:
       deprecated: false
       security:
         - bearerAuth: []
+  /validation/student:
+    get:
+      tags:
+        - For Satpam Validation
+      summary: GET DATA PERMISSION > 50%
+      description: ""
+      operationId: GETDATAPERMISSIONUPTO50
+      parameters: []
+      responses:
+        "200":
+          description: Successful get data permission up to cpi result 50%
+          headers: {}
+          content: {}
+        "400":
+          description: Error or not success get data permission up to cpi result 50%
+          headers: {}
+          content: {}
+        "500":
+          description: internal server error
+          headers: {}
+          content: {}
+      deprecated: false
+      security:
+        - bearerAuth: []
 
   #FOR REPORT
   /report:

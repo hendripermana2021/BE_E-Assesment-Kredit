@@ -55,6 +55,69 @@ export const getDataPermission = async (req, res) => {
   }
 };
 
+export const getDataPermissionForValidation = async (req, res) => {
+  try {
+    const req = await Req.findAll({
+      include: [
+        {
+          model: Santri,
+          as: "namasantri",
+        },
+        {
+          model: Pegawai,
+          as: "created_permission",
+        },
+        {
+          model: Cpi,
+          as: "cpi_data",
+          include: [
+            {
+              model: Kriteria,
+              as: "kriteria",
+            },
+            {
+              model: Sub_Kriteria,
+              as: "subkriteria",
+            },
+          ],
+        },
+        {
+          model: Pegawai,
+          as: "val_go_name",
+        },
+        {
+          model: Pegawai,
+          as: "val_back_name",
+        },
+      ],
+    });
+
+    const result = [];
+    for (let i = 0; i < req.length; i++) {
+      if (req[i].cpi_result > 0.5) result.push(req[i]);
+    }
+
+    if (result.length == 0) {
+      res.status(400).json({
+        code: 400,
+        status: false,
+        msg: "Data Req not exist",
+      });
+    }
+
+    const sortfill = result.sort((a, b) => b.cpi_result - a.cpi_result);
+
+    res.status(200).json({
+      code: 200,
+      status: true,
+      msg: "All Data Permission CPI Result > 50%",
+      data: sortfill,
+    });
+  } catch (error) {
+    console.log(error);
+  }
+};
+
 export const getDataPermissionById = async (req, res) => {
   const { id } = req.params;
   try {
