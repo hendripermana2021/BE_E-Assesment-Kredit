@@ -255,6 +255,19 @@ export const calculatedCPIisNull = async (req, res) => {
       },
     });
 
+    for (let i = 0; i < resultCpi.length; i++) {
+      let newStatus = resultCpi[i].cpi_result > 0.5 ? 1 : 4;
+
+      await Req.update(
+        {
+          permission_status: newStatus,
+        },
+        {
+          where: { id: resultCpi[i].id },
+        }
+      );
+    }
+
     res.status(200).json({
       status: true,
       msg: "Success Calculated CPI",

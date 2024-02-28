@@ -7,6 +7,7 @@ dotenv.config();
 const app = express();
 import bodyParser from "body-parser";
 
+app.use("/image", express.static("public/image"));
 app.use(cors());
 app.use(cookieParser());
 app.use(express.json());

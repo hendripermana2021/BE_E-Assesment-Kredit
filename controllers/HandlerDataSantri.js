@@ -2,6 +2,7 @@ import db from "../models/index.js";
 import { Op } from "sequelize";
 import multer from "multer";
 import fs from "fs/promises";
+import path from "path";
 
 const Santri = db.tbl_santri;
 const Room = db.tbl_room;
@@ -92,7 +93,7 @@ export const RegisterSantri = async (req, res) => {
       mothername,
       status: 1,
       id_room,
-      image: `./image/${req.file.filename}`,
+      image: `/image/${req.file.filename}`,
     });
 
     res.status(200).json({
@@ -149,7 +150,7 @@ export const updateDataSantri = async (req, res) => {
 
     let imagePath;
     if (req.file) {
-      imagePath = `./image/${req.file.filename}`;
+      imagePath = `/image/${req.file.filename}`;
     }
 
     if (data_before == null) {
@@ -185,6 +186,18 @@ export const updateDataSantri = async (req, res) => {
       msg: "Data Santri Success Updated",
       data: { data_before, data_update },
     });
+  } catch (error) {
+    console.log(error);
+  }
+};
+
+export const imageAppeared = async (req, res) => {
+  try {
+    const imageName = req.params;
+    const imagePath = path.join(__dirname, "../image", imageName);
+
+    // Send the image as a response
+    return res.status(200).sendFile(imagePath);
   } catch (error) {
     console.log(error);
   }

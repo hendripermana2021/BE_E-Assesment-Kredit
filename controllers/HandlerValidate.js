@@ -10,7 +10,7 @@ export const validationGo = async (req, res) => {
 
   try {
     const req = await Req.findOne({
-      where: { id, status_req: 1, permission_status: 0 },
+      where: { id, permission_status: 1 },
     });
 
     if (!req) {
@@ -22,7 +22,7 @@ export const validationGo = async (req, res) => {
     }
 
     const updateCode = await Req.update(
-      { status_req: 0, permission_status: 1, val_go_by: user.userId },
+      { permission_status: 2, val_go_by: user.userId },
       {
         where: { id },
       }
@@ -62,7 +62,7 @@ export const validationBack = async (req, res) => {
 
   try {
     const req = await Req.findOne({
-      where: { id, permission_status: 1 },
+      where: { id, permission_status: 2 },
     });
 
     if (!req) {

@@ -12,9 +12,6 @@ module.exports = {
       student_id: {
         type: Sequelize.INTEGER,
       },
-      status_req: {
-        type: Sequelize.BOOLEAN,
-      },
       created_by: {
         type: Sequelize.INTEGER,
       },
@@ -31,7 +28,7 @@ module.exports = {
         type: Sequelize.STRING,
       },
       permission_status: {
-        type: Sequelize.BOOLEAN,
+        type: Sequelize.INTEGER,
       },
       val_go_by: {
         type: Sequelize.INTEGER,

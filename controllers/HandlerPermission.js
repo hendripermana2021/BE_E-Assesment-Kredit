@@ -55,6 +55,59 @@ export const getDataPermission = async (req, res) => {
   }
 };
 
+export const getDataPermissionOnlyAccepted = async (req, res) => {
+  try {
+    const req = await Req.findAll({
+      include: [
+        {
+          model: Santri,
+          as: "namasantri",
+        },
+        {
+          model: Pegawai,
+          as: "created_permission",
+        },
+        {
+          model: Cpi,
+          as: "cpi_data",
+          include: [
+            {
+              model: Kriteria,
+              as: "kriteria",
+            },
+            {
+              model: Sub_Kriteria,
+              as: "subkriteria",
+            },
+          ],
+        },
+        {
+          model: Pegawai,
+          as: "val_go_name",
+        },
+        {
+          model: Pegawai,
+          as: "val_back_name",
+        },
+      ],
+    });
+
+    const result = [];
+    for (let i = 0; i < req.length; i++) {
+      if (req[i].permission_status != 4) result.push(req[i]);
+    }
+
+    res.status(200).json({
+      code: 200,
+      status: true,
+      msg: "All Data Permission",
+      data: result,
+    });
+  } catch (error) {
+    console.log(error);
+  }
+};
+
 export const getDataPermissionForValidation = async (req, res) => {
   try {
     const req = await Req.findAll({
