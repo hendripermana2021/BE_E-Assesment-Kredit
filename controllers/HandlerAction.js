@@ -73,27 +73,51 @@ export const CalculatedROC = async (req, res) => {
 };
 
 export const calculatedCPIisNull = async (req, res) => {
-  const user_id = req.user.userId;
+  const user = req.user;
   try {
-    const req = await Req.findAll({
-      where: {
-        id_calculated: 0,
-      },
-      include: {
-        model: Cpi,
-        as: "cpi_data",
-        include: [
-          {
-            model: Kriteria,
-            as: "kriteria",
-          },
-          {
-            model: Sub_Kriteria,
-            as: "subkriteria",
-          },
-        ],
-      },
-    });
+    let req;
+    if (user.role_id == 1) {
+      req = await Req.findAll({
+        where: {
+          id_calculated: 0,
+        },
+        include: {
+          model: Cpi,
+          as: "cpi_data",
+          include: [
+            {
+              model: Kriteria,
+              as: "kriteria",
+            },
+            {
+              model: Sub_Kriteria,
+              as: "subkriteria",
+            },
+          ],
+        },
+      });
+    } else {
+      req = await Req.findAll({
+        where: {
+          id_calculated: 0,
+          created_by: user.userId,
+        },
+        include: {
+          model: Cpi,
+          as: "cpi_data",
+          include: [
+            {
+              model: Kriteria,
+              as: "kriteria",
+            },
+            {
+              model: Sub_Kriteria,
+              as: "subkriteria",
+            },
+          ],
+        },
+      });
+    }
 
     const checkKriteria = await Kriteria.findAll({
       where: { weight_score: 0 },
@@ -221,7 +245,7 @@ export const calculatedCPIisNull = async (req, res) => {
     //Insert CPI RESULTS to DATABASE Permission Req Table Database
 
     const calculateId = await Calculated.create({
-      created_by: user_id,
+      created_by: user.userId,
     });
 
     for (let i = 0; i < req.length; i++) {

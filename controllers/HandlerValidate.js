@@ -73,7 +73,7 @@ export const validationBack = async (req, res) => {
       });
     }
 
-    const updateCode = await Req.update(
+    await Req.update(
       { permission_status: 0, val_back_by: user.userId },
       {
         where: { id },
@@ -87,6 +87,13 @@ export const validationBack = async (req, res) => {
     const santri = await Santri.findOne({
       where: { id: reqUpdate.student_id },
     });
+
+    await Santri.update(
+      { status: 1 },
+      {
+        where: { id: reqUpdate.student_id },
+      }
+    );
 
     const notif = await Notif.create({
       user_id: user.userId,

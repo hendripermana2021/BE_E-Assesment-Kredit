@@ -9,6 +9,7 @@ const Notif = db.tbl_notification;
 export const dashboard = async (req, res) => {
   try {
     const currentUser = req.user;
+    const user_id = req.user.userId;
     if (currentUser.role_id == 1) {
       const santri = (await Santri.findAll()).length;
       const pegawai = (await Pegawai.findAll()).length;
@@ -51,15 +52,50 @@ export const dashboard = async (req, res) => {
 
       const room = rooms[0]; // Assuming an Ustadz has only one room. Adjust as needed.
 
-      const santri = (await Santri.findAll({ where: { id_room: room.id } }))
-        .length;
+      const santri = (
+        await Santri.findAll({
+          where: { id_room: room.id },
+          include: {
+            model: Room,
+            as: "nameroom",
+            where: { id_ustadz: user_id },
+            include: {
+              model: Pegawai,
+              as: "walikamar",
+            },
+          },
+        })
+      ).length;
+
       const pegawai = (await Pegawai.findAll({ where: { role_id: "3" } }))
         .length;
       const santriNonActive = (
-        await Santri.findAll({ where: { id_room: room.id, status: false } })
+        await Santri.findAll({
+          where: { id_room: room.id, status: false },
+          include: {
+            model: Room,
+            as: "nameroom",
+            where: { id_ustadz: user_id },
+            include: {
+              model: Pegawai,
+              as: "walikamar",
+            },
+          },
+        })
       ).length;
       const santriActive = (
-        await Santri.findAll({ where: { id_room: room.id, status: true } })
+        await Santri.findAll({
+          where: { id_room: room.id, status: true },
+          include: {
+            model: Room,
+            as: "nameroom",
+            where: { id_ustadz: user_id },
+            include: {
+              model: Pegawai,
+              as: "walikamar",
+            },
+          },
+        })
       ).length;
 
       res.status(200).json({

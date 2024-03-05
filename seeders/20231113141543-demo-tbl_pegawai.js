@@ -28,7 +28,7 @@ module.exports = {
           email: "yusuf@gmail.com",
           password: await bcrypt.hash("12345", 10),
           real_password: "12345",
-          role_id: 3,
+          role_id: 2,
         },
         {
           name_pegawai: "Rasyid",

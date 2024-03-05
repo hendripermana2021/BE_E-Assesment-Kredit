@@ -9,23 +9,55 @@ const Room = db.tbl_room;
 const Pegawai = db.tbl_pegawai;
 const storage = multer.memoryStorage();
 const upload = multer({ storage: storage });
+const Req = db.tbl_req;
+
 export const getDataSantri = async (req, res) => {
   try {
-    const santri = await Santri.findAll({
-      include: {
-        model: Room,
-        as: "nameroom",
+    const user = req.user;
+    let santri;
+
+    if (user.role_id == 1) {
+      santri = await Santri.findAll({
         include: {
-          model: Pegawai,
-          as: "walikamar",
+          model: Room,
+          as: "nameroom",
+          include: {
+            model: Pegawai,
+            as: "walikamar",
+          },
         },
-      },
-    });
+      });
+    } else {
+      santri = await Santri.findAll({
+        include: {
+          model: Room,
+          as: "nameroom",
+          where: { id_ustadz: user.userId },
+          include: {
+            model: Pegawai,
+            as: "walikamar",
+          },
+        },
+      });
+    }
+
+    if (santri == "") {
+      return res.status(400).json({
+        code: 400,
+        status: false,
+        msg: "Data Doesn't Exist",
+      });
+    }
+
+    const sortfill = santri.sort((a, b) =>
+      a.name_santri.localeCompare(b.name_santri)
+    );
+
     res.status(200).json({
       code: 200,
       status: true,
       msg: "data you searched Found",
-      data: santri,
+      data: sortfill,
     });
   } catch (error) {
     console.log(error);
@@ -49,32 +81,6 @@ export const getDataSantriById = async (req, res) => {
       code: 200,
       status: true,
       msg: "data you searched Found",
-      data: santri,
-    });
-  } catch (error) {
-    console.log(error);
-  }
-};
-
-export const getSantriBy = async (req, res) => {
-  try {
-    const { search } = req.params;
-    let santri = await Santri.findAll({
-      where: {
-        [Op.or]: [{ name_santri: { [Op.like]: `%` + search + `%` } }],
-      },
-    });
-    if (santri == "") {
-      return res.status(400).json({
-        code: 400,
-        status: false,
-        msg: "Santri Doesn't Existing",
-      });
-    }
-    return res.status(200).json({
-      code: 200,
-      status: true,
-      msg: "data Santri you searched Found",
       data: santri,
     });
   } catch (error) {

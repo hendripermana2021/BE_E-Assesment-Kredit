@@ -25,7 +25,6 @@ import {
   deleteSantri,
   getDataSantri,
   getDataSantriById,
-  getSantriBy,
   imageAppeared,
   updateDataSantri,
 } from "../controllers/HandlerDataSantri.js";
@@ -64,7 +63,6 @@ import {
 } from "../controllers/HandlerKriteriaSubKriteria.js";
 import {
   getDataPermissionById,
-  getDataPermission,
   getDataPermissionByUserId,
   addPermission,
   updatePermission,
@@ -144,9 +142,7 @@ router.put(prefix + "pegawai/update/:id", verifyToken, updateDataPegawai);
 
 //API SANTRI
 router.get(prefix + "santri", verifyToken, getDataSantri);
-// router.get(prefix + "image/:imageName", imageAppeared);
 router.get(prefix + "santri/byid/:id", verifyToken, getDataSantriById);
-router.get(prefix + "santri/:search", verifyToken, getSantriBy);
 router.post(
   prefix + "santri/register",
   verifyToken,
@@ -182,7 +178,6 @@ router.get(prefix + "notif", verifyToken, getDataNotification);
 router.get(prefix + "notif/byid/:id", verifyToken, getDataNotificationById);
 
 //API PERMISSION
-router.get(prefix + "permission/all", verifyToken, getDataPermission);
 router.get(
   prefix + "permission/notRejected",
   verifyToken,

@@ -1,4 +1,5 @@
 import db from "../models/index.js";
+import { Op } from "sequelize";
 
 const Req = db.tbl_req;
 const Santri = db.tbl_santri;
@@ -7,53 +8,6 @@ const Cpi = db.tbl_cpi;
 const Kriteria = db.tbl_kriteria;
 const Sub_Kriteria = db.tbl_subkriteria;
 const Notif = db.tbl_notification;
-
-export const getDataPermission = async (req, res) => {
-  try {
-    const req = await Req.findAll({
-      include: [
-        {
-          model: Santri,
-          as: "namasantri",
-        },
-        {
-          model: Pegawai,
-          as: "created_permission",
-        },
-        {
-          model: Cpi,
-          as: "cpi_data",
-          include: [
-            {
-              model: Kriteria,
-              as: "kriteria",
-            },
-            {
-              model: Sub_Kriteria,
-              as: "subkriteria",
-            },
-          ],
-        },
-        {
-          model: Pegawai,
-          as: "val_go_name",
-        },
-        {
-          model: Pegawai,
-          as: "val_back_name",
-        },
-      ],
-    });
-    res.status(200).json({
-      code: 200,
-      status: true,
-      msg: "All Data Permission",
-      data: req,
-    });
-  } catch (error) {
-    console.log(error);
-  }
-};
 
 export const getDataPermissionOnlyAccepted = async (req, res) => {
   try {
@@ -228,45 +182,84 @@ export const getDataPermissionById = async (req, res) => {
 };
 
 export const getDataPermissionByUserId = async (req, res) => {
-  const user_id = req.user.userId;
+  const user = req.user;
+
   try {
-    const req = await Req.findAll({
-      where: {
-        created_by: user_id,
-      },
-      include: [
-        {
-          model: Santri,
-          as: "namasantri",
+    let req;
+    if (user.role_id == 1) {
+      req = await Req.findAll({
+        include: [
+          {
+            model: Santri,
+            as: "namasantri",
+          },
+          {
+            model: Pegawai,
+            as: "created_permission",
+          },
+          {
+            model: Cpi,
+            as: "cpi_data",
+            include: [
+              {
+                model: Kriteria,
+                as: "kriteria",
+              },
+              {
+                model: Sub_Kriteria,
+                as: "subkriteria",
+              },
+            ],
+          },
+          {
+            model: Pegawai,
+            as: "val_go_name",
+          },
+          {
+            model: Pegawai,
+            as: "val_back_name",
+          },
+        ],
+      });
+    } else {
+      req = await Req.findAll({
+        where: {
+          created_by: user.userId,
         },
-        {
-          model: Pegawai,
-          as: "created_permission",
-        },
-        {
-          model: Cpi,
-          as: "cpi_data",
-          include: [
-            {
-              model: Kriteria,
-              as: "kriteria",
-            },
-            {
-              model: Sub_Kriteria,
-              as: "subkriteria",
-            },
-          ],
-        },
-        {
-          model: Pegawai,
-          as: "val_go_name",
-        },
-        {
-          model: Pegawai,
-          as: "val_back_name",
-        },
-      ],
-    });
+        include: [
+          {
+            model: Santri,
+            as: "namasantri",
+          },
+          {
+            model: Pegawai,
+            as: "created_permission",
+          },
+          {
+            model: Cpi,
+            as: "cpi_data",
+            include: [
+              {
+                model: Kriteria,
+                as: "kriteria",
+              },
+              {
+                model: Sub_Kriteria,
+                as: "subkriteria",
+              },
+            ],
+          },
+          {
+            model: Pegawai,
+            as: "val_go_name",
+          },
+          {
+            model: Pegawai,
+            as: "val_back_name",
+          },
+        ],
+      });
+    }
 
     if (req == "") {
       return res.status(400).json({
@@ -296,18 +289,21 @@ export const addPermission = async (req, res) => {
 
   try {
     //Check Request Existed
-    const reqCheck = await Req.findOne({
+    const reqCheck = await Req.findAll({
       where: {
         student_id,
-        status_req: 1,
+        permission_status: {
+          [Op.or]: [0, 1, 2],
+        },
       },
     });
+    console.log(reqCheck.length);
 
-    if (reqCheck) {
+    if (reqCheck.length > 0) {
       return res.status(400).json({
         code: 400,
         status: false,
-        msg: "Data Permission has been created. Please change.",
+        msg: "Data Permission has been created, please change santri for permission.",
       });
     }
     //END CHECK
@@ -316,7 +312,6 @@ export const addPermission = async (req, res) => {
     const req = await Req.create({
       student_id,
       created_by: user.userId,
-      status_req: 1,
       start_permission,
       end_permission,
       cpi_result: "",
@@ -333,8 +328,6 @@ export const addPermission = async (req, res) => {
     const santri = await Santri.findOne({
       where: { id: req.student_id },
     });
-
-    console.log(santri);
 
     const dataReq = await Req.findAll({
       where: { id: req.id },

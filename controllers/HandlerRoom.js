@@ -5,21 +5,40 @@ const Room = db.tbl_room;
 const Pegawai = db.tbl_pegawai;
 export const getDataRoom = async (req, res) => {
   try {
-    const room = await Room.findAll({
-      include: {
-        model: Pegawai,
-        as: "namaustadz",
-      },
-    });
+    const user = req.user;
+    let room;
+
+    if (user.role_id == 1) {
+      room = await Room.findAll({
+        include: {
+          model: Pegawai,
+          as: "namaustadz",
+        },
+      });
+    } else {
+      room = await Room.findAll({
+        where: { id_ustadz: user.userId },
+        include: {
+          model: Pegawai,
+          as: "namaustadz",
+        },
+      });
+    }
     res.status(200).json({
       code: 200,
       status: true,
-      msg: "data you searched Found",
+      msg: "Data you searched found",
       data: room,
-      url: req.url,
     });
+    console.log(user.role_id);
   } catch (error) {
-    console.log(error);
+    console.error(error);
+    res.status(500).json({
+      code: 500,
+      status: false,
+      msg: "Internal Server Error",
+      error: error.message,
+    });
   }
 };
 
