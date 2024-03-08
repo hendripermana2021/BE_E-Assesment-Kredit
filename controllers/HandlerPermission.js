@@ -62,6 +62,102 @@ export const getDataPermissionOnlyAccepted = async (req, res) => {
   }
 };
 
+export const getDataPermissionAll = async (req, res) => {
+  const user = req.user;
+  try {
+    let req;
+    if (user.role_id == 1) {
+      req = await Req.findAll({
+        include: [
+          {
+            model: Santri,
+            as: "namasantri",
+          },
+          {
+            model: Pegawai,
+            as: "created_permission",
+          },
+          {
+            model: Cpi,
+            as: "cpi_data",
+            include: [
+              {
+                model: Kriteria,
+                as: "kriteria",
+              },
+              {
+                model: Sub_Kriteria,
+                as: "subkriteria",
+              },
+            ],
+          },
+          {
+            model: Pegawai,
+            as: "val_go_name",
+          },
+          {
+            model: Pegawai,
+            as: "val_back_name",
+          },
+        ],
+      });
+    } else {
+      req = await Req.findAll({
+        include: [
+          {
+            model: Santri,
+            as: "namasantri",
+          },
+          {
+            model: Pegawai,
+            as: "created_permission",
+            where: {},
+          },
+          {
+            model: Cpi,
+            as: "cpi_data",
+            include: [
+              {
+                model: Kriteria,
+                as: "kriteria",
+              },
+              {
+                model: Sub_Kriteria,
+                as: "subkriteria",
+              },
+            ],
+          },
+          {
+            model: Pegawai,
+            as: "val_go_name",
+          },
+          {
+            model: Pegawai,
+            as: "val_back_name",
+          },
+        ],
+      });
+    }
+
+    if (req.length == 0) {
+      res.status(400).json({
+        code: 400,
+        status: false,
+        msg: "Data Req not exist",
+      });
+    }
+
+    res.status(200).json({
+      code: 200,
+      status: true,
+      msg: "All Data Permission",
+      data: req,
+    });
+  } catch (error) {
+    console.log(error);
+  }
+};
+
 export const getDataPermissionForValidation = async (req, res) => {
   try {
     const req = await Req.findAll({
@@ -188,6 +284,7 @@ export const getDataPermissionByUserId = async (req, res) => {
     let req;
     if (user.role_id == 1) {
       req = await Req.findAll({
+        where: { id_calculated: 0 },
         include: [
           {
             model: Santri,
@@ -225,6 +322,7 @@ export const getDataPermissionByUserId = async (req, res) => {
       req = await Req.findAll({
         where: {
           created_by: user.userId,
+          id_calculated: 0,
         },
         include: [
           {
@@ -365,7 +463,6 @@ export const updatePermission = async (req, res) => {
   const { id } = req.params;
   const { start_permission, end_permission, commented } = req.body;
   const reasonPermission = req.body.kriteria;
-  const userID = req.user.userId;
 
   try {
     const dataPermissionBeforeUpdate = await Req.findOne({
