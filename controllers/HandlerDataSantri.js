@@ -3,13 +3,12 @@ import { Op } from "sequelize";
 import multer from "multer";
 import fs from "fs/promises";
 import path from "path";
+import prefix from "../routes/index.js";
 
 const Santri = db.tbl_santri;
 const Room = db.tbl_room;
 const Pegawai = db.tbl_pegawai;
 const storage = multer.memoryStorage();
-const upload = multer({ storage: storage });
-const Req = db.tbl_req;
 
 export const getDataSantri = async (req, res) => {
   try {
@@ -99,7 +98,7 @@ export const RegisterSantri = async (req, res) => {
       mothername,
       status: 1,
       id_room,
-      image: `/image/${req.file.filename}`,
+      image: `http://localhost:8000/image/${req.file.filename}`,
     });
 
     res.status(200).json({
@@ -150,13 +149,13 @@ export const updateDataSantri = async (req, res) => {
       where: { id },
     });
 
-    if (data_before.image) {
-      await fs.unlink(data_before.image);
-    }
+    let baseUrl = "http://localhost:8000";
 
-    let imagePath;
-    if (req.file) {
-      imagePath = `/image/${req.file.filename}`;
+    let relativeUrl = data_before.image.replace(baseUrl, "public");
+    console.log(relativeUrl);
+
+    if (data_before.image) {
+      await fs.unlink(relativeUrl);
     }
 
     if (data_before == null) {
@@ -175,7 +174,7 @@ export const updateDataSantri = async (req, res) => {
         mothername,
         password,
         id_room,
-        image: imagePath || null,
+        image: `http://localhost:8000/image/${req.file.filename}` || null,
       },
       {
         where: { id },
