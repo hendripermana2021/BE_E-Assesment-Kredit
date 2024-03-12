@@ -117,6 +117,15 @@ export const deleteSantri = async (req, res) => {
   const dataBefore = await Santri.findOne({
     where: { id },
   });
+
+  let baseUrl = "http://localhost:8000";
+
+  let relativeUrl = dataBefore.image.replace(baseUrl, "public");
+  console.log(relativeUrl);
+
+  if (dataBefore.image) {
+    await fs.unlink(relativeUrl);
+  }
   const parsedDataProfile = JSON.parse(JSON.stringify(dataBefore));
 
   if (!parsedDataProfile) {
@@ -149,14 +158,14 @@ export const updateDataSantri = async (req, res) => {
       where: { id },
     });
 
-    let baseUrl = "http://localhost:8000";
+    // let baseUrl = "http://localhost:8000";
 
-    let relativeUrl = data_before.image.replace(baseUrl, "public");
-    console.log(relativeUrl);
+    // let relativeUrl = data_before.image.replace(baseUrl, "public");
+    // console.log(relativeUrl);
 
-    if (data_before.image) {
-      await fs.unlink(relativeUrl);
-    }
+    // if (data_before.image) {
+    //   await fs.unlink(relativeUrl);
+    // }
 
     if (data_before == null) {
       return res.status(400).json({

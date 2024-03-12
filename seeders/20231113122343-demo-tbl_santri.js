@@ -13,7 +13,7 @@ module.exports = {
           mothername: "siti",
           status: 1,
           id_room: 1,
-          image: "image/image-1.jpg",
+          image: "http://localhost:8000/image/image-1.jpg",
         },
         {
           name_santri: "Najla Amiraturrizqi Panggabean",
@@ -22,7 +22,7 @@ module.exports = {
           mothername: "LYLA MAYASARI NASUTION",
           status: 1,
           id_room: 1,
-          image: "image/image-9.jpg",
+          image: "http://localhost:8000/image/image-9.jpg",
         },
         {
           name_santri: "Dava Hardinata",
@@ -31,7 +31,7 @@ module.exports = {
           mothername: "NANA SRI REZEKI",
           status: 1,
           id_room: 1,
-          image: "image/image-2.jpg",
+          image: "http://localhost:8000/image/image-2.jpg",
         },
         {
           name_santri: "Ahmad Syaufa Al Khairi",
@@ -40,7 +40,7 @@ module.exports = {
           mothername: "ROHANA DRA",
           status: 1,
           id_room: 1,
-          image: "image/image-7.jpg",
+          image: "http://localhost:8000/image/image-7.jpg",
         },
         {
           name_santri: "Amir Hakim Nasution",
@@ -49,7 +49,7 @@ module.exports = {
           mothername: "INDHA APRIANA",
           status: 1,
           id_room: 1,
-          image: "image/image-3.jpg",
+          image: "http://localhost:8000/image/image-3.jpg",
         },
         {
           name_santri: "Dhanis Herman Piliang",
@@ -58,7 +58,7 @@ module.exports = {
           mothername: "NOVITA PILIANG",
           status: 1,
           id_room: 1,
-          image: "image/image-4.jpg",
+          image: "http://localhost:8000/image/image-4.jpg",
         },
         {
           name_santri: "Bunga Nurmala",
@@ -67,7 +67,7 @@ module.exports = {
           mothername: "MELATI",
           status: 1,
           id_room: 1,
-          image: "image/image-8.jpg",
+          image: "http://localhost:8000/image/image-8.jpg",
         },
         {
           name_santri: "Satria",
@@ -76,7 +76,7 @@ module.exports = {
           mothername: "MELATI",
           status: 1,
           id_room: 1,
-          image: "image/image-5.jpg",
+          image: "http://localhost:8000/image/image-5.jpg",
         },
         {
           name_santri: "Farah Maulidani",
@@ -85,7 +85,7 @@ module.exports = {
           mothername: "MARIDHANIATI",
           status: 1,
           id_room: 1,
-          image: "image/image-10.jpg",
+          image: "http://localhost:8000/image/image-10.jpg",
         },
         {
           name_santri: "Fazri Alfarizi",
@@ -94,7 +94,7 @@ module.exports = {
           mothername: "HALIMATUSSAKDIAH",
           status: 1,
           id_room: 1,
-          image: "image/image-6.jpg",
+          image: "http://localhost:8000/image/image-6.jpg",
         },
       ],
       {}
