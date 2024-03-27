@@ -3,6 +3,7 @@ import db from "../models/index.js";
 const Req = db.tbl_req;
 const Cpi = db.tbl_cpi;
 const Kriteria = db.tbl_kriteria;
+const Santri = db.tbl_santri;
 const Sub_Kriteria = db.tbl_subkriteria;
 const Calculated = db.tbl_calculated;
 
@@ -182,10 +183,10 @@ export const calculatedCPIisNull = async (req, res) => {
     for (let i = 0; i < req.length; i++) {
       for (let j = 0; j < req[i].cpi_data.length; j++) {
         if (req[i].cpi_data[j].kriteria.type == 1) {
-          let a = (groupedArrays[i][j] / minValues[j]) * 1;
+          let a = (groupedArrays[i][j] / minValues[j]) * 100;
           minNormalisasi.push(a);
         } else {
-          let a = (minValues[j] / groupedArrays[i][j]) * 1;
+          let a = (minValues[j] / groupedArrays[i][j]) * 100;
           minNormalisasi.push(a);
         }
       }
@@ -263,21 +264,29 @@ export const calculatedCPIisNull = async (req, res) => {
     console.log(step4Final[0]);
 
     const resultCpi = await Req.findAll({
-      include: {
-        model: Cpi,
-        as: "cpi_data",
-        include: [
-          {
-            model: Kriteria,
-            as: "kriteria",
-          },
-          {
-            model: Sub_Kriteria,
-            as: "subkriteria",
-          },
-        ],
-      },
+      include: [
+        {
+          model: Cpi,
+          as: "cpi_data",
+          include: [
+            {
+              model: Kriteria,
+              as: "kriteria",
+            },
+            {
+              model: Sub_Kriteria,
+              as: "subkriteria",
+            },
+          ],
+        },
+        {
+          model: Santri,
+          as: "namasantri",
+        },
+      ],
     });
+
+    const sortfill = resultCpi.sort((b, a) => a.cpi_result - b.cpi_result);
 
     for (let i = 0; i < resultCpi.length; i++) {
       let newStatus = resultCpi[i].cpi_result > 0.5 ? 1 : 4;
@@ -296,7 +305,7 @@ export const calculatedCPIisNull = async (req, res) => {
       status: true,
       msg: "Success Calculated CPI",
       data: {
-        resultCpi,
+        sortfill,
         step1: { groupedArrays, minValues },
         step2: minNormalisasiTranspose,
         step3: { step3Transpose, sumGroups, maxValue, minValue },
@@ -384,10 +393,10 @@ export const calculatedCPIByIdCalculated = async (req, res) => {
     for (let i = 0; i < req.length; i++) {
       for (let j = 0; j < req[i].cpi_data.length; j++) {
         if (req[i].cpi_data[j].kriteria.type == 1) {
-          let a = (groupedArrays[i][j] / minValues[j]) * 1;
+          let a = (groupedArrays[i][j] / minValues[j]) * 100;
           minNormalisasi.push(a);
         } else {
-          let a = (minValues[j] / groupedArrays[i][j]) * 1;
+          let a = (minValues[j] / groupedArrays[i][j]) * 100;
           minNormalisasi.push(a);
         }
       }

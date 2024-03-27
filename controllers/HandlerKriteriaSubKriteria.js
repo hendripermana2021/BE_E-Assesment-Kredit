@@ -87,45 +87,45 @@ export const createKriteriaDanSub = async (req, res) => {
       bulkCreateKriteriaDanSub
     );
 
-    //Auto ROC for Kriteria
-    const kriteria = await Kriteria.findAll({});
-    const sortfill = kriteria.sort(
-      (a, b) => a.scale_priority - b.scale_priority
-    );
+    // //Auto ROC for Kriteria
+    // const kriteria = await Kriteria.findAll({});
+    // const sortfill = kriteria.sort(
+    //   (a, b) => a.scale_priority - b.scale_priority
+    // );
 
-    let result = [];
-    for (let i = 1; i <= sortfill.length; i++) {
-      for (let j = 1; j <= sortfill.length; j++) {
-        if (i <= j) {
-          result.push(1 / j);
-        } else {
-          result.push(0);
-        }
-      }
-      result;
-    }
+    // let result = [];
+    // for (let i = 1; i <= sortfill.length; i++) {
+    //   for (let j = 1; j <= sortfill.length; j++) {
+    //     if (i <= j) {
+    //       result.push(1 / j);
+    //     } else {
+    //       result.push(0);
+    //     }
+    //   }
+    //   result;
+    // }
 
-    const separatedArray = [];
-    for (let i = 0; i < result.length; i += 6) {
-      separatedArray.push(result.slice(i, i + 6));
-    }
+    // const separatedArray = [];
+    // for (let i = 0; i < result.length; i += 6) {
+    //   separatedArray.push(result.slice(i, i + 6));
+    // }
 
-    // Menjumlahkan setiap subarray dan membagi hasilnya dengan 6
-    const sumAndAverage = separatedArray.map(
-      (subarray) => subarray.reduce((acc, num) => acc + num, 0) / 6
-    );
-    ///////////////////////////////////////////////////////////////////////////////---> END CODE METHOD ROC
+    // // Menjumlahkan setiap subarray dan membagi hasilnya dengan 6
+    // const sumAndAverage = separatedArray.map(
+    //   (subarray) => subarray.reduce((acc, num) => acc + num, 0) / 6
+    // );
+    // ///////////////////////////////////////////////////////////////////////////////---> END CODE METHOD ROC
 
-    for (let i = 0; i < sortfill.length; i++) {
-      await Kriteria.update(
-        {
-          weight_score: sumAndAverage[i],
-        },
-        {
-          where: { id: sortfill[i].id },
-        }
-      );
-    }
+    // for (let i = 0; i < sortfill.length; i++) {
+    //   await Kriteria.update(
+    //     {
+    //       weight_score: sumAndAverage[i],
+    //     },
+    //     {
+    //       where: { id: sortfill[i].id },
+    //     }
+    //   );
+    // }
 
     const updateKriteria = await Kriteria.findAll({});
     //END

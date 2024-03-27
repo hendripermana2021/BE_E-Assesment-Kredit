@@ -66,8 +66,11 @@ export const getDataPermissionAll = async (req, res) => {
   const user = req.user;
   try {
     let req;
-    if (user.role_id == 1) {
+    if (user.role_id == 1 || user.role_id == 3) {
       req = await Req.findAll({
+        where: {
+          permission_status: { [Op.in]: [0, 1, 2] },
+        },
         include: [
           {
             model: Santri,
@@ -103,6 +106,9 @@ export const getDataPermissionAll = async (req, res) => {
       });
     } else {
       req = await Req.findAll({
+        where: {
+          permission_status: { [Op.in]: [0, 1, 2] },
+        },
         include: [
           {
             model: Santri,
@@ -147,11 +153,121 @@ export const getDataPermissionAll = async (req, res) => {
       });
     }
 
+    const sortfill = req.sort(
+      (b, a) => a.permission_status - b.permission_status
+    );
+
     res.status(200).json({
       code: 200,
       status: true,
       msg: "All Data Permission",
-      data: req,
+      data: sortfill,
+    });
+  } catch (error) {
+    console.log(error);
+  }
+};
+
+export const getApproval = async (req, res) => {
+  const user = req.user;
+  try {
+    let req;
+    if (user.role_id == 1) {
+      req = await Req.findAll({
+        where: {
+          permission_status: { [Op.in]: [0, 1, 2] },
+        },
+        include: [
+          {
+            model: Santri,
+            as: "namasantri",
+          },
+          {
+            model: Pegawai,
+            as: "created_permission",
+          },
+          {
+            model: Cpi,
+            as: "cpi_data",
+            include: [
+              {
+                model: Kriteria,
+                as: "kriteria",
+              },
+              {
+                model: Sub_Kriteria,
+                as: "subkriteria",
+              },
+            ],
+          },
+          {
+            model: Pegawai,
+            as: "val_go_name",
+          },
+          {
+            model: Pegawai,
+            as: "val_back_name",
+          },
+        ],
+      });
+    } else {
+      req = await Req.findAll({
+        where: {
+          permission_status: { [Op.in]: [1, 2] },
+        },
+        include: [
+          {
+            model: Santri,
+            as: "namasantri",
+          },
+          {
+            model: Pegawai,
+            as: "created_permission",
+            where: {},
+          },
+          {
+            model: Cpi,
+            as: "cpi_data",
+            include: [
+              {
+                model: Kriteria,
+                as: "kriteria",
+              },
+              {
+                model: Sub_Kriteria,
+                as: "subkriteria",
+              },
+            ],
+          },
+          {
+            model: Pegawai,
+            as: "val_go_name",
+          },
+          {
+            model: Pegawai,
+            as: "val_back_name",
+          },
+        ],
+      });
+    }
+
+    if (req.length == 0) {
+      res.status(400).json({
+        code: 400,
+        status: false,
+        msg: "Data Req not exist",
+      });
+    }
+
+    const sortfill = req.sort(
+      (b, a) => a.permission_status - b.permission_status
+    );
+
+    res.status(200).json({
+      code: 200,
+      status: true,
+      msg: "All Data Permission",
+      data: sortfill,
     });
   } catch (error) {
     console.log(error);
@@ -526,17 +642,46 @@ export const updatePermission = async (req, res) => {
       }
     );
 
-    //BULK UPDATE WITH FOR
     for (let i = 0; i < reasonPermission.length; i++) {
-      await Cpi.update(
-        {
-          id_subkriteria: reasonPermission[i].id_subkriteria,
-        },
-        {
-          where: { id: dataCpi[i].id },
-        }
+      let cpiData = dataCpi.find(
+        (cpi) => cpi.id_kriteria === reasonPermission[i].id_kriteria
       );
+      if (!cpiData) {
+        cpiData = await Cpi.create({
+          id_kriteria: reasonPermission[i].id_kriteria,
+          id_subkriteria: reasonPermission[i].id_subkriteria,
+          id_order: id,
+        });
+      } else {
+        await Cpi.update(
+          {
+            id_subkriteria: reasonPermission[i].id_subkriteria,
+          },
+          {
+            where: { id: dataCpi[i].id },
+          }
+        );
+      }
     }
+
+    //BULK UPDATE WITH FOR
+    // for (let i = 0; i < reasonPermission.length; i++) {
+    //   if (dataCpi[i].id == null) {
+    //     await Cpi.create({
+    //       id_kriteria: reasonPermission[i].id_kriteria,
+    //       id_subkriteria: reasonPermission[i].id_subkriteria,
+    //       id_order: req.id,
+    //     });
+    //   }
+    //   await Cpi.update(
+    // {
+    //   id_subkriteria: reasonPermission[i].id_subkriteria,
+    // },
+    // {
+    //   where: { id: dataCpi[i].id },
+    // }
+    //   );
+    // }
 
     const dataPermissionUpdated = await Req.findOne({
       where: { id: id },

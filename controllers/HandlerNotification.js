@@ -16,11 +16,14 @@ export const getDataNotification = async (req, res) => {
         msg: "Don't Have Notification",
       });
     }
+
+    const sortfill = notification.sort((b, a) => a.id - b.id);
+
     res.status(200).json({
       code: 200,
       status: true,
       msg: "data you searched Found",
-      data: notification,
+      data: sortfill,
     });
   } catch (error) {
     console.log(error);

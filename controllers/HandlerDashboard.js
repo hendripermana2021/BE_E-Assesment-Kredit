@@ -22,6 +22,8 @@ export const dashboard = async (req, res) => {
       const santriActive = (await Santri.findAll({ where: { status: true } }))
         .length;
 
+      const sortfill_notif = notif.sort((b, a) => a.id - b.id);
+
       res.status(200).json({
         code: 200,
         status: true,
@@ -34,7 +36,7 @@ export const dashboard = async (req, res) => {
           room,
           santriNonActive,
           santriActive,
-          notif,
+          sortfill_notif,
         },
       });
     } else if (currentUser.role_id == 2) {

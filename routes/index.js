@@ -69,6 +69,7 @@ import {
   getDataPermissionForValidation,
   getDataPermissionOnlyAccepted,
   getDataPermissionAll,
+  getApproval,
 } from "../controllers/HandlerPermission.js";
 import { dashboard } from "../controllers/HandlerDashboard.js";
 import {
@@ -184,6 +185,7 @@ router.get(
   getDataPermissionOnlyAccepted
 );
 router.get(prefix + "permission/byid/:id", verifyToken, getDataPermissionById);
+router.get(prefix + "approval", verifyToken, getApproval);
 router.get(prefix + "permission", verifyToken, getDataPermissionByUserId);
 router.get(prefix + "permission/all", verifyToken, getDataPermissionAll);
 router.put(prefix + "permission/update/:id", verifyToken, updatePermission);
