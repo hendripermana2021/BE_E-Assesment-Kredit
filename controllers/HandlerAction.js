@@ -80,7 +80,7 @@ export const calculatedCPIisNull = async (req, res) => {
     if (user.role_id == 1) {
       req = await Req.findAll({
         where: {
-          id_calculated: 0,
+          id_calculated: null,
         },
         include: {
           model: Cpi,
@@ -100,7 +100,7 @@ export const calculatedCPIisNull = async (req, res) => {
     } else {
       req = await Req.findAll({
         where: {
-          id_calculated: 0,
+          id_calculated: null,
           created_by: user.userId,
         },
         include: {
