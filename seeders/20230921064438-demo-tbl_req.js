@@ -11,7 +11,7 @@ module.exports = {
           created_by: 1,
           start_permission: new Date(),
           end_permission: new Date(),
-          cpi_result: "",
+          cpi_result: 0,
           commented: "Sakit karena pulang",
           permission_status: 0,
           val_go_by: "",
@@ -25,7 +25,7 @@ module.exports = {
           created_by: 1,
           start_permission: new Date(),
           end_permission: new Date(),
-          cpi_result: "",
+          cpi_result: 0,
           commented: "Sakit karena pulang",
           permission_status: 0,
           val_go_by: "",
@@ -40,7 +40,7 @@ module.exports = {
 
           start_permission: new Date(),
           end_permission: new Date(),
-          cpi_result: "",
+          cpi_result: 0,
           commented: "Sakit karena pulang",
           permission_status: 0,
           val_go_by: "",
@@ -55,7 +55,7 @@ module.exports = {
 
           start_permission: new Date(),
           end_permission: new Date(),
-          cpi_result: "",
+          cpi_result: 0,
           commented: "Sakit karena pulang",
           permission_status: 0,
           val_go_by: "",
@@ -70,7 +70,7 @@ module.exports = {
 
           start_permission: new Date(),
           end_permission: new Date(),
-          cpi_result: "",
+          cpi_result: 0,
           commented: "Sakit karena pulang",
           permission_status: 0,
           val_go_by: "",
@@ -85,7 +85,7 @@ module.exports = {
 
           start_permission: new Date(),
           end_permission: new Date(),
-          cpi_result: "",
+          cpi_result: 0,
           commented: "Sakit karena pulang",
           permission_status: 0,
           val_go_by: "",
@@ -100,7 +100,7 @@ module.exports = {
 
           start_permission: new Date(),
           end_permission: new Date(),
-          cpi_result: "",
+          cpi_result: 0,
           commented: "Sakit karena pulang",
           permission_status: 0,
           val_go_by: "",
@@ -115,7 +115,7 @@ module.exports = {
 
           start_permission: new Date(),
           end_permission: new Date(),
-          cpi_result: "",
+          cpi_result: 0,
           commented: "Sakit karena pulang",
           permission_status: 0,
           val_go_by: "",
@@ -130,7 +130,7 @@ module.exports = {
 
           start_permission: new Date(),
           end_permission: new Date(),
-          cpi_result: "",
+          cpi_result: 0,
           commented: "Sakit karena pulang",
           permission_status: 0,
           val_go_by: "",
@@ -145,7 +145,7 @@ module.exports = {
 
           start_permission: new Date(),
           end_permission: new Date(),
-          cpi_result: "",
+          cpi_result: 0,
           commented: "Sakit karena pulang",
           permission_status: 0,
           val_go_by: "",
