@@ -14,6 +14,8 @@ module.exports = {
           status: 1,
           id_room: 1,
           image: "http://localhost:8000/image/image-1.jpg",
+          createdAt: new Date(),
+          updatedAt: new Date(),
         },
         {
           name_santri: "Najla Amiraturrizqi Panggabean",
@@ -23,6 +25,8 @@ module.exports = {
           status: 1,
           id_room: 1,
           image: "http://localhost:8000/image/image-9.jpg",
+          createdAt: new Date(),
+          updatedAt: new Date(),
         },
         {
           name_santri: "Dava Hardinata",
@@ -32,6 +36,8 @@ module.exports = {
           status: 1,
           id_room: 1,
           image: "http://localhost:8000/image/image-2.jpg",
+          createdAt: new Date(),
+          updatedAt: new Date(),
         },
         {
           name_santri: "Ahmad Syaufa Al Khairi",
@@ -41,6 +47,8 @@ module.exports = {
           status: 1,
           id_room: 1,
           image: "http://localhost:8000/image/image-7.jpg",
+          createdAt: new Date(),
+          updatedAt: new Date(),
         },
         {
           name_santri: "Amir Hakim Nasution",
@@ -50,6 +58,8 @@ module.exports = {
           status: 1,
           id_room: 1,
           image: "http://localhost:8000/image/image-3.jpg",
+          createdAt: new Date(),
+          updatedAt: new Date(),
         },
         {
           name_santri: "Dhanis Herman Piliang",
@@ -59,6 +69,8 @@ module.exports = {
           status: 1,
           id_room: 1,
           image: "http://localhost:8000/image/image-4.jpg",
+          createdAt: new Date(),
+          updatedAt: new Date(),
         },
         {
           name_santri: "Bunga Nurmala",
@@ -68,6 +80,8 @@ module.exports = {
           status: 1,
           id_room: 1,
           image: "http://localhost:8000/image/image-8.jpg",
+          createdAt: new Date(),
+          updatedAt: new Date(),
         },
         {
           name_santri: "Satria",
@@ -77,6 +91,8 @@ module.exports = {
           status: 1,
           id_room: 1,
           image: "http://localhost:8000/image/image-5.jpg",
+          createdAt: new Date(),
+          updatedAt: new Date(),
         },
         {
           name_santri: "Farah Maulidani",
@@ -86,6 +102,8 @@ module.exports = {
           status: 1,
           id_room: 1,
           image: "http://localhost:8000/image/image-10.jpg",
+          createdAt: new Date(),
+          updatedAt: new Date(),
         },
         {
           name_santri: "Fazri Alfarizi",
@@ -95,6 +113,8 @@ module.exports = {
           status: 1,
           id_room: 1,
           image: "http://localhost:8000/image/image-6.jpg",
+          createdAt: new Date(),
+          updatedAt: new Date(),
         },
       ],
       {}

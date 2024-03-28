@@ -13,6 +13,8 @@ module.exports = {
           password: await bcrypt.hash("12345", 10),
           real_password: "12345",
           role_id: 1,
+          createdAt: new Date(),
+          updatedAt: new Date(),
         },
         {
           name_pegawai: "Setia Darma",
@@ -21,6 +23,8 @@ module.exports = {
           password: await bcrypt.hash("12345", 10),
           real_password: "12345",
           role_id: 2,
+          createdAt: new Date(),
+          updatedAt: new Date(),
         },
         {
           name_pegawai: "Yusuf",
@@ -29,6 +33,8 @@ module.exports = {
           password: await bcrypt.hash("12345", 10),
           real_password: "12345",
           role_id: 2,
+          createdAt: new Date(),
+          updatedAt: new Date(),
         },
         {
           name_pegawai: "Rasyid",
@@ -37,6 +43,8 @@ module.exports = {
           password: await bcrypt.hash("12345", 10),
           real_password: "12345",
           role_id: 3,
+          createdAt: new Date(),
+          updatedAt: new Date(),
         },
       ],
       {}

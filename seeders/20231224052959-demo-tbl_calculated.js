@@ -7,9 +7,13 @@ module.exports = {
       [
         {
           created_by: "2",
+          createdAt: new Date(),
+          updatedAt: new Date(),
         },
         {
           created_by: "1",
+          createdAt: new Date(),
+          updatedAt: new Date(),
         },
       ],
       {}
