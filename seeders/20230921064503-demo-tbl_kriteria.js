@@ -8,7 +8,7 @@ module.exports = {
         {
           scale_priority: 1,
           name_kriteria: "Keterangan Perizinan",
-          weight_score: "",
+          weight_score: 0,
           type: 1,
           createdAt: new Date(),
           updatedAt: new Date(),
@@ -16,7 +16,7 @@ module.exports = {
         {
           scale_priority: 2,
           name_kriteria: "Penanganan Medis",
-          weight_score: "",
+          weight_score: 0,
           type: 1,
           createdAt: new Date(),
           updatedAt: new Date(),
@@ -24,7 +24,7 @@ module.exports = {
         {
           scale_priority: 3,
           name_kriteria: "Lama Sakit",
-          weight_score: "",
+          weight_score: 0,
           type: 1,
           createdAt: new Date(),
           updatedAt: new Date(),
@@ -32,7 +32,7 @@ module.exports = {
         {
           scale_priority: 4,
           name_kriteria: "Lama Izin",
-          weight_score: "",
+          weight_score: 0,
           type: 0,
           createdAt: new Date(),
           updatedAt: new Date(),
@@ -40,7 +40,7 @@ module.exports = {
         {
           scale_priority: 5,
           name_kriteria: "Hubungan Penjemput",
-          weight_score: "",
+          weight_score: 0,
           type: 1,
           createdAt: new Date(),
           updatedAt: new Date(),
@@ -48,7 +48,7 @@ module.exports = {
         {
           scale_priority: 6,
           name_kriteria: "Disiplin Santri / Performa Santri",
-          weight_score: "",
+          weight_score: 0,
           type: 1,
           createdAt: new Date(),
           updatedAt: new Date(),
