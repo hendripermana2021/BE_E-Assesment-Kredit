@@ -400,7 +400,7 @@ export const getDataPermissionByUserId = async (req, res) => {
     let req;
     if (user.role_id == 1) {
       req = await Req.findAll({
-        where: { id_calculated: 0 },
+        where: { id_calculated: null },
         include: [
           {
             model: Santri,
@@ -438,7 +438,7 @@ export const getDataPermissionByUserId = async (req, res) => {
       req = await Req.findAll({
         where: {
           created_by: user.userId,
-          id_calculated: 0,
+          id_calculated: null,
         },
         include: [
           {
@@ -529,7 +529,7 @@ export const addPermission = async (req, res) => {
       start_permission,
       end_permission,
       cpi_result: "",
-      id_calculated: "",
+      id_calculated: null,
       commented,
       val_go_by: "",
       val_back_by: "",
