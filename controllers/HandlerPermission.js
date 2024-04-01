@@ -401,6 +401,7 @@ export const getDataPermissionByUserId = async (req, res) => {
     if (user.role_id == 1) {
       req = await Req.findAll({
         where: { id_calculated: null },
+        order: [["id", "DESC"]],
         include: [
           {
             model: Santri,
@@ -413,6 +414,7 @@ export const getDataPermissionByUserId = async (req, res) => {
           {
             model: Cpi,
             as: "cpi_data",
+
             include: [
               {
                 model: Kriteria,
@@ -423,7 +425,6 @@ export const getDataPermissionByUserId = async (req, res) => {
                 as: "subkriteria",
               },
             ],
-            order: [["id_kriteria", "ASC"]],
           },
           {
             model: Pegawai,
@@ -441,6 +442,7 @@ export const getDataPermissionByUserId = async (req, res) => {
           created_by: user.userId,
           id_calculated: null,
         },
+        order: [["id", "DESC"]],
         include: [
           {
             model: Santri,
