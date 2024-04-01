@@ -5,7 +5,9 @@ info:
   version: "1.0.0"
 servers:
   - url: http://localhost:8000/v1/api
+  - url: https://be-permission.up.railway.app/v1/api
     variables: {}
+
 paths:
   #FOR USERS LOGIN AND DASHBOARD
   /login:

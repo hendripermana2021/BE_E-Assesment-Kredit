@@ -423,6 +423,7 @@ export const getDataPermissionByUserId = async (req, res) => {
                 as: "subkriteria",
               },
             ],
+            order: [["id_kriteria", "ASC"]],
           },
           {
             model: Pegawai,
