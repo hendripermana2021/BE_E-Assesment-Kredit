@@ -82,10 +82,10 @@ export const calculatedCPIisNull = async (req, res) => {
         where: {
           id_calculated: null,
         },
-        order: [["id", "DESC"]],
         include: {
           model: Cpi,
           as: "cpi_data",
+          order: [["id", "ASC"]],
           include: [
             {
               model: Kriteria,
@@ -104,10 +104,10 @@ export const calculatedCPIisNull = async (req, res) => {
           id_calculated: null,
           created_by: user.userId,
         },
-        order: [["id", "DESC"]],
         include: {
           model: Cpi,
           as: "cpi_data",
+          order: [["id", "ASC"]],
           include: [
             {
               model: Kriteria,
