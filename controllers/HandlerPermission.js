@@ -108,6 +108,7 @@ export const getDataPermissionAll = async (req, res) => {
       req = await Req.findAll({
         where: {
           permission_status: { [Op.in]: [0, 1, 2] },
+          created_by: user.id,
         },
         include: [
           {
@@ -175,7 +176,7 @@ export const getApproval = async (req, res) => {
     if (user.role_id == 1) {
       req = await Req.findAll({
         where: {
-          permission_status: { [Op.in]: [0, 1, 2] },
+          permission_status: { [Op.in]: [1, 2] },
         },
         include: [
           {

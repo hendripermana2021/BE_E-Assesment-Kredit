@@ -85,7 +85,6 @@ export const calculatedCPIisNull = async (req, res) => {
         include: {
           model: Cpi,
           as: "cpi_data",
-          order: [["id", "ASC"]],
           include: [
             {
               model: Kriteria,
@@ -107,7 +106,6 @@ export const calculatedCPIisNull = async (req, res) => {
         include: {
           model: Cpi,
           as: "cpi_data",
-          order: [["id", "ASC"]],
           include: [
             {
               model: Kriteria,

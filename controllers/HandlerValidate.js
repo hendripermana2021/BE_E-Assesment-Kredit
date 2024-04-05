@@ -74,7 +74,7 @@ export const validationBack = async (req, res) => {
     }
 
     await Req.update(
-      { permission_status: 0, val_back_by: user.userId },
+      { permission_status: 4, val_back_by: user.userId },
       {
         where: { id },
       }
@@ -111,5 +111,3 @@ export const validationBack = async (req, res) => {
     console.log(error);
   }
 };
-
-
