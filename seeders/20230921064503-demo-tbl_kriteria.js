@@ -7,7 +7,7 @@ module.exports = {
       [
         {
           scale_priority: 1,
-          name_kriteria: "Keterangan Perizinan",
+          name_kriteria: "Pendapatan Bulanan Nasabah",
           weight_score: 0,
           type: 1,
           createdAt: new Date(),
@@ -15,7 +15,7 @@ module.exports = {
         },
         {
           scale_priority: 2,
-          name_kriteria: "Penanganan Medis",
+          name_kriteria: "Durasi Pekerjaan dan Usaha",
           weight_score: 0,
           type: 1,
           createdAt: new Date(),
@@ -23,7 +23,7 @@ module.exports = {
         },
         {
           scale_priority: 3,
-          name_kriteria: "Lama Sakit",
+          name_kriteria: "Aset dan Jaminan",
           weight_score: 0,
           type: 1,
           createdAt: new Date(),
@@ -31,7 +31,7 @@ module.exports = {
         },
         {
           scale_priority: 4,
-          name_kriteria: "Lama Izin",
+          name_kriteria: "Rasio Pengeluaran terhadap pendapatan",
           weight_score: 0,
           type: 0,
           createdAt: new Date(),
@@ -39,7 +39,7 @@ module.exports = {
         },
         {
           scale_priority: 5,
-          name_kriteria: "Hubungan Penjemput",
+          name_kriteria: "Sumber pendapatan lain",
           weight_score: 0,
           type: 1,
           createdAt: new Date(),
@@ -47,7 +47,47 @@ module.exports = {
         },
         {
           scale_priority: 6,
-          name_kriteria: "Disiplin Santri / Performa Santri",
+          name_kriteria: "Keperluan penggunaan kredit",
+          weight_score: 0,
+          type: 1,
+          createdAt: new Date(),
+          updatedAt: new Date(),
+        },
+        {
+          scale_priority: 7,
+          name_kriteria: "Resiko Kredit",
+          weight_score: 0,
+          type: 0,
+          createdAt: new Date(),
+          updatedAt: new Date(),
+        },
+        {
+          scale_priority: 8,
+          name_kriteria: "Mitigasi Resiko",
+          weight_score: 0,
+          type: 0,
+          createdAt: new Date(),
+          updatedAt: new Date(),
+        },
+        {
+          scale_priority: 9,
+          name_kriteria: "Pengalaman sebelumnya dengan lembaga keuangan",
+          weight_score: 0,
+          type: 0,
+          createdAt: new Date(),
+          updatedAt: new Date(),
+        },
+        {
+          scale_priority: 10,
+          name_kriteria: "Jangka waktu kredit",
+          weight_score: 0,
+          type: 1,
+          createdAt: new Date(),
+          updatedAt: new Date(),
+        },
+        {
+          scale_priority: 11,
+          name_kriteria: "Nominal pinjaman",
           weight_score: 0,
           type: 1,
           createdAt: new Date(),

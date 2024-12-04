@@ -1,7 +1,5 @@
-'use strict';
-const {
-  Model
-} = require('sequelize');
+"use strict";
+const { Model } = require("sequelize");
 module.exports = (sequelize, DataTypes) => {
   class tbl_subkriteria extends Model {
     /**
@@ -13,13 +11,17 @@ module.exports = (sequelize, DataTypes) => {
       // define association here
     }
   }
-  tbl_subkriteria.init({
-    name_sub: DataTypes.STRING,
-    id_kriteria: DataTypes.INTEGER,
-    value: DataTypes.FLOAT
-  }, {
-    sequelize,
-    modelName: 'tbl_subkriteria',
-  });
+  tbl_subkriteria.init(
+    {
+      name_sub: DataTypes.STRING,
+      description: DataTypes.STRING,
+      id_kriteria: DataTypes.INTEGER,
+      value: DataTypes.FLOAT,
+    },
+    {
+      sequelize,
+      modelName: "tbl_subkriteria",
+    }
+  );
   return tbl_subkriteria;
 };

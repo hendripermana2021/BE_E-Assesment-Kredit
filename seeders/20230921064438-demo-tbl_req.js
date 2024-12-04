@@ -74,7 +74,7 @@ module.exports = {
           purpose_req: "Beli motor",
           status_ajuan: "pending",
           commented: "keperluan sekolah",
-          id_calculated: "",K
+          id_calculated: "",
           createdAt: new Date(),
           updatedAt: new Date(),
         },

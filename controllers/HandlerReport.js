@@ -1,11 +1,11 @@
 import db from "../models/index.js";
 
 const Req = db.tbl_req;
-const Santri = db.tbl_santri;
+const Nasabah = db.tbl_nasabah;
 
 export const generateReport = async (req, res) => {
   try {
-    const report = await Santri.findAll({
+    const report = await Nasabah.findAll({
       include: {
         model: Req,
         as: "cpi",

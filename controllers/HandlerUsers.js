@@ -1,7 +1,6 @@
 import db from "../models/index.js";
 import bcrypt from "bcrypt";
 import jwt from "jsonwebtoken";
-import { Op } from "sequelize";
 
 const Users = db.tbl_users;
 const Role = db.tbl_role;

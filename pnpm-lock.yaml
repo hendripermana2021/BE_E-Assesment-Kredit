@@ -60,7 +60,7 @@ importers:
         specifier: ^3.6.0
         version: 3.11.5
       nodemon:
-        specifier: ^2.0.7
+        specifier: ^2.0.22
         version: 2.0.22
       part:
         specifier: ^0.1.1
