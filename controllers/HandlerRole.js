@@ -5,14 +5,20 @@ const Role = db.tbl_role;
 export const getDataRole = async (req, res) => {
   try {
     const role = await Role.findAll({});
-    res.status(200).json({
+    return res.status(200).json({
       code: 200,
       status: true,
       msg: "data you searched Found",
       data: role,
     });
   } catch (error) {
-    console.log(error);
+    console.error(error);
+    return res.status(500).json({
+      code: 500,
+      status: false,
+      msg: "An error occurred during the update.",
+      error: error.message,
+    });
   }
 };
 
@@ -23,20 +29,26 @@ export const getDataRoleById = async (req, res) => {
       where: { id: id },
     });
     if (role == "") {
-      return res.status(400).json({
-        code: 400,
+      return res.status(404).json({
+        code: 404,
         status: false,
         msg: "Role Doesn't Exist",
       });
     }
-    res.status(200).json({
+    return (200).json({
       code: 200,
       status: true,
       msg: "data you searched Found",
       data: role,
     });
   } catch (error) {
-    console.log(error);
+    console.error(error);
+    return res.status(500).json({
+      code: 500,
+      status: false,
+      msg: "An error occurred during the update.",
+      error: error.message,
+    });
   }
 };
 
@@ -49,8 +61,8 @@ export const getRoleBy = async (req, res) => {
       },
     });
     if (role == "") {
-      return res.status(400).json({
-        code: 400,
+      return res.status(404).json({
+        code: 404,
         status: false,
         msg: "Role Doesn't Existing",
       });
@@ -62,7 +74,13 @@ export const getRoleBy = async (req, res) => {
       data: role,
     });
   } catch (error) {
-    console.log(error);
+    console.error(error);
+    return res.status(500).json({
+      code: 500,
+      status: false,
+      msg: "An error occurred during the update.",
+      error: error.message,
+    });
   }
 };
 
@@ -77,8 +95,8 @@ export const createRole = async (req, res) => {
     });
 
     if (checkRole == 0) {
-      return res.status(400).json({
-        code: 400,
+      return res.status(404).json({
+        code: 404,
         status: false,
         msg: "Data Santri doesn't exist or has been deleted!",
       });
@@ -88,14 +106,20 @@ export const createRole = async (req, res) => {
       role_name,
     });
 
-    res.status(200).json({
+    return (200).json({
       code: 200,
       status: true,
       msg: "Create Data Role berhasil",
       data: role_name,
     });
   } catch (error) {
-    console.log(error);
+    console.error(error);
+    return res.status(500).json({
+      code: 500,
+      status: false,
+      msg: "An error occurred during the update.",
+      error: error.message,
+    });
   }
 };
 
@@ -107,8 +131,8 @@ export const deleteRole = async (req, res) => {
   const parsedDataProfile = JSON.parse(JSON.stringify(dataBefore));
 
   if (!parsedDataProfile) {
-    return res.status(400).json({
-      code: 400,
+    return res.status(404).json({
+      code: 404,
       status: false,
       msg: "Data Role doesn't exist or has been deleted!",
     });
@@ -135,8 +159,8 @@ export const updateRole = async (req, res) => {
     const parsedDataProfile = JSON.parse(JSON.stringify(dataBefore));
 
     if (!parsedDataProfile) {
-      return res.status(400).json({
-        code: 400,
+      return res.status(404).json({
+        code: 404,
         status: false,
         msg: "Data Role doesn't exist or has been deleted!",
       });
@@ -162,6 +186,12 @@ export const updateRole = async (req, res) => {
       data_before: { dataBefore, dataUpdate },
     });
   } catch (error) {
-    console.log(error);
+    console.error(error);
+    return res.status(500).json({
+      code: 500,
+      status: false,
+      msg: "An error occurred during the update.",
+      error: error.message,
+    });
   }
 };

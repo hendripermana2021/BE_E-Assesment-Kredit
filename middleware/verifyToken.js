@@ -15,19 +15,17 @@ export const verifyToken = (req, res, next) => {
 
     req.user = {
       userId: decoded.id,
-      name_pegawai: decoded.name_pegawai,
-      sex: decoded.sex,
+      name_pegawai: decoded.name_user,
+      sex: decoded.gender,
       email: decoded.email, // Fix here: change decoded.gender to decoded.email
       role_id: decoded.role_id,
-      image: decoded.image,
     };
 
     req.id = decoded.userId;
-    req.name_pegawai = decoded.name_pegawai;
-    req.sex = decoded.sex;
+    req.name_pegawai = decoded.name_user;
+    req.sex = decoded.gender;
     req.email = decoded.email;
     req.role_id = decoded.role_id;
-    req.image = decoded.image;
 
     next();
   });

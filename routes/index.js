@@ -7,34 +7,17 @@ import yaml from "js-yaml";
 import {
   handleGetRoot,
   Login,
-  getEmailPegawai,
   Logout,
   whoAmI,
-  deletePegawai,
-  RegisterPegawai,
-  getDataPegawaiId,
-  getDataPegawai,
-  updateDataPegawai,
-  getDataPegawaiBy,
   refreshToken,
+  getDataUsers,
+  getEmailUsers,
+  getDataUsersId,
+  deleteUsers,
+  RegisterUsers,
+  updateDataUsers,
 } from "../controllers/HandlerUsers.js";
 import { verifyToken } from "../middleware/verifyToken.js";
-import {
-  RegisterSantri,
-  deleteSantri,
-  getDataSantri,
-  getDataSantriById,
-  imageAppeared,
-  updateDataSantri,
-} from "../controllers/HandlerDataSantri.js";
-import {
-  createRoom,
-  deleteRoom,
-  getDataRoom,
-  getDataRoomById,
-  getRoomBy,
-  updateRoom,
-} from "../controllers/HandlerRoom.js";
 import {
   createRole,
   deleteRole,
@@ -61,22 +44,21 @@ import {
   updateKriteriaDanSub,
 } from "../controllers/HandlerKriteriaSubKriteria.js";
 import {
-  getDataPermissionById,
-  getDataPermissionByUserId,
-  addPermission,
-  updatePermission,
-  deletePermission,
-  getDataPermissionForValidation,
-  getDataPermissionOnlyAccepted,
-  getDataPermissionAll,
-  getApproval,
-} from "../controllers/HandlerPermission.js";
+  getDataAjuanById,
+  getDataAjuanAll,
+  updateAjuan,
+  deleteAjuan,
+  addAjuan,
+} from "../controllers/HandlerAjuan.js";
 import { dashboard } from "../controllers/HandlerDashboard.js";
-import {
-  validationGo,
-  validationBack,
-} from "../controllers/HandlerValidate.js";
 import { generateReport } from "../controllers/HandlerReport.js";
+import {
+  deleteNasabah,
+  getDataNasabah,
+  getDataNasabahById,
+  RegisterNasabah,
+  updateDataNasabah,
+} from "../controllers/HandlerDataNasabah.js";
 
 export const prefix = "/v1/api/";
 
@@ -132,39 +114,30 @@ router.put(prefix + "kriteria/update/:id", verifyToken, updateKriteriaDanSub);
 router.post(prefix + "kriteria/create", verifyToken, createKriteriaDanSub);
 //END API KRITERIA DAN SUB-KRITERIA
 
-//API PEGAWAI
-router.get(prefix + "pegawai/email", verifyToken, getEmailPegawai);
-router.get(prefix + "pegawai/byid/:id", verifyToken, getDataPegawaiId);
-router.get(prefix + "pegawai/:search", verifyToken, getDataPegawaiBy);
-router.get(prefix + "pegawai", verifyToken, getDataPegawai);
-router.delete(prefix + "pegawai/delete/:id", verifyToken, deletePegawai);
-router.post(prefix + "pegawai/register", verifyToken, RegisterPegawai);
-router.put(prefix + "pegawai/update/:id", verifyToken, updateDataPegawai);
+//API USERS
+router.get(prefix + "users/email", verifyToken, getEmailUsers);
+router.get(prefix + "users/byid/:id", verifyToken, getDataUsersId);
+router.get(prefix + "users", verifyToken, getDataUsers);
+router.delete(prefix + "users/delete/:id", verifyToken, deleteUsers);
+router.post(prefix + "users/register", verifyToken, RegisterUsers);
+router.put(prefix + "users/update/:id", verifyToken, updateDataUsers);
 
-//API SANTRI
-router.get(prefix + "santri", verifyToken, getDataSantri);
-router.get(prefix + "santri/byid/:id", verifyToken, getDataSantriById);
+//API NASABAH
+router.get(prefix + "nasabah", verifyToken, getDataNasabah);
+router.get(prefix + "nasabah/byid/:id", verifyToken, getDataNasabahById);
 router.post(
-  prefix + "santri/register",
+  prefix + "nasabah/register",
   verifyToken,
   upload.single("image"),
-  RegisterSantri
+  RegisterNasabah
 );
 router.put(
-  prefix + "santri/update/:id",
+  prefix + "nasabah/update/:id",
   verifyToken,
   upload.single("image"),
-  updateDataSantri
+  updateDataNasabah
 );
-router.delete(prefix + "santri/delete/:id", verifyToken, deleteSantri);
-
-//API ROOM
-router.get(prefix + "room", verifyToken, getDataRoom);
-router.get(prefix + "room/byid/:id", verifyToken, getDataRoomById);
-router.get(prefix + "room/:search", verifyToken, getRoomBy);
-router.post(prefix + "room/create", verifyToken, createRoom);
-router.put(prefix + "room/update/:id", verifyToken, updateRoom);
-router.delete(prefix + "room/delete/:id", verifyToken, deleteRoom);
+router.delete(prefix + "nasabah/delete/:id", verifyToken, deleteNasabah);
 
 //API ROLE
 router.get(prefix + "role", verifyToken, getDataRole);
@@ -178,27 +151,11 @@ router.delete(prefix + "role/delete/:id", verifyToken, deleteRole);
 router.get(prefix + "notif", verifyToken, getDataNotification);
 router.get(prefix + "notif/byid/:id", verifyToken, getDataNotificationById);
 
-//API PERMISSION
-router.get(
-  prefix + "permission/notRejected",
-  verifyToken,
-  getDataPermissionOnlyAccepted
-);
-router.get(prefix + "permission/byid/:id", verifyToken, getDataPermissionById);
-router.get(prefix + "approval", verifyToken, getApproval);
-router.get(prefix + "permission", verifyToken, getDataPermissionByUserId);
-router.get(prefix + "permission/all", verifyToken, getDataPermissionAll);
-router.put(prefix + "permission/update/:id", verifyToken, updatePermission);
-router.delete(prefix + "permission/delete/:id", verifyToken, deletePermission);
-router.post(prefix + "permission/create", verifyToken, addPermission);
-
-//ROUTES FOR PETUGAS KEAMANAN
-router.put(prefix + "validation-go/:id", verifyToken, validationGo);
-router.put(prefix + "validation-back/:id", verifyToken, validationBack);
-router.get(
-  prefix + "validation/student",
-  verifyToken,
-  getDataPermissionForValidation
-);
+//API Ajuan
+router.get(prefix + "ajuan/byid/:id", verifyToken, getDataAjuanById);
+router.get(prefix + "ajuan", verifyToken, getDataAjuanAll);
+router.put(prefix + "ajuan/update/:id", verifyToken, updateAjuan);
+router.delete(prefix + "ajuan/delete/:id", verifyToken, deleteAjuan);
+router.post(prefix + "ajuan/create", verifyToken, addAjuan);
 
 export default router;

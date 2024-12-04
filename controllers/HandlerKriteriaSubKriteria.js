@@ -10,14 +10,20 @@ export const getDataKriteria = async (req, res) => {
         as: "sub_kriteria",
       },
     });
-    res.status(200).json({
+    return res.status(200).json({
       code: 200,
       status: true,
       msg: "data you searched Found",
       data: kriteria,
     });
   } catch (error) {
-    console.log(error);
+    console.error(error);
+    return res.status(500).json({
+      code: 500,
+      status: false,
+      msg: "An error occurred during the update.",
+      error: error.message,
+    });
   }
 };
 
@@ -32,20 +38,26 @@ export const getDataKriteriaById = async (req, res) => {
       },
     });
     if (kriteria == "") {
-      return res.status(400).json({
-        code: 400,
+      return res.status(404).json({
+        code: 404,
         status: false,
         msg: "Kriteria Doesn't Exist",
       });
     }
-    res.status(200).json({
+    return res.status(200).json({
       code: 200,
       status: true,
       msg: "data you searched Found",
       data: kriteria,
     });
   } catch (error) {
-    console.log(error);
+    console.error(error);
+    return res.status(500).json({
+      code: 500,
+      status: false,
+      msg: "An error occurred during the update.",
+      error: error.message,
+    });
   }
 };
 
@@ -63,8 +75,8 @@ export const createKriteriaDanSub = async (req, res) => {
     });
 
     if (existingKriteria) {
-      return res.status(400).json({
-        code: 400,
+      return res.status(404).json({
+        code: 404,
         status: false,
         msg: "Scale Priority is Duplicate, please change",
       });
@@ -130,14 +142,20 @@ export const createKriteriaDanSub = async (req, res) => {
     const updateKriteria = await Kriteria.findAll({});
     //END
 
-    res.status(200).json({
+    return res.status(200).json({
       code: 200,
       status: true,
       msg: "Create Data Kriteria and Sub Kriteria berhasil",
       data: { updateKriteria, addSubKriteria },
     });
   } catch (error) {
-    console.log(error);
+    console.error(error);
+    return res.status(500).json({
+      code: 500,
+      status: false,
+      msg: "An error occurred during the update.",
+      error: error.message,
+    });
   }
 };
 
@@ -154,8 +172,8 @@ export const deleteKriteriaDanSub = async (req, res) => {
     });
 
     if (!dataBefore) {
-      return res.status(400).json({
-        code: 400,
+      return res.status(404).json({
+        code: 404,
         status: false,
         msg: "Data Role doesn't exist or has been deleted!",
       });
@@ -176,7 +194,13 @@ export const deleteKriteriaDanSub = async (req, res) => {
       data: dataBefore,
     });
   } catch (error) {
-    console.log(error);
+    console.error(error);
+    return res.status(500).json({
+      code: 500,
+      status: false,
+      msg: "An error occurred during the update.",
+      error: error.message,
+    });
   }
 };
 
@@ -203,8 +227,8 @@ export const updateKriteriaDanSub = async (req, res) => {
     });
 
     if (data_before == 0) {
-      return res.status(400).json({
-        code: 400,
+      return res.status(404).json({
+        code: 404,
         status: false,
         msg: "Data Kriteria doesn't exist or has been deleted!",
       });
@@ -305,6 +329,12 @@ export const updateKriteriaDanSub = async (req, res) => {
       data: { data_before, data_update },
     });
   } catch (error) {
-    console.log(error);
+    console.error(error);
+    return res.status(500).json({
+      code: 500,
+      status: false,
+      msg: "An error occurred during the update.",
+      error: error.message,
+    });
   }
 };

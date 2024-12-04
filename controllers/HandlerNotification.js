@@ -19,14 +19,20 @@ export const getDataNotification = async (req, res) => {
 
     const sortfill = notification.sort((b, a) => a.id - b.id);
 
-    res.status(200).json({
+    return res.status(200).json({
       code: 200,
       status: true,
       msg: "data you searched Found",
       data: sortfill,
     });
   } catch (error) {
-    console.log(error);
+    console.error(error);
+    return res.status(500).json({
+      code: 500,
+      status: false,
+      msg: "An error occurred during the update.",
+      error: error.message,
+    });
   }
 };
 
@@ -37,20 +43,26 @@ export const getDataNotificationById = async (req, res) => {
       where: { user_id: req.user.userId, id },
     });
     if (notification == "") {
-      return res.status(400).json({
-        code: 400,
+      return res.status(404).json({
+        code: 404,
         status: true,
         msg: "Notification Doesn't Exist",
       });
     }
-    res.status(200).json({
+    return res.status(200).json({
       code: 200,
       status: true,
       msg: "data you searched Found",
       data: notification,
     });
   } catch (error) {
-    console.log(error);
+    console.error(error);
+    return res.status(500).json({
+      code: 500,
+      status: false,
+      msg: "An error occurred during the update.",
+      error: error.message,
+    });
   }
 };
 
@@ -62,14 +74,20 @@ export const createNotification = async (req, res) => {
       message,
       user_id: req.user.userId,
     });
-    res.status(200).json({
+    return res.status(200).json({
       code: 200,
       status: true,
       msg: "Create Data Notification berhasil",
       data: req.body,
     });
   } catch (error) {
-    console.log(error);
+    console.error(error);
+    return res.status(500).json({
+      code: 500,
+      status: false,
+      msg: "An error occurred during the update.",
+      error: error.message,
+    });
   }
 };
 
@@ -81,8 +99,8 @@ export const deleteNotification = async (req, res) => {
   const parsedDataProfile = JSON.parse(JSON.stringify(dataBefore));
 
   if (!parsedDataProfile) {
-    return res.status(400).json({
-      code: 400,
+    return res.status(404).json({
+      code: 404,
       status: false,
       msg: "Data Notification doesn't exist or has been deleted!",
     });

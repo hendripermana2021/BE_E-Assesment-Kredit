@@ -6,22 +6,12 @@ module.exports = {
       "tbl_roles",
       [
         {
-          role_name: "Administrator",
+          role_name: "Admin",
           createdAt: new Date(),
           updatedAt: new Date(),
         },
         {
-          role_name: "Ustadz/ah",
-          createdAt: new Date(),
-          updatedAt: new Date(),
-        },
-        {
-          role_name: "Petugas Keamanan",
-          createdAt: new Date(),
-          updatedAt: new Date(),
-        },
-        {
-          role_name: "Santri",
+          role_name: "Petugas Lapangan",
           createdAt: new Date(),
           updatedAt: new Date(),
         },

@@ -3,14 +3,14 @@ import bcrypt from "bcrypt";
 import jwt from "jsonwebtoken";
 import { Op } from "sequelize";
 
-const Pegawai = db.tbl_pegawai;
+const Users = db.tbl_users;
 const Role = db.tbl_role;
 
 export const handleGetRoot = async (req, res) => {
-  res.status(200).json({
+  return res.status(200).json({
     code: 200,
     status: "OK",
-    msg: "E-Permission Status Activated",
+    msg: "E-Assesment Status Activated",
   });
 };
 
@@ -22,7 +22,7 @@ export const refreshToken = async (req, res) => {
       return res.sendStatus(401);
     }
 
-    const pegawai = await Pegawai.findOne({
+    const users = await Users.findOne({
       where: {
         refreshtoken: refreshToken,
       },
@@ -40,16 +40,21 @@ export const refreshToken = async (req, res) => {
           return res.sendStatus(403);
         }
 
-        const { role_id, name, email } = pegawai;
+        const { role_id, name_user, email } = users;
         const accessToken = jwt.sign(
-          { userId: role_id, name, email },
+          { userId: role_id, name_user, email },
           process.env.ACCESS_TOKEN_SECRET,
           {
             expiresIn: "30s",
           }
         );
 
-        res.json({ accessToken });
+        return res.status(200).json({
+          code: 200,
+          status: true,
+          msg: "This your Token",
+          data: accessToken,
+        });
       }
     );
   } catch (error) {
@@ -61,20 +66,26 @@ export const refreshToken = async (req, res) => {
 export const whoAmI = async (req, res) => {
   try {
     const currentUser = req.user;
-    res.status(200).json({
+    return res.status(200).json({
       code: 200,
       status: true,
       msg: "This data Users Login Now",
       data: currentUser,
     });
   } catch (error) {
-    console.log(error);
+    console.error(error);
+    return res.status(500).json({
+      code: 500,
+      status: false,
+      msg: "An error occurred during the update.",
+      error: error.message,
+    });
   }
 };
 
 export const Login = async (req, res) => {
   try {
-    const user = await Pegawai.findOne({
+    const user = await Users.findOne({
       where: { email: req.body.email },
     });
 
@@ -89,23 +100,23 @@ export const Login = async (req, res) => {
     const match = await bcrypt.compare(req.body.password, user.password);
 
     if (!match) {
-      return res.status(400).json({
-        code: 400,
+      return res.status(404).json({
+        code: 404,
         status: false,
         msg: "Incorrect password",
       });
     }
 
-    const { id, name_pegawai, sex, role_id, email } = user;
+    const { id, name_user, gender, role_id, email } = user;
 
     const accessToken = jwt.sign(
-      { id, name_pegawai, sex, email, role_id },
+      { id, name_user, gender, email, role_id },
       process.env.ACCESS_TOKEN_SECRET,
       { expiresIn: "1d" }
     );
 
     const refreshToken = jwt.sign(
-      { id, name_pegawai, sex, email, role_id },
+      { id, name_user, gender, email, role_id },
       process.env.REFRESH_TOKEN_SECRET,
       { expiresIn: "1d" }
     );
@@ -122,14 +133,14 @@ export const Login = async (req, res) => {
       sameSite: "Lax",
     });
 
-    res.status(200).json({
+    return res.status(200).json({
       code: 200,
       msg: "Login successful",
-      accessToken,
+      token: accessToken,
     });
   } catch (error) {
     console.error("System failure:", error);
-    res.status(500).json({
+    return res.status(500).json({
       code: 500,
       status: false,
       msg: "System failure",
@@ -137,21 +148,27 @@ export const Login = async (req, res) => {
   }
 };
 
-export const getEmailPegawai = async (req, res) => {
+export const getEmailUsers = async (req, res) => {
   try {
-    const pegawai = await Pegawai.findOne({
+    const user = await Users.findOne({
       where: {
         email: req.body.email,
       },
     });
-    res.status(200).json({
+    return res.status(200).json({
       code: 200,
       status: true,
       msg: "data you searched Found",
-      data: pegawai,
+      data: user,
     });
   } catch (error) {
-    console.log(error);
+    console.error(error);
+    return res.status(500).json({
+      code: 500,
+      status: false,
+      msg: "An error occurred during the update.",
+      error: error.message,
+    });
   }
 };
 
@@ -167,15 +184,15 @@ export const Logout = async (req, res) => {
       });
     }
 
-    const user = await Pegawai.findOne({
+    const user = await Users.findOne({
       where: {
         refreshtoken: refreshToken,
       },
     });
 
     if (!user) {
-      return res.status(400).json({
-        code: 400,
+      return res.status(404).json({
+        code: 404,
         status: false,
         msg: "User not found",
       });
@@ -183,7 +200,7 @@ export const Logout = async (req, res) => {
 
     const userId = user.id;
 
-    await Pegawai.update(
+    await Users.update(
       { refreshtoken: null },
       {
         where: {
@@ -209,22 +226,21 @@ export const Logout = async (req, res) => {
   }
 };
 
-export const deletePegawai = async (req, res) => {
+export const deleteUsers = async (req, res) => {
   const { id } = req.params;
-  const dataBefore = await Pegawai.findOne({
+  const user = await Users.findOne({
     where: { id },
   });
-  const parsedDataProfile = JSON.parse(JSON.stringify(dataBefore));
 
-  if (!parsedDataProfile) {
-    return res.status(400).json({
-      code: 400,
+  if (!user) {
+    return res.status(404).json({
+      code: 404,
       status: false,
       msg: "Users Account doesn't exist or has been deleted!",
     });
   }
 
-  await Pegawai.destroy({
+  await Users.destroy({
     where: { id },
   });
 
@@ -236,86 +252,112 @@ export const deletePegawai = async (req, res) => {
   });
 };
 
-export const RegisterPegawai = async (req, res) => {
-  const { name_pegawai, sex, email, password, role_id } = req.body;
+export const RegisterUsers = async (req, res) => {
+  const { name_user, gender, email, password, role_id } = req.body;
 
   const salt = await bcrypt.genSalt();
   const hashPassword = await bcrypt.hash(password, salt);
   try {
-    const pegawai_new = await Pegawai.create({
-      name_pegawai,
-      sex,
+    const user = await Users.create({
+      name_user,
+      gender,
       email,
       password: hashPassword,
       real_password: password,
       role_id,
     });
-    res.status(200).json({
-      code: 200,
+    return res.status(201).json({
+      code: 201,
       status: true,
-      msg: "Register Data Pegawai berhasil",
-      data: pegawai_new,
+      msg: "Register Data Users berhasil",
+      data: user,
     });
   } catch (error) {
-    console.log(error);
+    console.error(error);
+    return res.status(500).json({
+      code: 500,
+      status: false,
+      msg: "An error occurred during the update.",
+      error: error.message,
+    });
   }
 };
 
-export const getDataPegawai = async (req, res) => {
+export const getDataUsers = async (req, res) => {
   try {
-    const pegawai = await Pegawai.findAll({
+    const user = await Users.findAll({
       include: {
         model: Role,
         as: "role",
       },
     });
-    res.status(200).json({
+
+    if (!user) {
+      return res.status(404).json({
+        code: 404,
+        status: true,
+        msg: "Data not found",
+      });
+    }
+    return res.status(200).json({
       code: 200,
       status: true,
       msg: "This Data All Pegawai",
-      data: pegawai,
+      data: user,
     });
   } catch (error) {
-    console.log(error);
+    console.error(error);
+    return res.status(500).json({
+      code: 500,
+      status: false,
+      msg: "An error occurred during the update.",
+      error: error.message,
+    });
   }
 };
 
-export const getDataPegawaiId = async (req, res) => {
+export const getDataUsersId = async (req, res) => {
   const { id } = req.params;
   try {
-    const pegawai = await Pegawai.findAll({
+    const user = await Users.findAll({
       where: { id: id },
     });
-    if (pegawai == "") {
-      return res.status(400).json({
-        code: 400,
+    if (user == "") {
+      return res.status(404).json({
+        code: 404,
         status: false,
         msg: "Data Doesn't Exist",
       });
     }
-    res.status(200).json({
+    return res.status(200).json({
       code: 200,
       status: true,
       msg: "data you searched Found",
-      data: pegawai,
+      data: user,
     });
   } catch (error) {
-    console.log(error);
+    console.error(error);
+    return res.status(500).json({
+      code: 500,
+      status: false,
+      msg: "An error occurred during the update.",
+      error: error.message,
+    });
   }
 };
 
-export const updateDataPegawai = async (req, res) => {
+export const updateDataUsers = async (req, res) => {
   const { id } = req.params;
-  const { name_pegawai, sex, email, password, role_id } = req.body;
+  const { name_user, gender, email, password, role_id } = req.body;
 
   try {
-    const data_before = await Pegawai.findOne({
+    const user = await Users.findOne({
       where: { id },
     });
 
-    if (data_before == null) {
-      return res.status(400).json({
-        code: 400,
+    if (!user) {
+      return res.status(404).json({
+        code: 404,
         status: false,
         msg: "Users doesn't exist or has been deleted!",
       });
@@ -324,10 +366,10 @@ export const updateDataPegawai = async (req, res) => {
     const salt = await bcrypt.genSalt();
     const hashPassword = await bcrypt.hash(password, salt);
 
-    const user = await Pegawai.update(
+    const user_created = await Pegawai.update(
       {
-        name_pegawai,
-        sex,
+        name_user,
+        gender,
         email,
         password: hashPassword,
         real_password: password,
@@ -338,7 +380,7 @@ export const updateDataPegawai = async (req, res) => {
       }
     );
 
-    const data_update = await Pegawai.findOne({
+    const user_new = await Users.findOne({
       where: { id },
     });
 
@@ -346,35 +388,15 @@ export const updateDataPegawai = async (req, res) => {
       code: 200,
       status: true,
       msg: "Users Success Updated",
-      data: { data_before, data_update },
+      data: { user, user_new },
     });
   } catch (error) {
-    console.log(error);
-  }
-};
-
-export const getDataPegawaiBy = async (req, res) => {
-  try {
-    const { search } = req.params;
-    let pegawai = await Pegawai.findAll({
-      where: {
-        [Op.or]: [{ name_pegawai: { [Op.like]: `%` + search + `%` } }],
-      },
+    console.error(error);
+    return res.status(500).json({
+      code: 500,
+      status: false,
+      msg: "An error occurred during the update.",
+      error: error.message,
     });
-    if (pegawai == "") {
-      return res.status(400).json({
-        code: 400,
-        status: false,
-        msg: "Data Pegawai Doesn't Existing",
-      });
-    }
-    return res.status(200).json({
-      code: 200,
-      status: true,
-      msg: "data pegawai you searched Found",
-      data: pegawai,
-    });
-  } catch (error) {
-    console.log(error);
   }
 };

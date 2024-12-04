@@ -19,13 +19,19 @@ export const generateReport = async (req, res) => {
 
     const total = result.length;
 
-    res.status(200).json({
+    return res.status(200).json({
       code: 200,
       status: true,
       msg: "data you searched Found",
       data: { result, total },
     });
   } catch (error) {
-    console.log(error);
+    console.error(error);
+    return res.status(500).json({
+      code: 500,
+      status: false,
+      msg: "An error occurred during the update.",
+      error: error.message,
+    });
   }
 };

@@ -47,8 +47,8 @@ Object.keys(db).forEach((modelName) => {
 db.sequelize = sequelize;
 db.Sequelize = Sequelize;
 
-db.tbl_santri = require("../models/tbl_santri.js")(sequelize, Sequelize);
-db.tbl_pegawai = require("../models/tbl_pegawai.js")(sequelize, Sequelize);
+db.tbl_nasabah = require("../models/tbl_nasabah.js")(sequelize, Sequelize);
+db.tbl_users = require("../models/tbl_users.js")(sequelize, Sequelize);
 db.tbl_kriteria = require("../models/tbl_kriteria.js")(sequelize, Sequelize);
 db.tbl_notification = require("../models/tbl_notification.js")(
   sequelize,
@@ -56,7 +56,8 @@ db.tbl_notification = require("../models/tbl_notification.js")(
 );
 db.tbl_req = require("../models/tbl_req.js")(sequelize, Sequelize);
 db.tbl_role = require("../models/tbl_role.js")(sequelize, Sequelize);
-db.tbl_room = require("../models/tbl_room.js")(sequelize, Sequelize);
+db.tbl_contact = require("../models/tbl_contact.js")(sequelize, Sequelize);
+db.tbl_document = require("../models/tbl_document.js")(sequelize, Sequelize);
 db.tbl_subkriteria = require("../models/tbl_subkriteria.js")(
   sequelize,
   Sequelize
@@ -77,65 +78,41 @@ db.tbl_kriteria.hasMany(db.tbl_subkriteria, {
 
 //END API KRITERIA & SUBKRITERIA
 
-//for API SANTRI
-db.tbl_santri.belongsTo(db.tbl_room, {
-  as: "nameroom",
-  foreignKey: "id_room",
+//for API NASABAH
+db.tbl_nasabah.hasMany(db.tbl_document, {
+  foreignKey: "id_nasabah",
+  as: "document",
+  sourceKey: "id",
 });
 
-db.tbl_santri.belongsTo(db.tbl_req, {
+db.tbl_nasabah.belongsTo(db.tbl_req, {
   foreignKey: "id",
   as: "cpi",
-  sourceKey: "student_id",
+  sourceKey: "id_nasabah",
 });
 
-db.tbl_room.belongsTo(db.tbl_pegawai, {
-  as: "walikamar",
-  foreignKey: "id_ustadz",
-});
+//END API NASABAH
 
-//END API SANTRI
-
-//for API PEGAWAI
-db.tbl_pegawai.belongsTo(db.tbl_role, {
+//for API USERS
+db.tbl_users.belongsTo(db.tbl_role, {
   as: "role",
   foreignKey: "role_id",
 });
 
-//END API PEGAWAI
+//END API USERS
 
-//API FOR ROOMS
-db.tbl_room.belongsTo(db.tbl_pegawai, {
-  as: "namaustadz",
-  foreignKey: "id_ustadz",
+//FOR API REQUEST
+db.tbl_req.belongsTo(db.tbl_nasabah, {
+  foreignKey: "id_nasabah",
+  as: "nasabah",
 });
 
-//END API ROOMS
-
-//FOR API PERMISSION
-db.tbl_req.belongsTo(db.tbl_santri, {
-  foreignKey: "student_id",
-  as: "namasantri",
-});
-
-db.tbl_req.belongsTo(db.tbl_pegawai, {
-  foreignKey: "val_go_by",
-  as: "val_go_name",
-  targetKey: "id",
-});
-
-db.tbl_req.belongsTo(db.tbl_pegawai, {
+db.tbl_req.belongsTo(db.tbl_users, {
   foreignKey: "created_by",
-  as: "created_permission",
-  targetKey: "id",
+  as: "pengaju",
 });
 
-db.tbl_req.belongsTo(db.tbl_pegawai, {
-  foreignKey: "val_back_by",
-  as: "val_back_name",
-  targetKey: "id",
-});
-//END API PERMISSION
+//END API REQUEST
 
 //for API METHOD CPI and ROC
 db.tbl_cpi.belongsTo(db.tbl_kriteria, {

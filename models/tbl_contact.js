@@ -3,7 +3,7 @@ const {
   Model
 } = require('sequelize');
 module.exports = (sequelize, DataTypes) => {
-  class tbl_kriteria extends Model {
+  class tbl_contact extends Model {
     /**
      * Helper method for defining associations.
      * This method is not a part of Sequelize lifecycle.
@@ -13,14 +13,14 @@ module.exports = (sequelize, DataTypes) => {
       // define association here
     }
   }
-  tbl_kriteria.init({
-    scale_priority: DataTypes.INTEGER,
-    name_kriteria: DataTypes.STRING,
-    weight_score: DataTypes.FLOAT,
-    type: DataTypes.BOOLEAN
+  tbl_contact.init({
+    family_relationship: DataTypes.STRING,
+    name_family: DataTypes.STRING,
+    no_hp: DataTypes.STRING,
+    id_nasabah: DataTypes.STRING
   }, {
     sequelize,
-    modelName: 'tbl_kriteria',
+    modelName: 'tbl_contact',
   });
-  return tbl_kriteria;
+  return tbl_contact;
 };

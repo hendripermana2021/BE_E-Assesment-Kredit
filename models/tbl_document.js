@@ -3,7 +3,7 @@ const {
   Model
 } = require('sequelize');
 module.exports = (sequelize, DataTypes) => {
-  class tbl_pegawai extends Model {
+  class tbl_document extends Model {
     /**
      * Helper method for defining associations.
      * This method is not a part of Sequelize lifecycle.
@@ -13,18 +13,14 @@ module.exports = (sequelize, DataTypes) => {
       // define association here
     }
   }
-  tbl_pegawai.init({
-    name_pegawai: DataTypes.STRING,
-    sex: DataTypes.BOOLEAN,
-    email: DataTypes.STRING,
-    password: DataTypes.STRING,
-    real_password: DataTypes.STRING,
-    role_id: DataTypes.STRING,
-    accesstoken: DataTypes.TEXT,
-    refreshtoken: DataTypes.TEXT
+  tbl_document.init({
+    id_nasabah: DataTypes.INTEGER,
+    name_document: DataTypes.STRING,
+    file: DataTypes.STRING,
+    id_req: DataTypes.INTEGER
   }, {
     sequelize,
-    modelName: 'tbl_pegawai',
+    modelName: 'tbl_document',
   });
-  return tbl_pegawai;
+  return tbl_document;
 };

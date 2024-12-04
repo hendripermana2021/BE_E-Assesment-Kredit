@@ -62,14 +62,20 @@ export const CalculatedROC = async (req, res) => {
       },
     });
 
-    res.status(200).json({
+    return res.status(200).json({
       code: 200,
       status: true,
       msg: "Success Calculated ROC",
       data: updateKriteria,
     });
   } catch (error) {
-    console.log(error);
+    console.error(error);
+    return res.status(500).json({
+      code: 500,
+      status: false,
+      msg: "An error occurred during the update.",
+      error: error.message,
+    });
   }
 };
 
@@ -125,16 +131,16 @@ export const calculatedCPIisNull = async (req, res) => {
     });
 
     if (checkKriteria.length > 0) {
-      return res.status(400).json({
-        code: 400,
+      return res.status(404).json({
+        code: 404,
         status: false,
         msg: "Please Process ROC Kriteria First",
       });
     }
 
     if (req.length === 0) {
-      return res.status(400).json({
-        code: 400,
+      return res.status(404).json({
+        code: 404,
         status: false,
         msg: "Nothing Data CPI Empty for Calculated",
       });
@@ -301,7 +307,7 @@ export const calculatedCPIisNull = async (req, res) => {
       );
     }
 
-    res.status(200).json({
+    return res.status(200).json({
       status: true,
       msg: "Success Calculated CPI",
       data: {
@@ -313,7 +319,13 @@ export const calculatedCPIisNull = async (req, res) => {
       },
     });
   } catch (error) {
-    console.log(error);
+    console.error(error);
+    return res.status(500).json({
+      code: 500,
+      status: false,
+      msg: "An error occurred during the update.",
+      error: error.message,
+    });
   }
 };
 
@@ -343,8 +355,8 @@ export const calculatedCPIByIdCalculated = async (req, res) => {
     });
 
     if (req.length === 0) {
-      return res.status(400).json({
-        code: 400,
+      return res.status(404).json({
+        code: 404,
         status: false,
         msg: "Nothing Data CPI Empty for Calculated",
       });
@@ -466,7 +478,7 @@ export const calculatedCPIByIdCalculated = async (req, res) => {
     }
     console.log(step4Final[0]);
 
-    res.status(200).json({
+    return res.status(200).json({
       status: true,
       msg: "Success Calculated ROC",
       data: {
@@ -478,7 +490,13 @@ export const calculatedCPIByIdCalculated = async (req, res) => {
       },
     });
   } catch (error) {
-    console.log(error);
+    console.error(error);
+    return res.status(500).json({
+      code: 500,
+      status: false,
+      msg: "An error occurred during the update.",
+      error: error.message,
+    });
   }
 };
 
@@ -508,14 +526,14 @@ export const getReqCpiNull = async (req, res) => {
     });
 
     if (req.length === 0) {
-      return res.status(400).json({
-        code: 400,
+      return res.status(404).json({
+        code: 404,
         status: false,
         msg: "Nothing Data CPI Empty for Calculated",
       });
     }
 
-    res.status(200).json({
+    return res.status(200).json({
       status: true,
       msg: "Success get data CPI null by created",
       data: req,
