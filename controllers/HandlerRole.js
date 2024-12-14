@@ -98,7 +98,7 @@ export const createRole = async (req, res) => {
       return res.status(404).json({
         code: 404,
         status: false,
-        msg: "Data Santri doesn't exist or has been deleted!",
+        msg: "Data Nasabah doesn't exist or has been deleted!",
       });
     }
 
@@ -106,8 +106,8 @@ export const createRole = async (req, res) => {
       role_name,
     });
 
-    return (200).json({
-      code: 200,
+    return res.status(201).json({
+      code: 201,
       status: true,
       msg: "Create Data Role berhasil",
       data: role_name,

@@ -27,7 +27,7 @@ export const refreshToken = async (req, res) => {
       },
     });
 
-    if (!pegawai) {
+    if (!users) {
       return res.sendStatus(403);
     }
 
@@ -120,7 +120,7 @@ export const Login = async (req, res) => {
       { expiresIn: "1d" }
     );
 
-    await Pegawai.update(
+    await Users.update(
       { refreshtoken: refreshToken, accesstoken: accessToken },
       { where: { id } } // Use id directly without indexing
     );
@@ -246,8 +246,8 @@ export const deleteUsers = async (req, res) => {
   return res.status(200).json({
     code: 200,
     status: true,
-    msg: "Delete Data Pegawai Successfully",
-    data: dataBefore,
+    msg: "Delete Data Users Successfully",
+    data: user,
   });
 };
 
@@ -301,7 +301,7 @@ export const getDataUsers = async (req, res) => {
     return res.status(200).json({
       code: 200,
       status: true,
-      msg: "This Data All Pegawai",
+      msg: "This Data All Users",
       data: user,
     });
   } catch (error) {
@@ -362,16 +362,31 @@ export const updateDataUsers = async (req, res) => {
       });
     }
 
-    const salt = await bcrypt.genSalt();
-    const hashPassword = await bcrypt.hash(password, salt);
+    console.log(user);
+    console.log(req.body);
 
-    const user_created = await Pegawai.update(
+    let hashPasswordGetIt;
+    let passwordGetIt;
+
+    if (password == "") {
+      const salt = await bcrypt.genSalt();
+      const hashPassword = await bcrypt.hash(user.real_password, salt);
+      hashPasswordGetIt = hashPassword;
+      passwordGetIt = user.real_password;
+    } else {
+      const salt = await bcrypt.genSalt();
+      const hashPassword = await bcrypt.hash(password, salt);
+      hashPasswordGetIt = hashPassword;
+      passwordGetIt = password;
+    }
+
+    await Users.update(
       {
         name_user,
         gender,
         email,
-        password: hashPassword,
-        real_password: password,
+        password: hashPasswordGetIt,
+        real_password: passwordGetIt,
         role_id,
       },
       {

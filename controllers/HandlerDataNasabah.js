@@ -15,10 +15,16 @@ export const getDataNasabah = async (req, res) => {
 
     if (user.role_id == 1) {
       nasabah = await Nasabah.findAll({
-        include: {
-          model: Document,
-          as: "document",
-        },
+        include: [
+          {
+            model: Document,
+            as: "document",
+          },
+          {
+            model: Users,
+            as: "pengaju",
+          },
+        ],
       });
     } else {
       nasabah = await Nasabah.findAll({
@@ -40,15 +46,11 @@ export const getDataNasabah = async (req, res) => {
       });
     }
 
-    const sortfill = nasabah.sort((a, b) =>
-      a.name_nasabah.localeCompare(b.name_nasabah)
-    );
-
     return res.status(200).json({
       code: 200,
       status: true,
       msg: "data you searched Found",
-      data: sortfill,
+      data: nasabah,
     });
   } catch (error) {
     console.error(error);
@@ -92,6 +94,7 @@ export const getDataNasabahById = async (req, res) => {
 };
 
 export const RegisterNasabah = async (req, res) => {
+  const id = req.user.userId;
   const {
     name_nasabah,
     gender,
@@ -117,22 +120,24 @@ export const RegisterNasabah = async (req, res) => {
       fathername,
       mothername,
       marital_status,
-      status: "Aktif", // Assuming 'status' is active or something similar
+      status: true, // Assuming 'status' is active or something similar
       no_hp,
       place_of_birth,
       birthday,
       address,
-      image: `http://localhost:8000/image/${req.file.filename}`, // Handling the image upload
+
+      // image: `http://localhost:8000/image/${req.file.filename}`, // Handling the image upload
       nik,
       job_title,
       monthly_income,
       employment_status,
       work_address,
       long_work_at_company,
+      id_user: id,
     });
 
-    return res.status(200).json({
-      code: 200,
+    return res.status(201).json({
+      code: 201,
       status: true,
       msg: "Register Nasabah Successfully",
       data: nasabah,
@@ -158,18 +163,17 @@ export const deleteNasabah = async (req, res) => {
     return res.status(404).json({
       code: 404,
       status: false,
-      msg: "Data Santri doesn't exist or has been deleted!",
+      msg: "Data Nasabah doesn't exist or has been deleted!",
     });
   }
 
-  let baseUrl = "http://localhost:8000";
+  // let baseUrl = "http://localhost:8000";
 
-  let relativeUrl = dataBefore.image.replace(baseUrl, "public");
-  console.log(relativeUrl);
-
-  if (nasabah.image) {
-    await fs.unlink(relativeUrl);
-  }
+  // if (nasabah["image"]) {
+  //   let relativeUrl = nasabah.image.replace(baseUrl, "public");
+  //   console.log(relativeUrl);
+  //   await fs.unlink(relativeUrl);
+  // }
 
   await Nasabah.destroy({
     where: { id },
@@ -219,16 +223,16 @@ export const updateDataNasabah = async (req, res) => {
     }
 
     // Remove the previous image if exists
-    let baseUrl = "http://localhost:8000";
-    let relativeUrl = data_before.image.replace(baseUrl, "public");
-    console.log(relativeUrl);
+    // let baseUrl = "http://localhost:8000";
+    // let relativeUrl = data_before.image.replace(baseUrl, "public");
+    // console.log(relativeUrl);
 
-    if (data_before.image) {
-      await fs.unlink(relativeUrl);
-    }
+    // if (data_before.image) {
+    //   await fs.unlink(relativeUrl);
+    // }
 
     // Update the Nasabah data
-    const nasabah = await Nasabah.update(
+    await Nasabah.update(
       {
         name_nasabah,
         gender,
@@ -246,9 +250,9 @@ export const updateDataNasabah = async (req, res) => {
         employment_status,
         work_address,
         long_work_at_company,
-        image: req.file
-          ? `http://localhost:8000/image/${req.file.filename}`
-          : data_before.image, // Handle image update if provided
+        // image: req.file
+        //   ? `http://localhost:8000/image/${req.file.filename}`
+        //   : data_before.image, // Handle image update if provided
       },
       {
         where: { id },

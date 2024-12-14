@@ -2,24 +2,35 @@ import db from "../models/index.js";
 import { Op } from "sequelize";
 
 const Req = db.tbl_req;
-const Nasabah = db.tbl_santri;
-const Users = db.tbl_pegawai;
+const Nasabah = db.tbl_nasabah;
+const Users = db.tbl_users;
 const Cpi = db.tbl_cpi;
 const Kriteria = db.tbl_kriteria;
 const Sub_Kriteria = db.tbl_subkriteria;
 const Notif = db.tbl_notification;
+const Document_ajuan = db.tbl_document_ajuan;
+const Document = db.tbl_document;
 
 export const getDataAjuanOnlyAccepted = async (req, res) => {
   try {
     const req = await Req.findAll({
+      where: "Selesai",
       include: [
         {
           model: Nasabah,
           as: "nasabah",
+          include: {
+            model: Document,
+            as: "document",
+          },
+        },
+        {
+          model: Document_ajuan,
+          as: "document_ajuan",
         },
         {
           model: Users,
-          as: "pengaju",
+          as: "petugas_pengaju",
         },
         {
           model: Cpi,
@@ -38,17 +49,12 @@ export const getDataAjuanOnlyAccepted = async (req, res) => {
       ],
     });
 
-    if (req === "") {
+    if (req.length == 0) {
       return res.status(404).json({
         code: 404,
         status: true,
         msg: "Data not found",
       });
-    }
-
-    const result = [];
-    for (let i = 0; i < req.length; i++) {
-      if (req[i].status_ajuan != 1) result.push(req[i]);
     }
 
     return res.status(200).json({
@@ -78,10 +84,18 @@ export const getDataAjuanAll = async (req, res) => {
           {
             model: Nasabah,
             as: "nasabah",
+            include: {
+              model: Document,
+              as: "document",
+            },
+          },
+          {
+            model: Document_ajuan,
+            as: "document_ajuan",
           },
           {
             model: Users,
-            as: "pengaju",
+            as: "petugas_pengaju",
           },
           {
             model: Cpi,
@@ -106,10 +120,18 @@ export const getDataAjuanAll = async (req, res) => {
           {
             model: Nasabah,
             as: "nasabah",
+            include: {
+              model: Document,
+              as: "document",
+            },
           },
           {
             model: Users,
-            as: "pengaju",
+            as: "petugas_pengaju",
+          },
+          {
+            model: Document_ajuan,
+            as: "document_ajuan",
           },
           {
             model: Cpi,
@@ -137,15 +159,11 @@ export const getDataAjuanAll = async (req, res) => {
       });
     }
 
-    const sortfill = req.sort(
-      (b, a) => a.permission_status - b.permission_status
-    );
-
     return res.status(200).json({
       code: 200,
       status: true,
       msg: "All Data Permission",
-      data: sortfill,
+      data: req,
     });
   } catch (error) {
     console.error(error);
@@ -167,10 +185,18 @@ export const getDataAjuanById = async (req, res) => {
         {
           model: Nasabah,
           as: "nasabah",
+          include: {
+            model: Document,
+            as: "document",
+          },
         },
         {
           model: Users,
-          as: "pengaju",
+          as: "petugas_pengaju",
+        },
+        {
+          model: Document_ajuan,
+          as: "document_ajuan",
         },
         {
           model: Cpi,
@@ -225,10 +251,18 @@ export const getDataAjuanByUserId = async (req, res) => {
           {
             model: Nasabah,
             as: "nasabah",
+            include: {
+              model: Document,
+              as: "document",
+            },
           },
           {
             model: Users,
-            as: "pengaju",
+            as: "petugas_pengaju",
+          },
+          {
+            model: Document_ajuan,
+            as: "document_ajuan",
           },
           {
             model: Cpi,
@@ -257,10 +291,18 @@ export const getDataAjuanByUserId = async (req, res) => {
           {
             model: Nasabah,
             as: "nasabah",
+            include: {
+              model: Document,
+              as: "document",
+            },
           },
           {
             model: Users,
-            as: "pengaju",
+            as: "petugas_pengaju",
+          },
+          {
+            model: Document_ajuan,
+            as: "document_ajuan",
           },
           {
             model: Cpi,
@@ -280,7 +322,7 @@ export const getDataAjuanByUserId = async (req, res) => {
       });
     }
 
-    if (req == "") {
+    if (req.length == 0) {
       return res.status(404).json({
         code: 404,
         status: false,
@@ -308,6 +350,7 @@ export const getDataAjuanByUserId = async (req, res) => {
 export const addAjuan = async (req, res) => {
   const { id_nasabah, jlh_dana, commented, purpose } = req.body;
   const cpi = req.body.kriteria;
+  const document = req.body.document;
 
   const user = req.user;
 
@@ -320,7 +363,7 @@ export const addAjuan = async (req, res) => {
       },
     });
 
-    if (reqCheck.length > 0) {
+    if (reqCheck) {
       return res.status(404).json({
         code: 404,
         status: false,
@@ -333,7 +376,7 @@ export const addAjuan = async (req, res) => {
     const req = await Req.create({
       id_nasabah,
       created_by: user.userId,
-      cpi_result: "",
+      cpi_result: 0,
       id_calculated: null,
       commented,
       purpose_req: purpose,
@@ -354,7 +397,11 @@ export const addAjuan = async (req, res) => {
 
     await Notif.create({
       user_id: user.userId,
-      message: `Permission created by ${user.name_user} for ${nasabah.name_nasabah}`,
+      message: `Permission created by ${user.name_user} for ${
+        nasabah == null || undefined
+          ? "Nasabah belum dibuat"
+          : nasabah.name_nasabah
+      }`,
       isRead: 0,
     });
     //END
@@ -362,16 +409,67 @@ export const addAjuan = async (req, res) => {
     const inputCpi = cpi.map((result) => ({
       id_order: req.id,
       id_kriteria: result.id_kriteria,
-      id_subkriteria: result.id_subkriteria,
+      id_subkriteria: result.id_subKriteria,
     }));
 
-    const hasil = await Cpi.bulkCreate(inputCpi);
+    if (document !== "") {
+      const mapAllDocument = document.map((result) => ({
+        id_req: req.id,
+        name_document: result.name_document,
+        file: result.file,
+      }));
 
-    return res.status(200).json({
-      code: 200,
+      await Document_ajuan.bulkCreate(mapAllDocument);
+    }
+
+    await Cpi.bulkCreate(inputCpi);
+
+    const resultRequestNew = await Req.findOne({
+      where: {
+        id: req.id,
+      },
+      include: [
+        {
+          model: Nasabah,
+          as: "nasabah",
+          include: {
+            model: Document,
+            as: "document",
+          },
+        },
+        {
+          model: Document_ajuan,
+          as: "document_ajuan",
+        },
+
+        {
+          model: Cpi,
+          as: "cpi_data",
+          include: [
+            {
+              model: Kriteria,
+              as: "kriteria",
+            },
+            {
+              model: Sub_Kriteria,
+              as: "subkriteria",
+            },
+          ],
+        },
+      ],
+    });
+
+    return res.status(201).json({
+      code: 201,
       status: true,
-      msg: `Ajuan created by ${user.name_user} for ${nasabah.name_nasabah}`,
-      data: { dataReq, nasabah, hasil },
+      msg: `Ajuan has been created by id ${
+        req.created_by
+      } successfully for created ajuan to ${
+        nasabah == null || undefined
+          ? "Nasabah belum dibuat"
+          : nasabah.name_nasabah
+      }`,
+      data: resultRequestNew,
     });
   } catch (error) {
     console.error(error);
@@ -386,8 +484,9 @@ export const addAjuan = async (req, res) => {
 
 export const updateAjuan = async (req, res) => {
   const { id } = req.params;
-  const { jlh_dana, commented, purpose } = req.body;
-  const fieldKriteria = req.body.kriteria;
+  const { jlh_dana, commented, purpose, id_nasabah } = req.body;
+  const kriteria = req.body.kriteria;
+  const document = req.body.document;
 
   try {
     const reqBefore = await Req.findOne({
@@ -399,7 +498,11 @@ export const updateAjuan = async (req, res) => {
         },
         {
           model: Users,
-          as: "pengaju",
+          as: "petugas_pengaju",
+        },
+        {
+          model: Document_ajuan,
+          as: "document_ajuan",
         },
         {
           model: Cpi,
@@ -421,6 +524,9 @@ export const updateAjuan = async (req, res) => {
     const dataCpi = await Cpi.findAll({
       where: { id_order: id },
     });
+    const dataDocumentAjuan = await Document_ajuan.findAll({
+      where: { id_req: id },
+    });
 
     if (!reqBefore) {
       return res.status(404).json({
@@ -431,29 +537,43 @@ export const updateAjuan = async (req, res) => {
     }
 
     await Req.update(
-      { jlh_dana, purpose_req: purpose, commented },
+      { jlh_dana, purpose_req: purpose, commented, id_nasabah },
       {
         where: { id },
       }
     );
 
-    for (let i = 0; i < fieldKriteria.length; i++) {
+    for (let i = 0; i < kriteria.length; i++) {
       let cpiData = dataCpi.find(
-        (cpi) => cpi.id_kriteria === fieldKriteria[i].id_kriteria
+        (cpi) => cpi.id_kriteria === kriteria[i].id_kriteria
       );
       if (!cpiData) {
         cpiData = await Cpi.create({
-          id_kriteria: fieldKriteria[i].id_kriteria,
-          id_subkriteria: fieldKriteria[i].id_subkriteria,
+          id_kriteria: kriteria[i].id_kriteria,
+          id_subkriteria: kriteria[i].id_subkriteria,
           id_order: id,
         });
       } else {
         await Cpi.update(
           {
-            id_subkriteria: fieldKriteria[i].id_subkriteria,
+            id_subkriteria: kriteria[i].id_subkriteria,
           },
           {
             where: { id: dataCpi[i].id },
+          }
+        );
+      }
+    }
+
+    if (document != "") {
+      for (let i = 0; i < document.length; i++) {
+        await Document_ajuan.update(
+          {
+            name_document: document[i].name_document,
+            file: document[i].file,
+          },
+          {
+            where: { id_req: dataDocumentAjuan[i].id },
           }
         );
       }
@@ -468,7 +588,7 @@ export const updateAjuan = async (req, res) => {
         },
         {
           model: Users,
-          as: "pengaju",
+          as: "petugas_pengaju",
         },
         {
           model: Cpi,

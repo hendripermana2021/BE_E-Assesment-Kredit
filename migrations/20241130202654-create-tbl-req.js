@@ -1,52 +1,55 @@
-'use strict';
+"use strict";
 /** @type {import('sequelize-cli').Migration} */
 module.exports = {
   async up(queryInterface, Sequelize) {
-    await queryInterface.createTable('tbl_reqs', {
+    await queryInterface.createTable("tbl_reqs", {
       id: {
         allowNull: false,
         autoIncrement: true,
         primaryKey: true,
-        type: Sequelize.INTEGER
+        type: Sequelize.INTEGER,
       },
       id_nasabah: {
-        type: Sequelize.INTEGER
+        type: Sequelize.INTEGER,
       },
       created_by: {
-        type: Sequelize.INTEGER
+        type: Sequelize.INTEGER,
       },
       cpi_result: {
-        type: Sequelize.FLOAT
+        type: Sequelize.FLOAT,
+      },
+      rank: {
+        type: Sequelize.INTEGER,
       },
       commented: {
-        type: Sequelize.STRING
+        type: Sequelize.STRING,
       },
       id_calculated: {
-        type: Sequelize.INTEGER
+        type: Sequelize.INTEGER,
       },
       status_ajuan: {
-        type: Sequelize.STRING
+        type: Sequelize.STRING,
       },
       id_calculated: {
-        type: Sequelize.INTEGER
+        type: Sequelize.INTEGER,
       },
       jlh_dana: {
-        type: Sequelize.FLOAT
+        type: Sequelize.FLOAT,
       },
       purpose_req: {
-        type: Sequelize.STRING
+        type: Sequelize.STRING,
       },
       createdAt: {
         allowNull: false,
-        type: Sequelize.DATE
+        type: Sequelize.DATE,
       },
       updatedAt: {
         allowNull: false,
-        type: Sequelize.DATE
-      }
+        type: Sequelize.DATE,
+      },
     });
   },
   async down(queryInterface, Sequelize) {
-    await queryInterface.dropTable('tbl_reqs');
-  }
+    await queryInterface.dropTable("tbl_reqs");
+  },
 };

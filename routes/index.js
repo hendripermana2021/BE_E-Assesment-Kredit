@@ -38,10 +38,16 @@ import {
 } from "../controllers/HandlerAction.js";
 import {
   createKriteriaDanSub,
+  createSubKriteria,
   deleteKriteriaDanSub,
+  deleteSubKriteria,
   getDataKriteria,
+  getDataKriteriaAndSub,
+  getDataKriteriaAndSubById,
   getDataKriteriaById,
+  getDataSubKriteriaById,
   updateKriteriaDanSub,
+  updateSubKriteria,
 } from "../controllers/HandlerKriteriaSubKriteria.js";
 import {
   getDataAjuanById,
@@ -59,6 +65,11 @@ import {
   RegisterNasabah,
   updateDataNasabah,
 } from "../controllers/HandlerDataNasabah.js";
+import {
+  addDocumentToReq,
+  deleteDocumentFromReq,
+  updateDocumentToReq,
+} from "../controllers/HandlerDocReq.js";
 
 export const prefix = "/v1/api/";
 
@@ -92,8 +103,8 @@ router.get(prefix + "me", verifyToken, whoAmI);
 router.post(prefix + "login", Login);
 router.get(prefix + "token", refreshToken);
 router.delete(prefix + "logout", verifyToken, Logout);
-router.post(prefix + "action/calculatedROC", verifyToken, CalculatedROC);
-router.post(prefix + "action/calculatedCPI", verifyToken, calculatedCPIisNull);
+router.get(prefix + "action/calculatedROC", verifyToken, CalculatedROC);
+router.get(prefix + "action/calculatedCPI", verifyToken, calculatedCPIisNull);
 router.get(prefix + "result/CPI/:id", verifyToken, calculatedCPIByIdCalculated);
 router.get(prefix + "report", verifyToken, generateReport);
 router.get(prefix + "datareqByUser", verifyToken, getReqCpiNull);
@@ -102,16 +113,49 @@ router.get(prefix + "datareqByUser", verifyToken, getReqCpiNull);
 //API FOR DASHBOARD
 router.get(prefix + "dashboard", verifyToken, dashboard);
 
-//API KRITERIA DAN SUB-KRITERIA
+//API KRITERIA
 router.get(prefix + "kriteria", verifyToken, getDataKriteria);
 router.get(prefix + "kriteria/byid/:id", verifyToken, getDataKriteriaById);
+
+//API SUB KRITERIA
+//TODO : make sub-kriteria by kriteria ID
+router.get(prefix + "kriteria-sub", verifyToken, getDataKriteriaAndSub);
+
+//END API SUB KRITERIA
+
+//API KRITERIA DAN SUB-KRITERIA
+router.get(prefix + "kriteria-sub", verifyToken, getDataKriteriaAndSub);
+router.get(
+  prefix + "kriteria-sub/byid/:id",
+  verifyToken,
+  getDataKriteriaAndSubById
+);
+router.put(
+  prefix + "kriteria-sub/update/:id",
+  verifyToken,
+  updateKriteriaDanSub
+);
+router.post(prefix + "kriteria-sub/create", verifyToken, createKriteriaDanSub);
 router.delete(
-  prefix + "kriteria/delete/:id",
+  prefix + "kriteria-sub/delete/:id",
   verifyToken,
   deleteKriteriaDanSub
 );
-router.put(prefix + "kriteria/update/:id", verifyToken, updateKriteriaDanSub);
-router.post(prefix + "kriteria/create", verifyToken, createKriteriaDanSub);
+// END API KRITERIA
+
+//API SUB-KRITERIA
+router.get(
+  prefix + "sub-kriteria/byid/:id",
+  verifyToken,
+  getDataSubKriteriaById
+);
+router.delete(
+  prefix + "sub-kriteria/delete/:id",
+  verifyToken,
+  deleteSubKriteria
+);
+router.put(prefix + "sub-kriteria/update/:id", verifyToken, updateSubKriteria);
+router.post(prefix + "sub-kriteria/create", verifyToken, createSubKriteria);
 //END API KRITERIA DAN SUB-KRITERIA
 
 //API USERS
@@ -140,12 +184,12 @@ router.put(
 router.delete(prefix + "nasabah/delete/:id", verifyToken, deleteNasabah);
 
 //API ROLE
-router.get(prefix + "role", verifyToken, getDataRole);
-router.get(prefix + "role/byid/:id", verifyToken, getDataRoleById);
-router.get(prefix + "role/:search", verifyToken, getRoleBy);
-router.post(prefix + "role/create", verifyToken, createRole);
-router.put(prefix + "role/update/:id", verifyToken, updateRole);
-router.delete(prefix + "role/delete/:id", verifyToken, deleteRole);
+router.get(prefix + "role", getDataRole);
+router.get(prefix + "role/byid/:id", getDataRoleById);
+router.get(prefix + "role/:search", getRoleBy);
+router.post(prefix + "role/create", createRole);
+router.put(prefix + "role/update/:id", updateRole);
+router.delete(prefix + "role/delete/:id", deleteRole);
 
 //API NOTIFICATION
 router.get(prefix + "notif", verifyToken, getDataNotification);
@@ -157,5 +201,23 @@ router.get(prefix + "ajuan", verifyToken, getDataAjuanAll);
 router.put(prefix + "ajuan/update/:id", verifyToken, updateAjuan);
 router.delete(prefix + "ajuan/delete/:id", verifyToken, deleteAjuan);
 router.post(prefix + "ajuan/create", verifyToken, addAjuan);
+
+//ADDITIONAL AJUAN
+router.post(
+  prefix + "ajuan/document/create/:id",
+  verifyToken,
+  upload.single("file"),
+  addDocumentToReq
+);
+router.put(
+  prefix + "ajuan/document/update/:id",
+  verifyToken,
+  updateDocumentToReq
+);
+router.delete(
+  prefix + "ajuan/document/delete/:id",
+  verifyToken,
+  deleteDocumentFromReq
+);
 
 export default router;

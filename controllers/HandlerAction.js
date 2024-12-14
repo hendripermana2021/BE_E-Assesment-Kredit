@@ -1,9 +1,10 @@
+import { assignRanking } from "../globalFunction/sortedRank.js";
 import db from "../models/index.js";
 
 const Req = db.tbl_req;
 const Cpi = db.tbl_cpi;
 const Kriteria = db.tbl_kriteria;
-const Santri = db.tbl_santri;
+const Nasabah = db.tbl_nasabah;
 const Sub_Kriteria = db.tbl_subkriteria;
 const Calculated = db.tbl_calculated;
 
@@ -33,15 +34,20 @@ export const CalculatedROC = async (req, res) => {
       result;
     }
 
+    console.log("result", result);
+
     const separatedArray = [];
-    for (let i = 0; i < result.length; i += 6) {
-      separatedArray.push(result.slice(i, i + 6));
+    for (let i = 0; i < result.length; i += kriteria.length) {
+      separatedArray.push(result.slice(i, i + kriteria.length));
     }
 
-    // Menjumlahkan setiap subarray dan membagi hasilnya dengan 6
+    // Menjumlahkan setiap subarray dan membagi hasilnya
     const sumAndAverage = separatedArray.map(
-      (subarray) => subarray.reduce((acc, num) => acc + num, 0) / 6
+      (subarray) =>
+        subarray.reduce((acc, num) => acc + num, 0) / kriteria.length
     );
+
+    console.log("separatedArray :", separatedArray);
     ///////////////////////////////////////////////////////////////////////////////---> END CODE METHOD ROC
 
     for (let i = 0; i < sortfill.length; i++) {
@@ -66,7 +72,11 @@ export const CalculatedROC = async (req, res) => {
       code: 200,
       status: true,
       msg: "Success Calculated ROC",
-      data: updateKriteria,
+      data: {
+        rocArray: separatedArray,
+        resultArray: sumAndAverage,
+        result: updateKriteria,
+      },
     });
   } catch (error) {
     console.error(error);
@@ -85,9 +95,9 @@ export const calculatedCPIisNull = async (req, res) => {
     let req;
     if (user.role_id == 1) {
       req = await Req.findAll({
-        where: {
-          id_calculated: null,
-        },
+        // where: {
+        //   id_calculated: null,
+        // },
         include: {
           model: Cpi,
           as: "cpi_data",
@@ -105,10 +115,10 @@ export const calculatedCPIisNull = async (req, res) => {
       });
     } else {
       req = await Req.findAll({
-        where: {
-          id_calculated: null,
-          created_by: user.userId,
-        },
+        // where: {
+        //   id_calculated: null,
+        //   created_by: user.userId,
+        // },
         include: {
           model: Cpi,
           as: "cpi_data",
@@ -126,25 +136,23 @@ export const calculatedCPIisNull = async (req, res) => {
       });
     }
 
-    const checkKriteria = await Kriteria.findAll({
-      where: { weight_score: 0 },
-    });
+    const checkKriteria = await Kriteria.findAll({});
 
-    if (checkKriteria.length > 0) {
-      return res.status(404).json({
-        code: 404,
-        status: false,
-        msg: "Please Process ROC Kriteria First",
-      });
-    }
+    // if (checkKriteria.length > 0) {
+    //   return res.status(404).json({
+    //     code: 404,
+    //     status: false,
+    //     msg: "Please Process ROC Kriteria First",
+    //   });
+    // }
 
-    if (req.length === 0) {
-      return res.status(404).json({
-        code: 404,
-        status: false,
-        msg: "Nothing Data CPI Empty for Calculated",
-      });
-    }
+    // if (req.length === 0) {
+    //   return res.status(404).json({
+    //     code: 404,
+    //     status: false,
+    //     msg: "Nothing Data CPI Empty for Calculated",
+    //   });
+    // }
 
     const kriteria = await Kriteria.findAll({});
 
@@ -180,6 +188,7 @@ export const calculatedCPIisNull = async (req, res) => {
     console.log("Transposed Array : ", transposedArray);
 
     const minValues = transposedArray.map((row) => Math.min(...row));
+    const maxValues = transposedArray.map((row) => Math.max(...row));
     console.log("Pencarian Nilai Min : ", minValues);
     //END
 
@@ -189,10 +198,10 @@ export const calculatedCPIisNull = async (req, res) => {
     for (let i = 0; i < req.length; i++) {
       for (let j = 0; j < req[i].cpi_data.length; j++) {
         if (req[i].cpi_data[j].kriteria.type == 1) {
-          let a = (groupedArrays[i][j] / minValues[j]) * 100;
+          let a = groupedArrays[i][j] / maxValues[j];
           minNormalisasi.push(a);
         } else {
-          let a = (minValues[j] / groupedArrays[i][j]) * 100;
+          let a = minValues[j] / groupedArrays[i][j];
           minNormalisasi.push(a);
         }
       }
@@ -286,33 +295,60 @@ export const calculatedCPIisNull = async (req, res) => {
           ],
         },
         {
-          model: Santri,
-          as: "namasantri",
+          model: Nasabah,
+          as: "nasabah",
         },
       ],
     });
 
-    const sortfill = resultCpi.sort((b, a) => a.cpi_result - b.cpi_result);
+    const makeRank = assignRanking(resultCpi);
+
+    console.log("rank", makeRank);
 
     for (let i = 0; i < resultCpi.length; i++) {
-      let newStatus = resultCpi[i].cpi_result > 0.5 ? 1 : 4;
+      let newStatus = resultCpi[i].cpi_result > 0.5 ? "Diterima" : "Ditolak";
 
       await Req.update(
         {
-          permission_status: newStatus,
+          rank: makeRank[i].rank,
+          status_ajuan: newStatus,
         },
         {
-          where: { id: resultCpi[i].id },
+          where: { id: makeRank[i].id },
         }
       );
     }
+
+    const finalResultReq = await Req.findAll({
+      include: [
+        {
+          model: Cpi,
+          as: "cpi_data",
+          include: [
+            {
+              model: Kriteria,
+              as: "kriteria",
+            },
+            {
+              model: Sub_Kriteria,
+              as: "subkriteria",
+            },
+          ],
+        },
+        {
+          model: Nasabah,
+          as: "nasabah",
+        },
+      ],
+    });
 
     return res.status(200).json({
       status: true,
       msg: "Success Calculated CPI",
       data: {
-        sortfill,
-        step1: { groupedArrays, minValues },
+        result: finalResultReq,
+        kriteria: kriteria,
+        step1: { groupedArrays, minValues, maxValues },
         step2: minNormalisasiTranspose,
         step3: { step3Transpose, sumGroups, maxValue, minValue },
         step4: step4Final,

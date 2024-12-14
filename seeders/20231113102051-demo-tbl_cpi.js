@@ -14,7 +14,7 @@ module.exports = {
         },
         {
           id_kriteria: "2",
-          id_subkriteria: "7",
+          id_subkriteria: "6",
           id_order: "1",
           createdAt: new Date(),
           updatedAt: new Date(),
@@ -91,7 +91,7 @@ module.exports = {
         },
         {
           id_kriteria: "2",
-          id_subkriteria: "6",
+          id_subkriteria: "7",
           id_order: "2",
           createdAt: new Date(),
           updatedAt: new Date(),
@@ -168,7 +168,7 @@ module.exports = {
         },
         {
           id_kriteria: "2",
-          id_subkriteria: "8",
+          id_subkriteria: "5",
           id_order: "3",
           createdAt: new Date(),
           updatedAt: new Date(),
@@ -245,7 +245,7 @@ module.exports = {
         },
         {
           id_kriteria: "2",
-          id_subkriteria: "5",
+          id_subkriteria: "8",
           id_order: "4",
           createdAt: new Date(),
           updatedAt: new Date(),
@@ -322,7 +322,7 @@ module.exports = {
         },
         {
           id_kriteria: "2",
-          id_subkriteria: "6",
+          id_subkriteria: "7",
           id_order: "5",
           createdAt: new Date(),
           updatedAt: new Date(),
@@ -399,7 +399,7 @@ module.exports = {
         },
         {
           id_kriteria: "2",
-          id_subkriteria: "6",
+          id_subkriteria: "7",
           id_order: "6",
           createdAt: new Date(),
           updatedAt: new Date(),
@@ -476,7 +476,7 @@ module.exports = {
         },
         {
           id_kriteria: "2",
-          id_subkriteria: "7",
+          id_subkriteria: "6",
           id_order: "7",
           createdAt: new Date(),
           updatedAt: new Date(),
@@ -553,7 +553,7 @@ module.exports = {
         },
         {
           id_kriteria: "2",
-          id_subkriteria: "8",
+          id_subkriteria: "5",
           id_order: "8",
           createdAt: new Date(),
           updatedAt: new Date(),
@@ -630,7 +630,7 @@ module.exports = {
         },
         {
           id_kriteria: "2",
-          id_subkriteria: "5",
+          id_subkriteria: "8",
           id_order: "9",
           createdAt: new Date(),
           updatedAt: new Date(),
@@ -707,7 +707,7 @@ module.exports = {
         },
         {
           id_kriteria: "2",
-          id_subkriteria: "6",
+          id_subkriteria: "7",
           id_order: "10",
           createdAt: new Date(),
           updatedAt: new Date(),

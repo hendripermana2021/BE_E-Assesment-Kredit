@@ -63,6 +63,16 @@ db.tbl_subkriteria = require("../models/tbl_subkriteria.js")(
   Sequelize
 );
 db.tbl_cpi = require("../models/tbl_cpi.js")(sequelize, Sequelize);
+db.tbl_document_ajuan = require("../models/tbl_document_ajuan")(
+  sequelize,
+  Sequelize
+);
+db.tbl_document_aset = require("../models/tbl_document_aset.js")(
+  sequelize,
+  Sequelize
+);
+db.tbl_aset = require("../models/tbl_aset.js")(sequelize, Sequelize);
+db.tbl_income = require("../models/tbl_income.js")(sequelize, Sequelize);
 
 db.tbl_req.hasMany(db.tbl_cpi, {
   as: "cpi_data",
@@ -91,6 +101,12 @@ db.tbl_nasabah.belongsTo(db.tbl_req, {
   sourceKey: "id_nasabah",
 });
 
+db.tbl_nasabah.belongsTo(db.tbl_users, {
+  foreignKey: "id_user",
+  as: "pengaju",
+  sourceKey: "id",
+});
+
 //END API NASABAH
 
 //for API USERS
@@ -109,7 +125,13 @@ db.tbl_req.belongsTo(db.tbl_nasabah, {
 
 db.tbl_req.belongsTo(db.tbl_users, {
   foreignKey: "created_by",
-  as: "pengaju",
+  as: "petugas_pengaju",
+});
+
+db.tbl_req.hasMany(db.tbl_document_ajuan, {
+  foreignKey: "id_req",
+  as: "document_ajuan",
+  sourceKey: "id",
 });
 
 //END API REQUEST

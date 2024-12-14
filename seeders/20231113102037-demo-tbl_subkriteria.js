@@ -183,7 +183,7 @@ module.exports = {
           description:
             "kemungkinan besar bahwa peminjam akan mengalami kesulitan dalam memenuhi kewajiban pembayaran kredit. Faktor-faktor yang berkontribusi pada risiko tinggi meliputi riwayat kredit buruk, pendapatan yang tidak stabil, dan aset yang tidak memadai sebagai jaminan. Peminjam dengan risiko kredit tinggi sering kali memiliki peluang gagal bayar yang besar, sehingga lembaga keuangan biasanya menetapkan suku bunga lebih tinggi atau meminta jaminan tambahan.",
           id_kriteria: 7,
-          value: 1,
+          value: 3,
           createdAt: new Date(),
           updatedAt: new Date(),
         },

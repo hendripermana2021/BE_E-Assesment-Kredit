@@ -1,76 +1,79 @@
-'use strict';
+"use strict";
 /** @type {import('sequelize-cli').Migration} */
 module.exports = {
   async up(queryInterface, Sequelize) {
-    await queryInterface.createTable('tbl_nasabahs', {
+    await queryInterface.createTable("tbl_nasabahs", {
       id: {
         allowNull: false,
         autoIncrement: true,
         primaryKey: true,
-        type: Sequelize.INTEGER
+        type: Sequelize.INTEGER,
       },
       name_nasabah: {
-        type: Sequelize.STRING
+        type: Sequelize.STRING,
+      },
+      id_user: {
+        type: Sequelize.INTEGER,
       },
       gender: {
-        type: Sequelize.STRING
+        type: Sequelize.STRING,
       },
       marital_status: {
-        type: Sequelize.STRING
+        type: Sequelize.STRING,
       },
       fathername: {
-        type: Sequelize.STRING
+        type: Sequelize.STRING,
       },
       mothername: {
-        type: Sequelize.STRING
+        type: Sequelize.STRING,
       },
       status: {
-        type: Sequelize.BOOLEAN
+        type: Sequelize.BOOLEAN,
       },
       no_hp: {
-        type: Sequelize.INTEGER
+        type: Sequelize.STRING,
       },
       place_of_birth: {
-        type: Sequelize.STRING
+        type: Sequelize.STRING,
       },
       birthday: {
-        type: Sequelize.DATE
+        type: Sequelize.DATE,
       },
       address: {
-        type: Sequelize.STRING
+        type: Sequelize.STRING,
       },
       image: {
-        type: Sequelize.STRING
+        type: Sequelize.STRING,
       },
       nik: {
-        type: Sequelize.INTEGER
+        type: Sequelize.STRING,
       },
       job_title: {
-        type: Sequelize.STRING
+        type: Sequelize.STRING,
       },
       monthly_income: {
-        type: Sequelize.FLOAT
+        type: Sequelize.FLOAT,
       },
       employment_status: {
-        type: Sequelize.STRING
+        type: Sequelize.STRING,
       },
       work_address: {
-        type: Sequelize.STRING
+        type: Sequelize.STRING,
       },
       long_work_at_company: {
-        type: Sequelize.INTEGER
+        type: Sequelize.INTEGER,
       },
       createdAt: {
         allowNull: false,
-        type: Sequelize.DATE
+        type: Sequelize.DATE,
       },
       updatedAt: {
         allowNull: false,
-        type: Sequelize.DATE
-      }
+        type: Sequelize.DATE,
+      },
     });
   },
   async down(queryInterface, Sequelize) {
-    await queryInterface.dropTable('tbl_nasabahs');
-  }
+    await queryInterface.dropTable("tbl_nasabahs");
+  },
 };

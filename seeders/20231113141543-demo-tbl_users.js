@@ -4,12 +4,12 @@ const bcrypt = require("bcrypt");
 module.exports = {
   async up(queryInterface, Sequelize) {
     await queryInterface.bulkInsert(
-      "tbl_pegawais",
+      "tbl_users",
       [
         {
-          name_pegawai: "Hendri Permana",
-          sex: 1,
-          email: "hendripermana60@gmail.com",
+          name_user: "Irma",
+          gender: "Female",
+          email: "irma@gmail.com",
           password: await bcrypt.hash("12345", 10),
           real_password: "12345",
           role_id: 1,
@@ -17,32 +17,12 @@ module.exports = {
           updatedAt: new Date(),
         },
         {
-          name_pegawai: "Setia Darma",
-          sex: 1,
-          email: "setia@gmail.com",
+          name_user: "Petugas",
+          gender: "Male",
+          email: "petugas@gmail.com",
           password: await bcrypt.hash("12345", 10),
           real_password: "12345",
-          role_id: 2,
-          createdAt: new Date(),
-          updatedAt: new Date(),
-        },
-        {
-          name_pegawai: "Yusuf",
-          sex: 1,
-          email: "yusuf@gmail.com",
-          password: await bcrypt.hash("12345", 10),
-          real_password: "12345",
-          role_id: 2,
-          createdAt: new Date(),
-          updatedAt: new Date(),
-        },
-        {
-          name_pegawai: "Rasyid",
-          sex: 1,
-          email: "rasyid@gmail.com",
-          password: await bcrypt.hash("12345", 10),
-          real_password: "12345",
-          role_id: 3,
+          role_id: 1,
           createdAt: new Date(),
           updatedAt: new Date(),
         },
@@ -52,6 +32,6 @@ module.exports = {
   },
 
   async down(queryInterface, Sequelize) {
-    await queryInterface.bulkDelete("tbl_pegawais", null, {});
+    await queryInterface.bulkDelete("tbl_users", null, {});
   },
 };
