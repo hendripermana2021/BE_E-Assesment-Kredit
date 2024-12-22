@@ -25,7 +25,7 @@ export const getDataRole = async (req, res) => {
 export const getDataRoleById = async (req, res) => {
   const { id } = req.params;
   try {
-    const role = await Role.findAll({
+    const role = await Role.findOne({
       where: { id: id },
     });
     if (role == "") {
@@ -35,7 +35,7 @@ export const getDataRoleById = async (req, res) => {
         msg: "Role Doesn't Exist",
       });
     }
-    return (200).json({
+    return res.status(200).json({
       code: 200,
       status: true,
       msg: "data you searched Found",

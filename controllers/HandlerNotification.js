@@ -39,7 +39,7 @@ export const getDataNotification = async (req, res) => {
 export const getDataNotificationById = async (req, res) => {
   try {
     const { id } = req.params;
-    const notification = await Notification.findAll({
+    const notification = await Notification.findOne({
       where: { user_id: req.user.userId, id },
     });
     if (notification == "") {

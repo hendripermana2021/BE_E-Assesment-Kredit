@@ -1,25 +1,45 @@
+import { where } from "sequelize";
 import db from "../models/index.js";
 
-const Users = db.tbl_pegawai;
-const Nasabah = db.tbl_santri;
+const Users = db.tbl_users;
+const Nasabah = db.tbl_nasabah;
 const Kriteria = db.tbl_kriteria;
 const Notif = db.tbl_notification;
+const Req = db.tbl_req;
 
 export const dashboard = async (req, res) => {
   try {
     const currentUser = req.user;
-    const user_id = req.user.userId;
-    const status = req.query.status;
     if (currentUser.role_id == 1) {
-      const nasabah = (await Users.findAll()).length;
-      const users = (await Nasabah.findAll()).length;
+      const nasabah = (await Nasabah.findAll()).length;
+      const users = (await Users.findAll()).length;
       const kriteria = (await Kriteria.findAll()).length;
       const notif = await Notif.findAll();
-      const nasabahApprove = (
-        await Nasabah.findAll({ where: { status: "Approve" } })
+      const nasabahReject = (
+        await Req.findAll({
+          where: { status_ajuan: "Ditolak" },
+          include: [{ model: Nasabah, as: "nasabah" }],
+        })
+      ).length;
+      const nasabahApprove = await Req.findAll({
+        where: { status_ajuan: "Diterima" },
+      });
+
+      const nasabahRequest = (
+        await Req.findAll({
+          where: { status_ajuan: "Aktif" },
+          include: [{ model: Nasabah, as: "nasabah" }],
+        })
       ).length;
 
       const sortfill_notif = notif.sort((b, a) => a.id - b.id);
+
+      let dana = 0; // Initialize dana to 0 before the loop
+
+      for (let i = 0; i < nasabahApprove.length; i++) {
+        dana += nasabahApprove[i].jlh_dana; // Add jlh_dana to dana
+        console.log(dana); // This will print the running total after each iteration
+      }
 
       return res.status(200).json({
         code: 200,
@@ -30,23 +50,49 @@ export const dashboard = async (req, res) => {
           nasabah,
           users,
           kriteria,
-          nasabahApprove,
+          ajuan_approve: nasabahApprove.length,
+          ajuan_reject: nasabahReject,
+          ajuan_ready: nasabahRequest,
+          jumlah_dana: dana,
           sortfill_notif,
         },
       });
-    } else if (currentUser.role_id == 2) {
-      const nasabah = await Nasabah.findAll({
-        where: {
-          created_by: user_id,
-          status_ajuan: status,
-        },
+    } else {
+      const nasabah = (
+        await Nasabah.findAll({
+          where: {
+            id_user: currentUser.userId,
+          },
+        })
+      ).length;
+      const nasabahReject = (
+        await Req.findAll({
+          where: { status_ajuan: "Ditolak", created_by: currentUser.userId },
+          include: [{ model: Nasabah, as: "nasabah" }],
+        })
+      ).length;
+      const nasabahApprove = await Req.findAll({
+        where: { status_ajuan: "Diterima", created_by: currentUser.userId },
       });
+
+      const nasabahRequest = (
+        await Req.findAll({
+          where: { status_ajuan: "Aktif", created_by: currentUser.userId },
+          include: [{ model: Nasabah, as: "nasabah" }],
+        })
+      ).length;
 
       return res.status(200).json({
         code: 200,
         status: true,
-        msg: "Dashboard For Ustadz/ah",
-        data: nasabah,
+        msg: "Dashboard for Admin",
+        data: {
+          currentUser,
+          nasabah,
+          ajuan_approve: nasabahApprove.length,
+          ajuan_reject: nasabahReject,
+          ajuan_ready: nasabahRequest,
+        },
       });
     }
   } catch (error) {
@@ -56,11 +102,6 @@ export const dashboard = async (req, res) => {
       status: false,
       msg: "An error occurred during the update.",
       error: error.message,
-    });
-    return res.status(500).json({
-      code: 500,
-      status: false,
-      msg: "Internal Server Error",
     });
   }
 };

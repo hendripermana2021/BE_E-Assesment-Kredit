@@ -92,67 +92,35 @@ export const CalculatedROC = async (req, res) => {
 export const calculatedCPIisNull = async (req, res) => {
   const user = req.user;
   try {
-    let req;
-    if (user.role_id == 1) {
-      req = await Req.findAll({
-        // where: {
-        //   id_calculated: null,
-        // },
-        include: {
-          model: Cpi,
-          as: "cpi_data",
-          include: [
-            {
-              model: Kriteria,
-              as: "kriteria",
-            },
-            {
-              model: Sub_Kriteria,
-              as: "subkriteria",
-            },
-          ],
-        },
-      });
-    } else {
-      req = await Req.findAll({
-        // where: {
-        //   id_calculated: null,
-        //   created_by: user.userId,
-        // },
-        include: {
-          model: Cpi,
-          as: "cpi_data",
-          include: [
-            {
-              model: Kriteria,
-              as: "kriteria",
-            },
-            {
-              model: Sub_Kriteria,
-              as: "subkriteria",
-            },
-          ],
-        },
+    const reqAjuan = await Req.findAll({
+      where: {
+        id_calculated: null,
+      },
+      include: {
+        model: Cpi,
+        as: "cpi_data",
+        include: [
+          {
+            model: Kriteria,
+            as: "kriteria",
+          },
+          {
+            model: Sub_Kriteria,
+            as: "subkriteria",
+          },
+        ],
+      },
+    });
+
+    console.log(reqAjuan);
+
+    if (reqAjuan == 0) {
+      return res.status(404).json({
+        code: 404,
+        status: true,
+        msg: "No data CPI to be calculated",
       });
     }
-
-    const checkKriteria = await Kriteria.findAll({});
-
-    // if (checkKriteria.length > 0) {
-    //   return res.status(404).json({
-    //     code: 404,
-    //     status: false,
-    //     msg: "Please Process ROC Kriteria First",
-    //   });
-    // }
-
-    // if (req.length === 0) {
-    //   return res.status(404).json({
-    //     code: 404,
-    //     status: false,
-    //     msg: "Nothing Data CPI Empty for Calculated",
-    //   });
-    // }
 
     const kriteria = await Kriteria.findAll({});
 
@@ -160,14 +128,14 @@ export const calculatedCPIisNull = async (req, res) => {
     //------> STEP 1
     let normalisasi = [];
     //Step 1 normalisasi Tabel dan Flatten
-    for (let i = 0; i < req.length; i++) {
-      for (let j = 0; j < req[i].cpi_data.length; j++) {
-        normalisasi.push(req[i].cpi_data[j].subkriteria.value);
+    for (let i = 0; i < reqAjuan.length; i++) {
+      for (let j = 0; j < reqAjuan[i].cpi_data.length; j++) {
+        normalisasi.push(reqAjuan[i].cpi_data[j].subkriteria.value);
       }
     }
 
     //flatten
-    const groupSize = normalisasi.length / req.length;
+    const groupSize = normalisasi.length / reqAjuan.length;
 
     // Mengelompokkan array menjadi subarray berukuran 6
     const groupedArrays = [];
@@ -179,7 +147,7 @@ export const calculatedCPIisNull = async (req, res) => {
     console.log("Grouped by Alternatif : ", groupedArrays);
 
     console.log("normalisasi lenght : ", normalisasi.length);
-    console.log("groupsized lenght : ", req.length);
+    console.log("groupsized lenght : ", reqAjuan.length);
 
     //pencarian MIN :
     const transposedArray = groupedArrays[0].map((_, colIndex) =>
@@ -195,9 +163,9 @@ export const calculatedCPIisNull = async (req, res) => {
     //------> STEP KE-2, melakukan perkalian dan pembagian
     let minNormalisasi = [];
 
-    for (let i = 0; i < req.length; i++) {
-      for (let j = 0; j < req[i].cpi_data.length; j++) {
-        if (req[i].cpi_data[j].kriteria.type == 1) {
+    for (let i = 0; i < reqAjuan.length; i++) {
+      for (let j = 0; j < reqAjuan[i].cpi_data.length; j++) {
+        if (reqAjuan[i].cpi_data[j].kriteria.type == 1) {
           let a = groupedArrays[i][j] / maxValues[j];
           minNormalisasi.push(a);
         } else {
@@ -218,8 +186,8 @@ export const calculatedCPIisNull = async (req, res) => {
     //------> STEP KE-3, BOBOT x MATRIKS TERNORMALISASI
     let step3 = [];
 
-    for (let i = 0; i < req.length; i++) {
-      for (let j = 0; j < req[i].cpi_data.length; j++) {
+    for (let i = 0; i < reqAjuan.length; i++) {
+      for (let j = 0; j < reqAjuan[i].cpi_data.length; j++) {
         let b = minNormalisasiTranspose[i][j] * kriteria[j].weight_score;
         step3.push(b);
       }
@@ -258,20 +226,20 @@ export const calculatedCPIisNull = async (req, res) => {
 
     ///////////////////////////////////////////////////////////////////////////////---> END CODE METHOD CPI
 
-    //Insert CPI RESULTS to DATABASE Permission Req Table Database
+    //Insert CPI RESULTS to DATABASE Permission reqAjuan Table Database
 
     const calculateId = await Calculated.create({
       created_by: user.userId,
     });
 
-    for (let i = 0; i < req.length; i++) {
+    for (let i = 0; i < reqAjuan.length; i++) {
       await Req.update(
         {
           cpi_result: step4Final[i],
           id_calculated: calculateId.id,
         },
         {
-          where: { id: req[i].id },
+          where: { id: reqAjuan[i].id },
         }
       );
     }

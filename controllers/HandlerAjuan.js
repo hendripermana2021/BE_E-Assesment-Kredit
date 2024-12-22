@@ -10,6 +10,7 @@ const Sub_Kriteria = db.tbl_subkriteria;
 const Notif = db.tbl_notification;
 const Document_ajuan = db.tbl_document_ajuan;
 const Document = db.tbl_document;
+const Calculated = db.tbl_calculated;
 
 export const getDataAjuanOnlyAccepted = async (req, res) => {
   try {
@@ -80,6 +81,7 @@ export const getDataAjuanAll = async (req, res) => {
     let req;
     if (user.role_id == 1) {
       req = await Req.findAll({
+        where: { id_calculated: null },
         include: [
           {
             model: Nasabah,
@@ -156,6 +158,214 @@ export const getDataAjuanAll = async (req, res) => {
         code: 404,
         status: true,
         msg: "Data Req not exist",
+      });
+    }
+
+    return res.status(200).json({
+      code: 200,
+      status: true,
+      msg: "All Data Permission",
+      data: req,
+    });
+  } catch (error) {
+    console.error(error);
+    return res.status(500).json({
+      code: 500,
+      status: false,
+      msg: "An error occurred during the update.",
+      error: error.message,
+    });
+  }
+};
+
+export const getDataAjuanHistory = async (req, res) => {
+  const user = req.user;
+  try {
+    let req;
+    if (user.role_id == 1) {
+      req = await Req.findAll({
+        where: {
+          id_calculated: {
+            [Op.ne]: null, // This means "not equal to null"
+          },
+        },
+        include: [
+          {
+            model: Calculated,
+            as: "history_calculated",
+          },
+          {
+            model: Nasabah,
+            as: "nasabah",
+            include: {
+              model: Document,
+              as: "document",
+            },
+          },
+          {
+            model: Document_ajuan,
+            as: "document_ajuan",
+          },
+          {
+            model: Users,
+            as: "petugas_pengaju",
+          },
+          {
+            model: Cpi,
+            as: "cpi_data",
+            include: [
+              {
+                model: Kriteria,
+                as: "kriteria",
+              },
+              {
+                model: Sub_Kriteria,
+                as: "subkriteria",
+              },
+            ],
+          },
+        ],
+      });
+    } else {
+      req = await Req.findAll({
+        where: { created_by: user.userId },
+        include: [
+          {
+            model: Nasabah,
+            as: "nasabah",
+            include: {
+              model: Document,
+              as: "document",
+            },
+          },
+          {
+            model: Users,
+            as: "petugas_pengaju",
+          },
+          {
+            model: Document_ajuan,
+            as: "document_ajuan",
+          },
+          {
+            model: Cpi,
+            as: "cpi_data",
+            include: [
+              {
+                model: Kriteria,
+                as: "kriteria",
+              },
+              {
+                model: Sub_Kriteria,
+                as: "subkriteria",
+              },
+            ],
+          },
+        ],
+      });
+    }
+
+    if (req.length == 0) {
+      return res.status(404).json({
+        code: 404,
+        status: true,
+        msg: "Data is on generated not existed, so please generated first",
+      });
+    }
+
+    return res.status(200).json({
+      code: 200,
+      status: true,
+      msg: "All Data Permission",
+      data: req,
+    });
+  } catch (error) {
+    console.error(error);
+    return res.status(500).json({
+      code: 500,
+      status: false,
+      msg: "An error occurred during the update.",
+      error: error.message,
+    });
+  }
+};
+
+export const getDataAjuanNullGenerated = async (req, res) => {
+  const user = req.user;
+  try {
+    let req;
+    if (user.role_id == 1) {
+      req = await Req.findAll({
+        where: {
+          id_calculated: null,
+        },
+        include: [
+          {
+            model: Nasabah,
+            as: "nasabah",
+            include: {
+              model: Document,
+              as: "document",
+            },
+          },
+          {
+            model: Document_ajuan,
+            as: "document_ajuan",
+          },
+          {
+            model: Users,
+            as: "petugas_pengaju",
+          },
+          {
+            model: Cpi,
+            as: "cpi_data",
+            include: [
+              {
+                model: Kriteria,
+                as: "kriteria",
+              },
+              {
+                model: Sub_Kriteria,
+                as: "subkriteria",
+              },
+            ],
+          },
+        ],
+      });
+    } else {
+      req = await Req.findAll({
+        where: { created_by: user.userId, id_calculated: null },
+        include: [
+          {
+            model: Nasabah,
+            as: "nasabah",
+            include: {
+              model: Document,
+              as: "document",
+            },
+          },
+          {
+            model: Users,
+            as: "petugas_pengaju",
+          },
+          {
+            model: Document_ajuan,
+            as: "document_ajuan",
+          },
+          {
+            model: Cpi,
+            as: "cpi_data",
+            include: [
+              {
+                model: Kriteria,
+                as: "kriteria",
+              },
+              {
+                model: Sub_Kriteria,
+                as: "subkriteria",
+              },
+            ],
+          },
+        ],
       });
     }
 
@@ -364,8 +574,8 @@ export const addAjuan = async (req, res) => {
     });
 
     if (reqCheck) {
-      return res.status(404).json({
-        code: 404,
+      return res.status(400).json({
+        code: 400,
         status: false,
         msg: "Ajuan is still existed, and processing by system.",
       });
@@ -547,22 +757,14 @@ export const updateAjuan = async (req, res) => {
       let cpiData = dataCpi.find(
         (cpi) => cpi.id_kriteria === kriteria[i].id_kriteria
       );
-      if (!cpiData) {
-        cpiData = await Cpi.create({
-          id_kriteria: kriteria[i].id_kriteria,
+      await Cpi.update(
+        {
           id_subkriteria: kriteria[i].id_subkriteria,
-          id_order: id,
-        });
-      } else {
-        await Cpi.update(
-          {
-            id_subkriteria: kriteria[i].id_subkriteria,
-          },
-          {
-            where: { id: dataCpi[i].id },
-          }
-        );
-      }
+        },
+        {
+          where: { id: dataCpi[i].id },
+        }
+      );
     }
 
     if (document != "") {

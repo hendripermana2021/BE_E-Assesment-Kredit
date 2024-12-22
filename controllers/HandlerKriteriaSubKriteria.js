@@ -67,7 +67,7 @@ export const getDataKriteriaById = async (req, res) => {
 export const getDataSubKriteriaById = async (req, res) => {
   const { id } = req.params;
   try {
-    const subkriteria = await SubKriteria.findAll({
+    const subkriteria = await SubKriteria.findOne({
       where: { id: id },
     });
 
@@ -246,7 +246,7 @@ export const getDataKriteriaAndSub = async (req, res) => {
 export const getDataKriteriaAndSubById = async (req, res) => {
   try {
     const { id } = req.params;
-    const kriteria = await Kriteria.findAll({
+    const kriteria = await Kriteria.findOne({
       where: { id: id },
       include: {
         model: SubKriteria,

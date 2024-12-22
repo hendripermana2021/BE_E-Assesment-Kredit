@@ -55,6 +55,8 @@ import {
   updateAjuan,
   deleteAjuan,
   addAjuan,
+  getDataAjuanNullGenerated,
+  getDataAjuanHistory,
 } from "../controllers/HandlerAjuan.js";
 import { dashboard } from "../controllers/HandlerDashboard.js";
 import { generateReport } from "../controllers/HandlerReport.js";
@@ -169,18 +171,8 @@ router.put(prefix + "users/update/:id", verifyToken, updateDataUsers);
 //API NASABAH
 router.get(prefix + "nasabah", verifyToken, getDataNasabah);
 router.get(prefix + "nasabah/byid/:id", verifyToken, getDataNasabahById);
-router.post(
-  prefix + "nasabah/register",
-  verifyToken,
-  upload.single("image"),
-  RegisterNasabah
-);
-router.put(
-  prefix + "nasabah/update/:id",
-  verifyToken,
-  upload.single("image"),
-  updateDataNasabah
-);
+router.post(prefix + "nasabah/register", verifyToken, RegisterNasabah);
+router.put(prefix + "nasabah/update/:id", verifyToken, updateDataNasabah);
 router.delete(prefix + "nasabah/delete/:id", verifyToken, deleteNasabah);
 
 //API ROLE
@@ -198,6 +190,8 @@ router.get(prefix + "notif/byid/:id", verifyToken, getDataNotificationById);
 //API Ajuan
 router.get(prefix + "ajuan/byid/:id", verifyToken, getDataAjuanById);
 router.get(prefix + "ajuan", verifyToken, getDataAjuanAll);
+router.get(prefix + "ajuan/history", verifyToken, getDataAjuanHistory);
+router.get(prefix + "ajuan/generated", verifyToken, getDataAjuanNullGenerated);
 router.put(prefix + "ajuan/update/:id", verifyToken, updateAjuan);
 router.delete(prefix + "ajuan/delete/:id", verifyToken, deleteAjuan);
 router.post(prefix + "ajuan/create", verifyToken, addAjuan);

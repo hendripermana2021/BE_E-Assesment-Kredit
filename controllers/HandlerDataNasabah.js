@@ -15,6 +15,7 @@ export const getDataNasabah = async (req, res) => {
 
     if (user.role_id == 1) {
       nasabah = await Nasabah.findAll({
+        order: [["name_nasabah", "ASC"]],
         include: [
           {
             model: Document,

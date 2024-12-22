@@ -73,6 +73,10 @@ db.tbl_document_aset = require("../models/tbl_document_aset.js")(
 );
 db.tbl_aset = require("../models/tbl_aset.js")(sequelize, Sequelize);
 db.tbl_income = require("../models/tbl_income.js")(sequelize, Sequelize);
+db.tbl_calculated = require("../models/tbl_calculated.js")(
+  sequelize,
+  Sequelize
+);
 
 db.tbl_req.hasMany(db.tbl_cpi, {
   as: "cpi_data",
@@ -118,6 +122,11 @@ db.tbl_users.belongsTo(db.tbl_role, {
 //END API USERS
 
 //FOR API REQUEST
+db.tbl_req.belongsTo(db.tbl_calculated, {
+  foreignKey: "id_calculated",
+  as: "history_calculated",
+});
+
 db.tbl_req.belongsTo(db.tbl_nasabah, {
   foreignKey: "id_nasabah",
   as: "nasabah",
