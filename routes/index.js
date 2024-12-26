@@ -33,6 +33,7 @@ import {
 import {
   CalculatedROC,
   calculatedCPIByIdCalculated,
+  calculatedCPIHistory,
   calculatedCPIisNull,
   getReqCpiNull,
 } from "../controllers/HandlerAction.js";
@@ -57,6 +58,7 @@ import {
   addAjuan,
   getDataAjuanNullGenerated,
   getDataAjuanHistory,
+  getDataAjuanHistoryById,
 } from "../controllers/HandlerAjuan.js";
 import { dashboard } from "../controllers/HandlerDashboard.js";
 import { generateReport } from "../controllers/HandlerReport.js";
@@ -72,6 +74,7 @@ import {
   deleteDocumentFromReq,
   updateDocumentToReq,
 } from "../controllers/HandlerDocReq.js";
+import { getHistoryCalculated } from "../controllers/HandlerCalculatedHistory.js";
 
 export const prefix = "/v1/api/";
 
@@ -107,9 +110,15 @@ router.get(prefix + "token", refreshToken);
 router.delete(prefix + "logout", verifyToken, Logout);
 router.get(prefix + "action/calculatedROC", verifyToken, CalculatedROC);
 router.get(prefix + "action/calculatedCPI", verifyToken, calculatedCPIisNull);
+router.get(
+  prefix + "action/calculatedCPI/history/:id",
+  verifyToken,
+  calculatedCPIHistory
+);
 router.get(prefix + "result/CPI/:id", verifyToken, calculatedCPIByIdCalculated);
 router.get(prefix + "report", verifyToken, generateReport);
 router.get(prefix + "datareqByUser", verifyToken, getReqCpiNull);
+router.get(prefix + "history", verifyToken, getHistoryCalculated);
 
 //ROUTES FOR ADMINISTRATOR
 //API FOR DASHBOARD
@@ -189,8 +198,9 @@ router.get(prefix + "notif/byid/:id", verifyToken, getDataNotificationById);
 
 //API Ajuan
 router.get(prefix + "ajuan/byid/:id", verifyToken, getDataAjuanById);
+
 router.get(prefix + "ajuan", verifyToken, getDataAjuanAll);
-router.get(prefix + "ajuan/history", verifyToken, getDataAjuanHistory);
+router.get(prefix + "ajuan/history/byid/:id", verifyToken, getDataAjuanHistory);
 router.get(prefix + "ajuan/generated", verifyToken, getDataAjuanNullGenerated);
 router.put(prefix + "ajuan/update/:id", verifyToken, updateAjuan);
 router.delete(prefix + "ajuan/delete/:id", verifyToken, deleteAjuan);

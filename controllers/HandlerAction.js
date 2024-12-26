@@ -333,6 +333,233 @@ export const calculatedCPIisNull = async (req, res) => {
   }
 };
 
+export const calculatedCPIHistory = async (req, res) => {
+  const user = req.user;
+  const { id } = req.params;
+  try {
+    const reqAjuan = await Req.findAll({
+      where: {
+        id_calculated: id,
+      },
+      include: {
+        model: Cpi,
+        as: "cpi_data",
+        include: [
+          {
+            model: Kriteria,
+            as: "kriteria",
+          },
+          {
+            model: Sub_Kriteria,
+            as: "subkriteria",
+          },
+        ],
+      },
+    });
+
+    console.log(reqAjuan);
+
+    if (reqAjuan == 0) {
+      return res.status(404).json({
+        code: 404,
+        status: true,
+        msg: "No data CPI to be calculated",
+      });
+    }
+
+    const kriteria = await Kriteria.findAll({});
+
+    ///////////////////////////////////////////////////////////////---> START CODE METHOD CPI
+    //------> STEP 1
+    let normalisasi = [];
+    //Step 1 normalisasi Tabel dan Flatten
+    for (let i = 0; i < reqAjuan.length; i++) {
+      for (let j = 0; j < reqAjuan[i].cpi_data.length; j++) {
+        normalisasi.push(reqAjuan[i].cpi_data[j].subkriteria.value);
+      }
+    }
+
+    //flatten
+    const groupSize = normalisasi.length / reqAjuan.length;
+
+    // Mengelompokkan array menjadi subarray berukuran 6
+    const groupedArrays = [];
+    for (let i = 0; i < normalisasi.length; i += groupSize) {
+      const subarray = normalisasi.slice(i, i + groupSize);
+      groupedArrays.push(subarray);
+    }
+    console.log("getvalue : ", normalisasi);
+    console.log("Grouped by Alternatif : ", groupedArrays);
+
+    console.log("normalisasi lenght : ", normalisasi.length);
+    console.log("groupsized lenght : ", reqAjuan.length);
+
+    //pencarian MIN :
+    const transposedArray = groupedArrays[0].map((_, colIndex) =>
+      groupedArrays.map((row) => row[colIndex])
+    );
+    console.log("Transposed Array : ", transposedArray);
+
+    const minValues = transposedArray.map((row) => Math.min(...row));
+    const maxValues = transposedArray.map((row) => Math.max(...row));
+    console.log("Pencarian Nilai Min : ", minValues);
+    //END
+
+    //------> STEP KE-2, melakukan perkalian dan pembagian
+    let minNormalisasi = [];
+
+    for (let i = 0; i < reqAjuan.length; i++) {
+      for (let j = 0; j < reqAjuan[i].cpi_data.length; j++) {
+        if (reqAjuan[i].cpi_data[j].kriteria.type == 1) {
+          let a = groupedArrays[i][j] / maxValues[j];
+          minNormalisasi.push(a);
+        } else {
+          let a = minValues[j] / groupedArrays[i][j];
+          minNormalisasi.push(a);
+        }
+      }
+    }
+    const minNormalisasiTranspose = [];
+    for (let i = 0; i < normalisasi.length; i += groupSize) {
+      const subarray = minNormalisasi.slice(i, i + groupSize);
+      minNormalisasiTranspose.push(subarray);
+    }
+    console.log("Hasil Step 2 :", minNormalisasi);
+    console.log("Transpose Step 2 :", minNormalisasiTranspose);
+    //END
+
+    //------> STEP KE-3, BOBOT x MATRIKS TERNORMALISASI
+    let step3 = [];
+
+    for (let i = 0; i < reqAjuan.length; i++) {
+      for (let j = 0; j < reqAjuan[i].cpi_data.length; j++) {
+        let b = minNormalisasiTranspose[i][j] * kriteria[j].weight_score;
+        step3.push(b);
+      }
+    }
+
+    const step3Transpose = [];
+    for (let i = 0; i < normalisasi.length; i += groupSize) {
+      const subarray = step3.slice(i, i + groupSize);
+      step3Transpose.push(subarray);
+    }
+
+    const sumGroups = step3Transpose.map((group) =>
+      group.reduce((acc, value) => acc + value, 0)
+    );
+
+    console.log("Hasil Step 3 :", step3);
+    console.log("Transpose Step 3 :", step3Transpose);
+    console.log("Sum Array Step 3 :", sumGroups);
+
+    // Find maximum value
+    const maxValue = Math.max(...sumGroups);
+
+    // Find minimum value
+    const minValue = Math.min(...sumGroups);
+    console.log(`Max Value: ${maxValue}
+    Min Value: ${minValue}`);
+    //END
+
+    //------> STEP 4 FINAL RESULTS
+    let step4Final = [];
+    for (let i = 0; i < sumGroups.length; i++) {
+      let z = (sumGroups[i] - minValue) / (maxValue - minValue);
+      step4Final.push(z);
+    }
+    console.log("Final Results CPI dan ROC : ", step4Final);
+
+    ///////////////////////////////////////////////////////////////////////////////---> END CODE METHOD CPI
+
+    //Insert CPI RESULTS to DATABASE Permission reqAjuan Table Database
+
+    const resultCpi = await Req.findAll({
+      include: [
+        {
+          model: Cpi,
+          as: "cpi_data",
+          include: [
+            {
+              model: Kriteria,
+              as: "kriteria",
+            },
+            {
+              model: Sub_Kriteria,
+              as: "subkriteria",
+            },
+          ],
+        },
+        {
+          model: Nasabah,
+          as: "nasabah",
+        },
+      ],
+    });
+
+    const makeRank = assignRanking(resultCpi);
+
+    console.log("rank", makeRank);
+
+    for (let i = 0; i < resultCpi.length; i++) {
+      let newStatus = resultCpi[i].cpi_result > 0.5 ? "Diterima" : "Ditolak";
+
+      await Req.update(
+        {
+          rank: makeRank[i].rank,
+          status_ajuan: newStatus,
+        },
+        {
+          where: { id: makeRank[i].id },
+        }
+      );
+    }
+
+    const finalResultReq = await Req.findAll({
+      include: [
+        {
+          model: Cpi,
+          as: "cpi_data",
+          include: [
+            {
+              model: Kriteria,
+              as: "kriteria",
+            },
+            {
+              model: Sub_Kriteria,
+              as: "subkriteria",
+            },
+          ],
+        },
+        {
+          model: Nasabah,
+          as: "nasabah",
+        },
+      ],
+    });
+
+    return res.status(200).json({
+      status: true,
+      msg: "Success Calculated CPI",
+      data: {
+        result: finalResultReq,
+        kriteria: kriteria,
+        step1: { groupedArrays, minValues, maxValues },
+        step2: minNormalisasiTranspose,
+        step3: { step3Transpose, sumGroups, maxValue, minValue },
+        step4: step4Final,
+      },
+    });
+  } catch (error) {
+    console.error(error);
+    return res.status(500).json({
+      code: 500,
+      status: false,
+      msg: "An error occurred during the update.",
+      error: error.message,
+    });
+  }
+};
+
 export const calculatedCPIByIdCalculated = async (req, res) => {
   const user_id = req.user.userId;
   const { id } = req.params;

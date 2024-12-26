@@ -81,7 +81,6 @@ export const getDataAjuanAll = async (req, res) => {
     let req;
     if (user.role_id == 1) {
       req = await Req.findAll({
-        where: { id_calculated: null },
         include: [
           {
             model: Nasabah,
@@ -179,96 +178,55 @@ export const getDataAjuanAll = async (req, res) => {
 };
 
 export const getDataAjuanHistory = async (req, res) => {
-  const user = req.user;
+  const { id } = req.params;
   try {
-    let req;
-    if (user.role_id == 1) {
-      req = await Req.findAll({
-        where: {
-          id_calculated: {
-            [Op.ne]: null, // This means "not equal to null"
+    const req = await Req.findAll({
+      where: {
+        id_calculated: id,
+      },
+      include: [
+        {
+          model: Calculated,
+          as: "history_calculated",
+        },
+        {
+          model: Nasabah,
+          as: "nasabah",
+          include: {
+            model: Document,
+            as: "document",
           },
         },
-        include: [
-          {
-            model: Calculated,
-            as: "history_calculated",
-          },
-          {
-            model: Nasabah,
-            as: "nasabah",
-            include: {
-              model: Document,
-              as: "document",
+        {
+          model: Document_ajuan,
+          as: "document_ajuan",
+        },
+        {
+          model: Users,
+          as: "petugas_pengaju",
+        },
+        {
+          model: Cpi,
+          as: "cpi_data",
+          include: [
+            {
+              model: Kriteria,
+              as: "kriteria",
             },
-          },
-          {
-            model: Document_ajuan,
-            as: "document_ajuan",
-          },
-          {
-            model: Users,
-            as: "petugas_pengaju",
-          },
-          {
-            model: Cpi,
-            as: "cpi_data",
-            include: [
-              {
-                model: Kriteria,
-                as: "kriteria",
-              },
-              {
-                model: Sub_Kriteria,
-                as: "subkriteria",
-              },
-            ],
-          },
-        ],
-      });
-    } else {
-      req = await Req.findAll({
-        where: { created_by: user.userId },
-        include: [
-          {
-            model: Nasabah,
-            as: "nasabah",
-            include: {
-              model: Document,
-              as: "document",
+            {
+              model: Sub_Kriteria,
+              as: "subkriteria",
             },
-          },
-          {
-            model: Users,
-            as: "petugas_pengaju",
-          },
-          {
-            model: Document_ajuan,
-            as: "document_ajuan",
-          },
-          {
-            model: Cpi,
-            as: "cpi_data",
-            include: [
-              {
-                model: Kriteria,
-                as: "kriteria",
-              },
-              {
-                model: Sub_Kriteria,
-                as: "subkriteria",
-              },
-            ],
-          },
-        ],
-      });
-    }
+          ],
+        },
+      ],
+    });
 
     if (req.length == 0) {
       return res.status(404).json({
         code: 404,
         status: true,
-        msg: "Data is on generated not existed, so please generated first",
+        msg: "Data is on generated not existed",
       });
     }
 
@@ -391,6 +349,68 @@ export const getDataAjuanById = async (req, res) => {
   try {
     const req = await Req.findOne({
       where: { id: id },
+      include: [
+        {
+          model: Nasabah,
+          as: "nasabah",
+          include: {
+            model: Document,
+            as: "document",
+          },
+        },
+        {
+          model: Users,
+          as: "petugas_pengaju",
+        },
+        {
+          model: Document_ajuan,
+          as: "document_ajuan",
+        },
+        {
+          model: Cpi,
+          as: "cpi_data",
+          include: [
+            {
+              model: Kriteria,
+              as: "kriteria",
+            },
+            {
+              model: Sub_Kriteria,
+              as: "subkriteria",
+            },
+          ],
+        },
+      ],
+    });
+    if (req == "") {
+      return res.status(404).json({
+        code: 404,
+        status: false,
+        msg: "Permission Doesn't Exist",
+      });
+    }
+    return res.status(200).json({
+      code: 200,
+      status: true,
+      msg: "data you searched Found",
+      data: req,
+    });
+  } catch (error) {
+    console.error(error);
+    return res.status(500).json({
+      code: 500,
+      status: false,
+      msg: "An error occurred during the update.",
+      error: error.message,
+    });
+  }
+};
+
+export const getDataAjuanHistoryById = async (req, res) => {
+  const { id } = req.params;
+  try {
+    const req = await Req.findOne({
+      where: { id_calculated: id },
       include: [
         {
           model: Nasabah,
