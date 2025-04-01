@@ -59,6 +59,8 @@ import {
   getDataAjuanNullGenerated,
   getDataAjuanHistory,
   getDataAjuanHistoryById,
+  getDataAjuanHistoryFinish,
+  getDataAjuanActive,
 } from "../controllers/HandlerAjuan.js";
 import { dashboard } from "../controllers/HandlerDashboard.js";
 import { generateReport } from "../controllers/HandlerReport.js";
@@ -201,6 +203,11 @@ router.get(prefix + "ajuan/byid/:id", verifyToken, getDataAjuanById);
 
 router.get(prefix + "ajuan", verifyToken, getDataAjuanAll);
 router.get(prefix + "ajuan/history/byid/:id", verifyToken, getDataAjuanHistory);
+router.get(
+  prefix + "ajuan/history/finish",
+  verifyToken,
+  getDataAjuanHistoryFinish
+);
 router.get(prefix + "ajuan/generated", verifyToken, getDataAjuanNullGenerated);
 router.put(prefix + "ajuan/update/:id", verifyToken, updateAjuan);
 router.delete(prefix + "ajuan/delete/:id", verifyToken, deleteAjuan);

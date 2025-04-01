@@ -6,6 +6,7 @@ import path from "path";
 const Nasabah = db.tbl_nasabah;
 const Document = db.tbl_document;
 const Users = db.tbl_users;
+const ReqAjuan = db.tbl_req;
 const storage = multer.memoryStorage();
 
 export const getDataNasabah = async (req, res) => {
@@ -168,13 +169,9 @@ export const deleteNasabah = async (req, res) => {
     });
   }
 
-  // let baseUrl = "http://localhost:8000";
-
-  // if (nasabah["image"]) {
-  //   let relativeUrl = nasabah.image.replace(baseUrl, "public");
-  //   console.log(relativeUrl);
-  //   await fs.unlink(relativeUrl);
-  // }
+  await ReqAjuan.destroy({
+    where: { id_nasabah: id },
+  });
 
   await Nasabah.destroy({
     where: { id },

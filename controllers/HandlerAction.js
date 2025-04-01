@@ -1,3 +1,4 @@
+import { Op } from "sequelize";
 import { assignRanking } from "../globalFunction/sortedRank.js";
 import db from "../models/index.js";
 
@@ -122,7 +123,19 @@ export const calculatedCPIisNull = async (req, res) => {
       });
     }
 
-    const kriteria = await Kriteria.findAll({});
+    const kriteria = await Kriteria.findAll({
+      where: {
+        weight_score: { [Op.not]: 0 },
+      },
+    });
+
+    if (kriteria == 0) {
+      return res.status(404).json({
+        code: 404,
+        status: true,
+        msg: "Please ROC generated first!",
+      });
+    }
 
     ///////////////////////////////////////////////////////////////---> START CODE METHOD CPI
     //------> STEP 1
@@ -247,6 +260,9 @@ export const calculatedCPIisNull = async (req, res) => {
     console.log(step4Final[0]);
 
     const resultCpi = await Req.findAll({
+      where: {
+        id_calculated: calculateId.id,
+      },
       include: [
         {
           model: Cpi,
@@ -288,6 +304,9 @@ export const calculatedCPIisNull = async (req, res) => {
     }
 
     const finalResultReq = await Req.findAll({
+      where: {
+        id_calculated: calculateId.id,
+      },
       include: [
         {
           model: Cpi,
@@ -334,7 +353,6 @@ export const calculatedCPIisNull = async (req, res) => {
 };
 
 export const calculatedCPIHistory = async (req, res) => {
-  const user = req.user;
   const { id } = req.params;
   try {
     const reqAjuan = await Req.findAll({
@@ -474,6 +492,9 @@ export const calculatedCPIHistory = async (req, res) => {
     //Insert CPI RESULTS to DATABASE Permission reqAjuan Table Database
 
     const resultCpi = await Req.findAll({
+      where: {
+        id_calculated: id,
+      },
       include: [
         {
           model: Cpi,
@@ -515,6 +536,9 @@ export const calculatedCPIHistory = async (req, res) => {
     }
 
     const finalResultReq = await Req.findAll({
+      where: {
+        id_calculated: id,
+      },
       include: [
         {
           model: Cpi,

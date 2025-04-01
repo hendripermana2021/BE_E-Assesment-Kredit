@@ -247,6 +247,150 @@ export const getDataAjuanHistory = async (req, res) => {
   }
 };
 
+export const getDataAjuanHistoryFinish = async (req, res) => {
+  const { id } = req.params;
+  try {
+    const req = await Req.findAll({
+      where: {
+        id_calculated: {
+          [Op.not]: null, // Menambahkan kondisi untuk req_status tidak null
+        },
+      },
+      include: [
+        {
+          model: Calculated,
+          as: "history_calculated",
+        },
+        {
+          model: Nasabah,
+          as: "nasabah",
+          include: {
+            model: Document,
+            as: "document",
+          },
+        },
+        {
+          model: Document_ajuan,
+          as: "document_ajuan",
+        },
+        {
+          model: Users,
+          as: "petugas_pengaju",
+        },
+        {
+          model: Cpi,
+          as: "cpi_data",
+          include: [
+            {
+              model: Kriteria,
+              as: "kriteria",
+            },
+            {
+              model: Sub_Kriteria,
+              as: "subkriteria",
+            },
+          ],
+        },
+      ],
+    });
+
+    if (req.length == 0) {
+      return res.status(404).json({
+        code: 404,
+        status: true,
+        msg: "Data is on generated not existed",
+      });
+    }
+
+    return res.status(200).json({
+      code: 200,
+      status: true,
+      msg: "All Data Permission",
+      data: req,
+    });
+  } catch (error) {
+    console.error(error);
+    return res.status(500).json({
+      code: 500,
+      status: false,
+      msg: "An error occurred during the update.",
+      error: error.message,
+    });
+  }
+};
+
+export const getDataAjuanActive = async (req, res) => {
+  const { id } = req.params;
+  try {
+    const req = await Req.findAll({
+      where: {
+        status_ajuan: {
+          [Op.like]: null, // Menambahkan kondisi untuk req_status tidak null
+        },
+      },
+      include: [
+        {
+          model: Calculated,
+          as: "history_calculated",
+        },
+        {
+          model: Nasabah,
+          as: "nasabah",
+          include: {
+            model: Document,
+            as: "document",
+          },
+        },
+        {
+          model: Document_ajuan,
+          as: "document_ajuan",
+        },
+        {
+          model: Users,
+          as: "petugas_pengaju",
+        },
+        {
+          model: Cpi,
+          as: "cpi_data",
+          include: [
+            {
+              model: Kriteria,
+              as: "kriteria",
+            },
+            {
+              model: Sub_Kriteria,
+              as: "subkriteria",
+            },
+          ],
+        },
+      ],
+    });
+
+    if (req.length == 0) {
+      return res.status(404).json({
+        code: 404,
+        status: true,
+        msg: "Data is on generated not existed",
+      });
+    }
+
+    return res.status(200).json({
+      code: 200,
+      status: true,
+      msg: "All Data Permission",
+      data: req,
+    });
+  } catch (error) {
+    console.error(error);
+    return res.status(500).json({
+      code: 500,
+      status: false,
+      msg: "An error occurred during the update.",
+      error: error.message,
+    });
+  }
+};
+
 export const getDataAjuanNullGenerated = async (req, res) => {
   const user = req.user;
   try {
