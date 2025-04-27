@@ -66,6 +66,7 @@
     "part": "0.1.1",
     "path": "0.12.7",
     "pg": "8.14.1",
+    "pnpm": "^10.9.0",
     "sequelize": "6.37.7",
     "sequelize-cli": "6.6.2",
     "socket.io": "4.8.1",

@@ -22,7 +22,7 @@ module.exports = {
           email: "petugas@gmail.com",
           password: await bcrypt.hash("12345", 10),
           real_password: "12345",
-          role_id: 1,
+          role_id: 2,
           createdAt: new Date(),
           updatedAt: new Date(),
         },

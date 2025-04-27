@@ -1,4 +1,4 @@
-import { Op } from "sequelize";
+import { JSONB, Op } from "sequelize";
 import { assignRanking } from "../globalFunction/sortedRank.js";
 import db from "../models/index.js";
 
@@ -240,10 +240,10 @@ export const calculatedCPIisNull = async (req, res) => {
     ///////////////////////////////////////////////////////////////////////////////---> END CODE METHOD CPI
 
     //Insert CPI RESULTS to DATABASE Permission reqAjuan Table Database
-
     const calculateId = await Calculated.create({
-      created_by: user.userId,
+      created_by: user.userId
     });
+    
 
     for (let i = 0; i < reqAjuan.length; i++) {
       await Req.update(
@@ -258,6 +258,8 @@ export const calculatedCPIisNull = async (req, res) => {
     }
 
     console.log(step4Final[0]);
+
+    
 
     const resultCpi = await Req.findAll({
       where: {
@@ -328,6 +330,23 @@ export const calculatedCPIisNull = async (req, res) => {
         },
       ],
     });
+
+ 
+    await Calculated.update(
+      {result_calculation: {
+        result: finalResultReq,
+        kriteria: kriteria,
+        step1: { groupedArrays, minValues, maxValues },
+        step2: minNormalisasiTranspose,
+        step3: { step3Transpose, sumGroups, maxValue, minValue },
+        step4: step4Final,
+      }},
+      { 
+        where : {
+          id : calculateId.id 
+        }
+      }
+    );
 
     return res.status(200).json({
       status: true,

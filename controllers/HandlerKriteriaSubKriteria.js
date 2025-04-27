@@ -428,6 +428,7 @@ export const updateKriteriaDanSub = async (req, res) => {
           name_sub: fromBodySubKriteria[i].name_sub,
           value: fromBodySubKriteria[i].value,
           description: fromBodySubKriteria[i].description,
+          sub_detail: fromBodySubKriteria[i].sub_detail
         },
         {
           where: { id: getDataSubKriteria[i].id },

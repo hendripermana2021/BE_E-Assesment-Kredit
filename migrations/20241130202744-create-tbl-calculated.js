@@ -12,6 +12,9 @@ module.exports = {
       created_by: {
         type: Sequelize.INTEGER
       },
+      result_calculation: {
+        type: Sequelize.JSONB
+      },
       createdAt: {
         allowNull: false,
         type: Sequelize.DATE

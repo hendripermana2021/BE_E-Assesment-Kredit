@@ -1,0 +1,6 @@
+onlyBuiltDependencies:
+  - '@scarf/scarf'
+  - bcrypt
+  - core-js
+  - es5-ext
+  - nodemon

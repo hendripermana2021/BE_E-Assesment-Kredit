@@ -14,7 +14,8 @@ module.exports = (sequelize, DataTypes) => {
     }
   }
   tbl_calculated.init({
-    created_by: DataTypes.INTEGER
+    created_by: DataTypes.INTEGER,
+    result_calculation: DataTypes.JSONB
   }, {
     sequelize,
     modelName: 'tbl_calculated',

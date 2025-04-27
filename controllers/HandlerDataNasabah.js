@@ -31,7 +31,7 @@ export const getDataNasabah = async (req, res) => {
     } else {
       nasabah = await Nasabah.findAll({
         where: {
-          id_user: user.id,
+          id_user: user.userId,
         },
         include: {
           model: Document,
@@ -39,6 +39,8 @@ export const getDataNasabah = async (req, res) => {
         },
       });
     }
+
+    console.log("==>", user)
 
     if (user == "") {
       return res.status(404).json({

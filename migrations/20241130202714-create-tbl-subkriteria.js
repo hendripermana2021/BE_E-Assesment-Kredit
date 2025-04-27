@@ -21,6 +21,9 @@ module.exports = {
       value: {
         type: Sequelize.FLOAT,
       },
+      sub_detail: {
+        type: Sequelize.JSONB,
+      },
       createdAt: {
         allowNull: false,
         type: Sequelize.DATE,
