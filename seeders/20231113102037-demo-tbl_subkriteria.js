@@ -304,10 +304,6 @@ module.exports = {
           description: "",
           id_kriteria: 11,
           value: 4,
-          sub_detail: JSON.stringify({
-            min: 500000000,
-            high: 1000000000
-          }),
           createdAt: new Date(),
           updatedAt: new Date(),
         },
@@ -316,10 +312,6 @@ module.exports = {
           description: "",
           id_kriteria: 11,
           value: 3,
-          sub_detail: JSON.stringify({
-            min: 200000000,
-            high: 499999999
-          }),
           createdAt: new Date(),
           updatedAt: new Date(),
         },
@@ -328,10 +320,6 @@ module.exports = {
           description: "",
           id_kriteria: 11,
           value: 2,
-          sub_detail: JSON.stringify({
-            min: 50000000,
-            high: 199999999
-          }),
           createdAt: new Date(),
           updatedAt: new Date(),
         },
@@ -340,10 +328,6 @@ module.exports = {
           description: "",
           id_kriteria: 11,
           value: 1,
-          sub_detail: JSON.stringify({
-            min: 1000000,
-            high: 49999999
-          }),
           createdAt: new Date(),
           updatedAt: new Date(),
         },

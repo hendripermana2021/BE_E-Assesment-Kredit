@@ -1,7 +1,5 @@
-'use strict';
-const {
-  Model
-} = require('sequelize');
+"use strict";
+const { Model } = require("sequelize");
 module.exports = (sequelize, DataTypes) => {
   class tbl_calculated extends Model {
     /**
@@ -13,12 +11,14 @@ module.exports = (sequelize, DataTypes) => {
       // define association here
     }
   }
-  tbl_calculated.init({
-    created_by: DataTypes.INTEGER,
-    result_calculation: DataTypes.JSONB
-  }, {
-    sequelize,
-    modelName: 'tbl_calculated',
-  });
+  tbl_calculated.init(
+    {
+      created_by: DataTypes.INTEGER,
+    },
+    {
+      sequelize,
+      modelName: "tbl_calculated",
+    }
+  );
   return tbl_calculated;
 };

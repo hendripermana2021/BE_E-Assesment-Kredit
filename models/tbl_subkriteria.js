@@ -17,7 +17,6 @@ module.exports = (sequelize, DataTypes) => {
       description: DataTypes.STRING,
       id_kriteria: DataTypes.INTEGER,
       value: DataTypes.FLOAT,
-      sub_detail: DataTypes.JSONB
     },
     {
       sequelize,
