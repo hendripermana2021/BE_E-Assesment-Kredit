@@ -328,24 +328,6 @@ export const calculatedCPIisNull = async (req, res) => {
       ],
     });
 
-    await Calculated.update(
-      {
-        result_calculation: {
-          result: finalResultReq,
-          kriteria: kriteria,
-          step1: { groupedArrays, minValues, maxValues },
-          step2: minNormalisasiTranspose,
-          step3: { step3Transpose, sumGroups, maxValue, minValue },
-          step4: step4Final,
-        },
-      },
-      {
-        where: {
-          id: calculateId.id,
-        },
-      }
-    );
-
     return res.status(200).json({
       status: true,
       msg: "Success Calculated CPI",
